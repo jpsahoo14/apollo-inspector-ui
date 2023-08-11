@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { IDataView, ApolloInspector } from "apollo-inspector";
+import { IDataView, ApolloInspector, OperationType, ResultsFrom, OperationStatus } from "apollo-inspector";
 import { mergeClasses, Spinner, Title2 } from "@fluentui/react-components";
 import { OperationsTrackerBody } from "./operations-tracker-body/operations-tracker-body";
 import { useStyles } from "./operations-tracker-container-styles";
@@ -18,6 +18,8 @@ import {
 } from "./operations-tracker-container-helper";
 import { ApolloClientsObject, ClientObject } from "./types";
 import { useTrackerStore, ISetState } from "./store";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+import jsonOperationsData1 from "./operationsDataJson.json";
 
 interface IOperationsTrackerContainer {
   apolloClients?: ApolloClientsObject;
@@ -26,10 +28,11 @@ export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
   const [openDescription, setOpenDescription] = useState<boolean>(false);
+  const [showSearchBanner, setShowSearchBanner] = useState<boolean>(false);
+  const [searchString, setSearchString] = useState('');
   const [apollOperationsData, setApolloOperationsData] = useTrackerStore(
     (store) => [store.apollOperationsData, store.setApolloOperationsData]
   );
-
   const [loader, setLoader] = useTrackerStore((store) => [
     store.loader,
     store.setLoader,
@@ -40,22 +43,24 @@ export const OperationsTrackerContainer = (
     store.setIsRecording,
   ]);
 
+  // ?????
   const [operationsState, dispatchOperationsState] = React.useReducer(
     reducers,
     getInitialState()
   );
 
   const classes = useStyles();
-  useSubscribeToPublisher(setError, setApolloOperationsData, setLoader);
-
-  useSetSelectedApolloClient(props);
+  // useSubscribeToPublisher(setError, setApolloOperationsData, setLoader);
+  // useSetSelectedApolloClient(props);
 
   const toggleRecording = useToggleRecording(
+    isRecording,
     setIsRecording,
     setApolloOperationsData,
     setLoader,
     setError
   );
+  // ?????
   React.useMemo(() => {
     return null;
   }, [operationsState]);
@@ -71,12 +76,22 @@ export const OperationsTrackerContainer = (
       apollOperationsData,
       operationsState,
       dispatchOperationsState,
+      showSearchBanner,
+      searchString
     },
     { classes }
   );
 
   const setSearchText = React.useCallback(
     (text: string) => {
+      if(text)
+      {
+        setShowSearchBanner(true);
+        setSearchString(text);
+      }
+      else
+      setShowSearchBanner(false);
+      
       dispatchOperationsState({
         type: OperationReducerActionEnum.UpdateSearchText,
         value: text,
@@ -141,6 +156,8 @@ const useMainSlot = (
     loader,
     dispatchOperationsState,
     operationsState,
+    showSearchBanner,
+    searchString
   }: IUseMainSlotParams,
   { classes }: IUseMainSlotService
 ) => {
@@ -159,16 +176,29 @@ const useMainSlot = (
     );
   }
 
+  if (!!!apollOperationsData?.verboseOperations)
+  {
+    return(<div>
+      <h2>Please select below configs:</h2>
+      <DropDownList />
+      </div>);
+  }
+  
+  
   return (
+    <>
+    {showSearchBanner && <h3>Results are filtered by search text - {searchString}</h3>}
     <OperationsTrackerBody
       dispatchOperationsState={dispatchOperationsState}
       data={apollOperationsData}
       operationsState={operationsState}
     />
+    </>
   );
 };
 
 const useToggleRecording = (
+  isRecording: Boolean,
   setIsRecording: ISetState<boolean>,
   setApolloOperationsData: ISetState<IDataView | null>,
   setLoader: ISetState<ILoader>,
@@ -183,23 +213,44 @@ const useToggleRecording = (
     store.setStopApolloInspectorTracking,
   ]);
   return useCallback(() => {
-    setIsRecording?.((isRecording) => {
-      if (!isRecording) {
-        const apolloInspector = new ApolloInspector(
-          apolloClients[selectedApolloClientId]
-        );
-        const stopTracking = apolloInspector.startTracking();
-        setStopTracking(stopTracking);
-        setApolloOperationsData(null);
-        setLoader({ message: "Recording operations", loading: true });
-        setError(null);
-      } else {
-        stopTracking();
-        setLoader({ message: "Processing operations", loading: true });
-      }
-      return !isRecording;
-    });
+    // setLoader({ message: "Recording operations", loading: true });
+    if (!isRecording) {
+      const apolloInspector = new ApolloInspector(
+        apolloClients[selectedApolloClientId]
+      );
+      //const stopTracking = apolloInspector.startTracking();
+      // const stopTracking = {};
+      setStopTracking(stopTracking);
+      setApolloOperationsData(null);
+      setLoader({ message: "Recording operations", loading: true });
+      setError(null);
+    } else {
+      //stopTracking();
+      setLoader({ message: "", loading: false });
+      setApolloOperationsData(jsonOperationsData1);
+      // setLoader({ message: "Processing operations", loading: true });
+    }
+    setIsRecording(!isRecording);
+    //setIsRecording?.((isRecording) => {
+      // if (!isRecording) {
+      //   const apolloInspector = new ApolloInspector(
+      //     apolloClients[selectedApolloClientId]
+      //   );
+      //   //const stopTracking = apolloInspector.startTracking();
+      //   // const stopTracking = {};
+      //   setStopTracking(stopTracking);
+      //   setApolloOperationsData(null);
+      //   setLoader({ message: "Recording operations", loading: true });
+      //   setError(null);
+      // } else {
+      //   stopTracking();
+      //   setApolloOperationsData(jsonData);
+      //   setLoader({ message: "Processing operations", loading: true });
+      // }
+    //  return !isRecording;
+    //});
   }, [
+    isRecording,
     setIsRecording,
     stopTracking,
     selectedApolloClientId,
@@ -214,18 +265,18 @@ const useSubscribeToPublisher = (
   setLoader: ISetState<ILoader>
 ) => {
   useEffect(() => {
-    remplSubscriber
-      .ns("apollo-operations-tracker")
-      .subscribe((data: IDataView) => {
-        if (data && (data as any).message) {
-          const typedData = data as any;
-          setError({ error: typedData.error, message: typedData.message });
-          setLoader({ message: "", loading: false });
-          return;
-        }
-        setApolloOperationsData(data);
-        setLoader({ message: "", loading: false });
-      });
+    // remplSubscriber
+    //   .ns("apollo-operations-tracker")
+    //   .subscribe((data: IDataView) => {
+    //     if (data && (data as any).message) {
+    //       const typedData = data as any;
+    //       setError({ error: typedData.error, message: typedData.message });
+    //       setLoader({ message: "", loading: false });
+    //       return;
+    //     }
+    //     setApolloOperationsData(data);
+    //     setLoader({ message: "", loading: false });
+    //   });
   }, []);
 };
 
@@ -237,3 +288,40 @@ const getApolloClientFromWindow = (): ApolloClientsObject => {
 
   return apolloClients;
 };
+
+function DropDownList() {
+  const [selectedOption, setSelectedOption] = useState('core');
+  const [selectedApolloClientId, setSelectedApolloClientId, apolloClients, setApolloClients] = useTrackerStore((store) => [
+    store.selectedApolloClientId,
+    store.setSelectedApolloClientId,
+    store.apolloClients,
+    store.setApolloClients
+  ]);
+
+  const temp1 : ApolloClient<NormalizedCacheObject> = {};
+  const temp : ApolloClientsObject = {["core"]: temp1, ["abc"]: temp1};
+  // apolloClients = temp;
+//   React.useMemo(() => { 
+//     const temp1 : ApolloClient<NormalizedCacheObject> = {};
+//     const temp : ApolloClientsObject = {["core"]: temp1};
+//     setApolloClients(temp);
+// }, [setApolloClients]);
+  
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+    setSelectedApolloClientId(event.target.value);
+  };
+
+  return (
+    <div>
+      <label htmlFor="dropdown">Apollo client : </label>
+      <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
+      {Object.keys(temp).map((key, index) => (
+          <option key={index} value={key}>
+            {key}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}

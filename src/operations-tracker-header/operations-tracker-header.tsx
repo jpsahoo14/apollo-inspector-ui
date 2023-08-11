@@ -55,9 +55,10 @@ export const OperationsTrackerHeader = React.memo(
             >
               <Info20Regular />
             </Button>
-            <Button onClick={toggleRecording}>
+            {showClear ? null : <Button onClick={toggleRecording}
+            disabled={!!showClear}>
               {isRecording ? "Stop" : "Record"}
-            </Button>
+            </Button>}
             <CopyButton
               hideCopy={isRecording || !showClear}
               operationsState={operationsState}
