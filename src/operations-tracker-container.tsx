@@ -28,8 +28,12 @@ export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
   const [openDescription, setOpenDescription] = useState<boolean>(false);
-  const [showSearchBanner, setShowSearchBanner] = useState<boolean>(false);
-  const [searchString, setSearchString] = useState('');
+  //const [showSearchBanner, setShowSearchBanner] = useState<boolean>(false);
+  const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
+    store.searchBanner,
+    store.setSearchBanner,
+  ]);
+
   const [apollOperationsData, setApolloOperationsData] = useTrackerStore(
     (store) => [store.apollOperationsData, store.setApolloOperationsData]
   );
@@ -75,22 +79,18 @@ export const OperationsTrackerContainer = (
       loader,
       apollOperationsData,
       operationsState,
-      dispatchOperationsState,
-      showSearchBanner,
-      searchString
+      dispatchOperationsState
     },
     { classes }
   );
 
   const setSearchText = React.useCallback(
     (text: string) => {
-      if(text)
-      {
-        setShowSearchBanner(true);
-        setSearchString(text);
-      }
+      const isValidString = text && text.trim() !== "";
+      if(isValidString)
+      setSearchBanner({showSearchBanner:true, searchText:text});
       else
-      setShowSearchBanner(false);
+      setSearchBanner({showSearchBanner:false, searchText:""});
       
       dispatchOperationsState({
         type: OperationReducerActionEnum.UpdateSearchText,
@@ -155,12 +155,16 @@ const useMainSlot = (
     error,
     loader,
     dispatchOperationsState,
-    operationsState,
-    showSearchBanner,
-    searchString
+    operationsState
   }: IUseMainSlotParams,
   { classes }: IUseMainSlotService
 ) => {
+
+  const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
+    store.searchBanner,
+    store.setSearchBanner,
+  ]);
+
   if (error) {
     return (
       <div className={classes.centerDiv}>
@@ -187,7 +191,7 @@ const useMainSlot = (
   
   return (
     <>
-    {showSearchBanner && <h3>Results are filtered by search text - {searchString}</h3>}
+    {searchBanner.showSearchBanner && <h3>Results are filtered by search text - {searchBanner.searchText}</h3>}
     <OperationsTrackerBody
       dispatchOperationsState={dispatchOperationsState}
       data={apollOperationsData}

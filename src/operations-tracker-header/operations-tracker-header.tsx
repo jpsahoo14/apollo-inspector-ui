@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { IDataView } from "apollo-inspector";
+import { useTrackerStore } from "../store";
 
 export interface IOperationsTrackerHeaderProps {
   setOpenDescription: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +36,11 @@ export const OperationsTrackerHeader = React.memo(
       apollOperationsData,
     } = props;
 
+    const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
+      store.searchBanner,
+      store.setSearchBanner,
+    ]);
+    
     const debouncedFilter = React.useCallback(
       debounce((e: React.SyntheticEvent) => {
         const input = e.target as HTMLInputElement;

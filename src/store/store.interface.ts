@@ -7,6 +7,7 @@ export interface IStore
     IIsRecordingStore,
     IApolloClientsStore,
     ISelectedApolloClientId,
+    ISearchBannerStore,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -30,6 +31,16 @@ export interface ILoaderStore {
 export interface ILoader {
   message: string;
   loading: boolean;
+}
+
+export interface ISearchBannerStore {
+  searchBanner: ISearchBanner;
+  setSearchBanner: ISetState<ISearchBanner>;
+}
+
+export interface ISearchBanner {
+  searchText: string;
+  showSearchBanner: boolean;
 }
 
 export interface IIsRecordingStore {

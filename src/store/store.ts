@@ -8,6 +8,7 @@ import {
   getSelectedApolloClientId,
   getApolloInspectorStopTracking,
 } from "./states";
+import { getSearchBannerStore } from "./states/get-search-banner";
 
 export const useTrackerStore = create<IStore>((set: ISet) => {
   return {
@@ -17,5 +18,6 @@ export const useTrackerStore = create<IStore>((set: ISet) => {
     ...getApolloClients(set),
     ...getSelectedApolloClientId(set),
     ...getApolloInspectorStopTracking(set),
+    ...getSearchBannerStore(set),
   };
 });

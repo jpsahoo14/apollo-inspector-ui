@@ -28,8 +28,6 @@ export interface IUseMainSlotParams {
   apollOperationsData: IDataView | null;
   operationsState: IOperationsReducerState;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
-  showSearchBanner: Boolean;
-  searchString: String;
 }
 
 export interface IUseMainSlotService {
