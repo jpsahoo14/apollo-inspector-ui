@@ -23,8 +23,6 @@ export type stylesClasses =
   | "centerDiv";
 
 export interface IUseMainSlotParams {
-  loader: ILoader;
-  apollOperationsData: IDataView | null;
   operationsState: IOperationsReducerState;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
 }

@@ -13,10 +13,8 @@ export interface IOperationsTrackerHeaderProps {
   setOpenDescription: React.Dispatch<React.SetStateAction<boolean>>;
   openDescription: boolean;
   toggleRecording: () => void;
-  isRecording: boolean;
   setSearchText: (text: string) => void;
   operationsState: IOperationsReducerState;
-  apollOperationsData: IDataView | null;
   clearApolloOperations: () => void;
   showClear: boolean;
 }
@@ -25,20 +23,22 @@ export const OperationsTrackerHeader = React.memo(
   (props: IOperationsTrackerHeaderProps) => {
     const classes = useStyles();
     const {
-      isRecording,
       openDescription,
       setOpenDescription,
       toggleRecording,
       setSearchText,
       operationsState,
       clearApolloOperations,
-      showClear,
-      apollOperationsData,
+      showClear
     } = props;
 
-    const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
+    const [searchBanner, setSearchBanner,
+      isRecording,
+      apollOperationsData] = useTrackerStore((store) => [
       store.searchBanner,
       store.setSearchBanner,
+      store.isRecording,
+      store.apollOperationsData
     ]);
     
     const debouncedFilter = React.useCallback(

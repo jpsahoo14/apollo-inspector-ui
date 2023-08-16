@@ -28,25 +28,14 @@ export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
   const [openDescription, setOpenDescription] = useState<boolean>(false);
-  const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
-    store.searchBanner,
+  const [setSearchBanner,
+    apollOperationsData,
+    setApolloOperationsData,
+    isRecording] = useTrackerStore((store) => [
     store.setSearchBanner,
-  ]);
-
-  const [apollOperationsData, setApolloOperationsData] = useTrackerStore(
-    (store) => [store.apollOperationsData, store.setApolloOperationsData]
-  );
-  const [loader, setLoader] = useTrackerStore((store) => [
-    store.loader,
-    store.setLoader,
-  ]);
-  const [error, setError] = useTrackerStore((store) => [
-    store.error,
-    store.setError,
-  ]);
-  const [isRecording, setIsRecording] = useTrackerStore((store) => [
+    store.apollOperationsData,
+    store.setApolloOperationsData,
     store.isRecording,
-    store.setIsRecording,
   ]);
 
   // ?????
@@ -71,8 +60,6 @@ export const OperationsTrackerContainer = (
 
   const mainSlot = useMainSlot(
     {
-      loader,
-      apollOperationsData,
       operationsState,
       dispatchOperationsState
     },
@@ -105,13 +92,11 @@ export const OperationsTrackerContainer = (
           )}
         >
           <OperationsTrackerHeader
-            isRecording={isRecording}
             openDescription={openDescription}
             setOpenDescription={setOpenDescription}
             toggleRecording={toggleRecording}
             setSearchText={setSearchText}
             operationsState={operationsState}
-            apollOperationsData={apollOperationsData}
             clearApolloOperations={clearApolloOperations}
             showClear={!!apollOperationsData?.verboseOperations}
           />
@@ -146,18 +131,20 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
 
 const useMainSlot = (
   {
-    apollOperationsData,
-    loader,
     dispatchOperationsState,
     operationsState
   }: IUseMainSlotParams,
   { classes }: IUseMainSlotService
 ) => {
 
-  const [searchBanner, setSearchBanner, error] = useTrackerStore((store) => [
+  const [searchBanner,
+    error,
+    apollOperationsData,
+    loader] = useTrackerStore((store) => [
     store.searchBanner,
-    store.setSearchBanner,
-    store.error
+    store.error,
+    store.apollOperationsData,
+    store.loader
   ]);
 
   if (error.error) {
@@ -174,7 +161,6 @@ const useMainSlot = (
       </div>
     );
   }
-
   if (!!!apollOperationsData?.verboseOperations)
   {
     return(<div>
@@ -182,7 +168,6 @@ const useMainSlot = (
       <DropDownList />
       </div>);
   }
-  
   
   return (
     <>
