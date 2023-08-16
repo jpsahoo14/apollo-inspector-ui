@@ -27,15 +27,14 @@ interface IOperationsTrackerContainer {
 export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
-  const [openDescription, setOpenDescription] = useState<boolean>(false);
-  const [setSearchBanner,
+ const [setSearchBanner,
     apollOperationsData,
     setApolloOperationsData,
-    isRecording] = useTrackerStore((store) => [
+    openDescription] = useTrackerStore((store) => [
     store.setSearchBanner,
     store.apollOperationsData,
     store.setApolloOperationsData,
-    store.isRecording,
+    store.openDescription
   ]);
 
   // ?????
@@ -92,8 +91,6 @@ export const OperationsTrackerContainer = (
           )}
         >
           <OperationsTrackerHeader
-            openDescription={openDescription}
-            setOpenDescription={setOpenDescription}
             toggleRecording={toggleRecording}
             setSearchText={setSearchText}
             operationsState={operationsState}
@@ -182,23 +179,26 @@ const useMainSlot = (
 };
 
 const useToggleRecording = () => {
-  const [selectedApolloClientId, apolloClients] = useTrackerStore((store) => [
+  const [selectedApolloClientId,
+    apolloClients,
+    isRecording,
+    setIsRecording,
+    setApolloOperationsData,
+    setLoader,
+    setError,
+    stopTracking,
+    setStopTracking] = useTrackerStore((store) => [
     store.selectedApolloClientId,
     store.apolloClients,
-  ]);
-  const [isRecording, setIsRecording] = useTrackerStore((store) => [
     store.isRecording,
     store.setIsRecording,
-  ]);
-  const [setApolloOperationsData, setLoader, setError] = useTrackerStore((store) => [
     store.setApolloOperationsData,
     store.setLoader,
-    store.setError
-  ]);
-  const [stopTracking, setStopTracking] = useTrackerStore((store) => [
+    store.setError,
     store.stopApolloInspectorTracking,
     store.setStopApolloInspectorTracking,
   ]);
+
   return useCallback(() => {
     // setLoader({ message: "Recording operations", loading: true });
     if (!isRecording) {

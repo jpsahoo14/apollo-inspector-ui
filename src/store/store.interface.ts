@@ -10,6 +10,7 @@ export interface IStore
     ISearchBannerStore,
     IErrorStore,
     ISelectedTabStore,
+    IOpenDescriptionStore,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -63,6 +64,11 @@ export interface IErrorStore {
 export interface ISelectedTabStore {
   selectedTab: TabHeaders;
   setSelectedTab: ISetState<TabHeaders>;
+}
+
+export interface IOpenDescriptionStore {
+  openDescription: boolean;
+  setOpenDescription: ISetState<boolean>;
 }
 
 export interface IApolloClientsStore {

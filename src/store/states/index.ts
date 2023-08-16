@@ -5,5 +5,6 @@ export { getLoaderStore } from "./get-loader";
 export { getErrorStore } from "./get-error";
 export { getSearchBannerStore } from "./get-search-banner";
 export { getSelectedTabStore } from "./get-selected-tab";
+export { getOpenDescriptionStore } from "./get-open-description";
 export { getSelectedApolloClientId } from "./get-selected-apollo-client-id";
 export { getApolloInspectorStopTracking } from "./get-apollo-inspector-stop-tracking";

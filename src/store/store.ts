@@ -9,7 +9,8 @@ import {
   getApolloInspectorStopTracking,
   getSearchBannerStore,
   getErrorStore,
-  getSelectedTabStore
+  getSelectedTabStore,
+  getOpenDescriptionStore
 } from "./states";
 
 export const useTrackerStore = create<IStore>((set: ISet) => {
@@ -23,5 +24,6 @@ export const useTrackerStore = create<IStore>((set: ISet) => {
     ...getSearchBannerStore(set),
     ...getErrorStore(set),
     ...getSelectedTabStore(set),
+    ...getOpenDescriptionStore(set),
   };
 });

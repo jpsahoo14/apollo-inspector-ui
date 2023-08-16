@@ -10,8 +10,6 @@ import { IDataView } from "apollo-inspector";
 import { useTrackerStore } from "../store";
 
 export interface IOperationsTrackerHeaderProps {
-  setOpenDescription: React.Dispatch<React.SetStateAction<boolean>>;
-  openDescription: boolean;
   toggleRecording: () => void;
   setSearchText: (text: string) => void;
   operationsState: IOperationsReducerState;
@@ -23,8 +21,6 @@ export const OperationsTrackerHeader = React.memo(
   (props: IOperationsTrackerHeaderProps) => {
     const classes = useStyles();
     const {
-      openDescription,
-      setOpenDescription,
       toggleRecording,
       setSearchText,
       operationsState,
@@ -32,13 +28,16 @@ export const OperationsTrackerHeader = React.memo(
       showClear
     } = props;
 
-    const [searchBanner, setSearchBanner,
+    const [setSearchBanner,
       isRecording,
-      apollOperationsData] = useTrackerStore((store) => [
-      store.searchBanner,
+      apollOperationsData,
+      openDescription,
+      setOpenDescription] = useTrackerStore((store) => [
       store.setSearchBanner,
       store.isRecording,
-      store.apollOperationsData
+      store.apollOperationsData,
+      store.openDescription,
+      store.setOpenDescription
     ]);
     
     const debouncedFilter = React.useCallback(
