@@ -30,8 +30,6 @@ export interface IOperationViewContainer {
 }
 
 const tabHeaders = [
-  { key: TabHeaders.AllOperationsView, name: "All operations" },
-  { key: TabHeaders.OperationsView, name: "Only Cache operations" },
   { key: TabHeaders.VerboseOperationView, name: "Operations" },
   { key: TabHeaders.AffectedQueriesView, name: "Affected Queries" },
 ];
@@ -109,9 +107,8 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
     dispatchOperationsState,
   } = props;
 
-  const [selectedTab, setSelectedTab] = useTrackerStore((store) => [
-    store.selectedTab,
-    store.setSelectedTab,
+  const [selectedTab] = useTrackerStore((store) => [
+    store.selectedTab
   ]);
 
   switch (selectedTab) {

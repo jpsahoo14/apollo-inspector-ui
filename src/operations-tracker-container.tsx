@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { IDataView, ApolloInspector, OperationType, ResultsFrom, OperationStatus } from "apollo-inspector";
+import { IDataView, ApolloInspector } from "apollo-inspector";
 import { mergeClasses, Spinner, Title2 } from "@fluentui/react-components";
 import { OperationsTrackerBody } from "./operations-tracker-body/operations-tracker-body";
 import { useStyles } from "./operations-tracker-container-styles";
@@ -18,12 +18,13 @@ import {
 } from "./operations-tracker-container-helper";
 import { ApolloClientsObject, ClientObject } from "./types";
 import { useTrackerStore, ISetState } from "./store";
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+// TODO: remove static data.
 import jsonOperationsData1 from "./operationsDataJson.json";
 
 interface IOperationsTrackerContainer {
   apolloClients?: ApolloClientsObject;
 }
+
 export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
@@ -37,7 +38,7 @@ export const OperationsTrackerContainer = (
     store.openDescription
   ]);
 
-  // ?????
+// TODO: Convert Reducer to zustand store
   const [operationsState, dispatchOperationsState] = React.useReducer(
     reducers,
     getInitialState()
@@ -48,6 +49,7 @@ export const OperationsTrackerContainer = (
   // useSetSelectedApolloClient(props);
 
   const toggleRecording = useToggleRecording();
+  
   // ?????
   React.useMemo(() => {
     return null;
@@ -55,6 +57,7 @@ export const OperationsTrackerContainer = (
 
   const clearApolloOperations = useCallback(() => {
     setApolloOperationsData(null);
+    setSearchText("");
   }, [setApolloOperationsData]);
 
   const mainSlot = useMainSlot(
@@ -67,11 +70,7 @@ export const OperationsTrackerContainer = (
 
   const setSearchText = React.useCallback(
     (text: string) => {
-      const isValidString = text && text.trim() !== "";
-      if(isValidString)
-      setSearchBanner({showSearchBanner:true, searchText:text});
-      else
-      setSearchBanner({showSearchBanner:false, searchText:""});
+      text ? setSearchBanner({showSearchBanner:true, searchText:text}) : setSearchBanner({showSearchBanner:false, searchText:""});
       
       dispatchOperationsState({
         type: OperationReducerActionEnum.UpdateSearchText,
@@ -125,6 +124,32 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
     }
   }, [props.apolloClients, setApolloClients, selectedApolloClientId]);
 };
+const ApolloClientDropDownList = () => {
+  const [selectedOption, setSelectedOption] = useState('core');
+  const [setSelectedApolloClientId,
+    apolloClients] = useTrackerStore((store) => [
+    store.setSelectedApolloClientId,
+    store.apolloClients
+  ]);
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+    setSelectedApolloClientId(event.target.value);
+  };
+
+  return (
+    <div>
+      <label htmlFor="dropdown">Apollo client : </label>
+      <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
+      {Object.keys(apolloClients).map((key, index) => (
+          <option key={index} value={key}>
+            {key}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
 
 const useMainSlot = (
   {
@@ -162,7 +187,7 @@ const useMainSlot = (
   {
     return(<div>
       <h2>Please select below configs:</h2>
-      <DropDownList />
+      <ApolloClientDropDownList />
       </div>);
   }
   
@@ -275,40 +300,3 @@ const getApolloClientFromWindow = (): ApolloClientsObject => {
 
   return apolloClients;
 };
-
-function DropDownList() {
-  const [selectedOption, setSelectedOption] = useState('core');
-  const [selectedApolloClientId, setSelectedApolloClientId, apolloClients, setApolloClients] = useTrackerStore((store) => [
-    store.selectedApolloClientId,
-    store.setSelectedApolloClientId,
-    store.apolloClients,
-    store.setApolloClients
-  ]);
-
-  const temp1 : ApolloClient<NormalizedCacheObject> = {};
-  const temp : ApolloClientsObject = {["core"]: temp1, ["abc"]: temp1};
-  // apolloClients = temp;
-//   React.useMemo(() => { 
-//     const temp1 : ApolloClient<NormalizedCacheObject> = {};
-//     const temp : ApolloClientsObject = {["core"]: temp1};
-//     setApolloClients(temp);
-// }, [setApolloClients]);
-  
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-    setSelectedApolloClientId(event.target.value);
-  };
-
-  return (
-    <div>
-      <label htmlFor="dropdown">Apollo client : </label>
-      <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
-      {Object.keys(temp).map((key, index) => (
-          <option key={index} value={key}>
-            {key}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}

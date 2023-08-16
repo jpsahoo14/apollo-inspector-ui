@@ -6,7 +6,6 @@ import { Search } from "../search/search";
 import { debounce } from "lodash";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
-import { IDataView } from "apollo-inspector";
 import { useTrackerStore } from "../store";
 
 export interface IOperationsTrackerHeaderProps {
@@ -80,7 +79,7 @@ export const OperationsTrackerHeader = React.memo(
             )}
           </div>
           <div>
-            <Search onSearchChange={debouncedFilter} />
+            {showClear ? <Search onSearchChange={debouncedFilter} /> : null}
           </div>
         </div>
         {openDescription && (
