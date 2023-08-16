@@ -14,9 +14,9 @@ import {
   IOperationsAction,
   IOperationsReducerState,
 } from "../operations-tracker-container-helper";
+import { useTrackerStore } from "../store";
 
 export interface IOperationViewRendererProps {
-  selectedTab: TabHeaders;
   data: IDataView;
   operationsState: IOperationsReducerState;
   dispatchOperationsCount: React.Dispatch<ICountReducerAction>;
@@ -38,9 +38,10 @@ const tabHeaders = [
 
 export const OperationsTrackerBody = (props: IOperationViewContainer) => {
   const { data, operationsState, dispatchOperationsState } = props;
-  const [selectedTab, setSelectedTab] = React.useState(
-    TabHeaders.VerboseOperationView
-  );
+  const [selectedTab, setSelectedTab] = useTrackerStore((store) => [
+    store.selectedTab,
+    store.setSelectedTab,
+  ]);
   const initialState = React.useMemo(() => {
     return computeInitialReducerState(data);
   }, [data]);
@@ -92,7 +93,6 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
       </TabList>
       <OperationsViewRenderer
         data={data}
-        selectedTab={selectedTab}
         operationsState={operationsState}
         dispatchOperationsCount={dispatchOperationsCount}
         dispatchOperationsState={dispatchOperationsState}
@@ -103,12 +103,16 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
 
 const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
   const {
-    selectedTab,
     data,
     operationsState,
     dispatchOperationsCount,
     dispatchOperationsState,
   } = props;
+
+  const [selectedTab, setSelectedTab] = useTrackerStore((store) => [
+    store.selectedTab,
+    store.setSelectedTab,
+  ]);
 
   switch (selectedTab) {
     case TabHeaders.VerboseOperationView: {

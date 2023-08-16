@@ -1,5 +1,5 @@
 import { IDataView } from "apollo-inspector";
-import { ApolloClientsObject } from "../types";
+import { ApolloClientsObject, TabHeaders } from "../types";
 
 export interface IStore
   extends IApolloOperationsDataStore,
@@ -9,6 +9,7 @@ export interface IStore
     ISelectedApolloClientId,
     ISearchBannerStore,
     IErrorStore,
+    ISelectedTabStore,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -57,6 +58,11 @@ export interface IError {
 export interface IErrorStore {
   error: IError;
   setError: ISetState<IError>;
+}
+
+export interface ISelectedTabStore {
+  selectedTab: TabHeaders;
+  setSelectedTab: ISetState<TabHeaders>;
 }
 
 export interface IApolloClientsStore {
