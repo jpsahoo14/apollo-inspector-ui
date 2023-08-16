@@ -8,6 +8,7 @@ export interface IStore
     IApolloClientsStore,
     ISelectedApolloClientId,
     ISearchBannerStore,
+    IErrorStore,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -46,6 +47,16 @@ export interface ISearchBanner {
 export interface IIsRecordingStore {
   isRecording: boolean;
   setIsRecording: ISetState<boolean>;
+}
+
+export interface IError {
+  error: any;
+  message: string;
+}
+
+export interface IErrorStore {
+  error: IError;
+  setError: ISetState<IError>;
 }
 
 export interface IApolloClientsStore {

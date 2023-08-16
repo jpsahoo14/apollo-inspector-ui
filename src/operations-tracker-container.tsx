@@ -28,7 +28,6 @@ export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
   const [openDescription, setOpenDescription] = useState<boolean>(false);
-  //const [showSearchBanner, setShowSearchBanner] = useState<boolean>(false);
   const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
     store.searchBanner,
     store.setSearchBanner,
@@ -41,7 +40,10 @@ export const OperationsTrackerContainer = (
     store.loader,
     store.setLoader,
   ]);
-  const [error, setError] = React.useState<IError | null>(null);
+  const [error, setError] = useTrackerStore((store) => [
+    store.error,
+    store.setError,
+  ]);
   const [isRecording, setIsRecording] = useTrackerStore((store) => [
     store.isRecording,
     store.setIsRecording,
@@ -57,13 +59,7 @@ export const OperationsTrackerContainer = (
   // useSubscribeToPublisher(setError, setApolloOperationsData, setLoader);
   // useSetSelectedApolloClient(props);
 
-  const toggleRecording = useToggleRecording(
-    isRecording,
-    setIsRecording,
-    setApolloOperationsData,
-    setLoader,
-    setError
-  );
+  const toggleRecording = useToggleRecording();
   // ?????
   React.useMemo(() => {
     return null;
@@ -75,7 +71,6 @@ export const OperationsTrackerContainer = (
 
   const mainSlot = useMainSlot(
     {
-      error,
       loader,
       apollOperationsData,
       operationsState,
@@ -152,7 +147,6 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
 const useMainSlot = (
   {
     apollOperationsData,
-    error,
     loader,
     dispatchOperationsState,
     operationsState
@@ -160,12 +154,13 @@ const useMainSlot = (
   { classes }: IUseMainSlotService
 ) => {
 
-  const [searchBanner, setSearchBanner] = useTrackerStore((store) => [
+  const [searchBanner, setSearchBanner, error] = useTrackerStore((store) => [
     store.searchBanner,
     store.setSearchBanner,
+    store.error
   ]);
 
-  if (error) {
+  if (error.error) {
     return (
       <div className={classes.centerDiv}>
         <Title2>{error.message}</Title2>
@@ -201,16 +196,19 @@ const useMainSlot = (
   );
 };
 
-const useToggleRecording = (
-  isRecording: Boolean,
-  setIsRecording: ISetState<boolean>,
-  setApolloOperationsData: ISetState<IDataView | null>,
-  setLoader: ISetState<ILoader>,
-  setError: React.Dispatch<React.SetStateAction<IError | null>>
-) => {
+const useToggleRecording = () => {
   const [selectedApolloClientId, apolloClients] = useTrackerStore((store) => [
     store.selectedApolloClientId,
     store.apolloClients,
+  ]);
+  const [isRecording, setIsRecording] = useTrackerStore((store) => [
+    store.isRecording,
+    store.setIsRecording,
+  ]);
+  const [setApolloOperationsData, setLoader, setError] = useTrackerStore((store) => [
+    store.setApolloOperationsData,
+    store.setLoader,
+    store.setError
   ]);
   const [stopTracking, setStopTracking] = useTrackerStore((store) => [
     store.stopApolloInspectorTracking,
@@ -227,7 +225,7 @@ const useToggleRecording = (
       setStopTracking(stopTracking);
       setApolloOperationsData(null);
       setLoader({ message: "Recording operations", loading: true });
-      setError(null);
+      setError({error: null, message: ""});
     } else {
       //stopTracking();
       setLoader({ message: "", loading: false });
