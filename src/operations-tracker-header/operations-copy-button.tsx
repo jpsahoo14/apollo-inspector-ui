@@ -13,9 +13,17 @@ import { IOperationsReducerState } from "../operations-tracker-container-helper"
 import { useStyles } from "./operations-copy-button-styles";
 import { IDataView } from "apollo-inspector";
 
-const remplSubscriber: any = {
-  callRemote: () => {},
+const copyToClipboard = (jsonString) => {
+  navigator.clipboard
+    .writeText(jsonString)
+    .then(() => {
+      console.log("Copied to clipboard");
+    })
+    .catch((err) => {
+      console.error("Error copying JSON:", err);
+    });
 };
+
 export interface ICopyButtonProps {
   hideCopy: boolean;
   operationsState: IOperationsReducerState;
@@ -27,41 +35,27 @@ export const CopyButton = (props: ICopyButtonProps) => {
   const { operationsState, hideCopy, apolloOperationsData } = props;
 
   const copyAll = React.useCallback(() => {
-    const ids: number[] = [];
-    apolloOperationsData?.verboseOperations?.forEach((op) => {
-      ids.push(op.id);
-    });
-    remplSubscriber.callRemote("copyOperationsData", ids);
+    const jsonString = JSON.stringify(apolloOperationsData?.verboseOperations); // Convert array to JSON string with indentation
+    copyToClipboard(jsonString);
   }, [apolloOperationsData]);
 
   const copyFiltered = React.useCallback(() => {
-    const ids: number[] = [];
-    operationsState.filteredOperations?.forEach((op) => {
-      ids.push(op.id);
-    });
-
-    remplSubscriber.callRemote("copyOperationsData", ids);
+    const jsonString = JSON.stringify(operationsState.filteredOperations); // Convert array to JSON string with indentation
+    copyToClipboard(jsonString);
   }, [operationsState]);
 
   const copyChecked = React.useCallback(() => {
-    const ids: number[] = [];
-    operationsState.checkedOperations?.forEach((op) => {
-      ids.push(op.id);
-    });
-
-    remplSubscriber.callRemote("copyOperationsData", ids);
+    const jsonString = JSON.stringify(operationsState.checkedOperations); // Convert array to JSON string with indentation
+    copyToClipboard(jsonString);
   }, [operationsState]);
 
   const copySelected = React.useCallback(() => {
-    if (operationsState.selectedOperation?.id) {
-      const ids: number[] = [operationsState.selectedOperation.id];
-
-      remplSubscriber.callRemote("copyOperationsData", ids);
-    }
+    const jsonString = JSON.stringify(operationsState.selectedOperation); // Convert array to JSON string with indentation
+    copyToClipboard(jsonString);
   }, [operationsState]);
 
   const copyCache = React.useCallback(() => {
-    remplSubscriber.callRemote("copyOperationsData", [-1]);
+    copyToClipboard(null);
   }, [operationsState]);
 
   if (hideCopy) {

@@ -82,8 +82,8 @@ export interface ISelectedApolloClientId {
 }
 
 export interface IStopApolloInspectorTracking {
-  stopApolloInspectorTracking: () => void;
-  setStopApolloInspectorTracking: ISetState<() => void>;
+  stopApolloInspectorTracking: () => IDataView;
+  setStopApolloInspectorTracking: ISetState<() => IDataView>;
 }
 
 export type ISetState<T> = (value: T | ((prevState: T) => T)) => void;

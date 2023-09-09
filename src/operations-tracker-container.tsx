@@ -28,28 +28,36 @@ interface IOperationsTrackerContainer {
 export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
- const [setSearchBanner,
+  const [
+    setApolloClients,
+    setSelectedApolloClientId,
+    setSearchBanner,
     apollOperationsData,
     setApolloOperationsData,
-    openDescription] = useTrackerStore((store) => [
+    openDescription,
+  ] = useTrackerStore((store) => [
+    store.setApolloClients,
+    store.setSelectedApolloClientId,
     store.setSearchBanner,
     store.apollOperationsData,
     store.setApolloOperationsData,
-    store.openDescription
+    store.openDescription,
   ]);
 
-// TODO: Convert Reducer to zustand store
+  // TODO: Convert Reducer to zustand store
   const [operationsState, dispatchOperationsState] = React.useReducer(
     reducers,
     getInitialState()
   );
 
+  setApolloClients(props.apolloClients);
+  setSelectedApolloClientId("onenote");
   const classes = useStyles();
   // useSubscribeToPublisher(setError, setApolloOperationsData, setLoader);
   // useSetSelectedApolloClient(props);
 
   const toggleRecording = useToggleRecording();
-  
+
   // ?????
   React.useMemo(() => {
     return null;
@@ -63,15 +71,17 @@ export const OperationsTrackerContainer = (
   const mainSlot = useMainSlot(
     {
       operationsState,
-      dispatchOperationsState
+      dispatchOperationsState,
     },
     { classes }
   );
 
   const setSearchText = React.useCallback(
     (text: string) => {
-      text ? setSearchBanner({showSearchBanner:true, searchText:text}) : setSearchBanner({showSearchBanner:false, searchText:""});
-      
+      text
+        ? setSearchBanner({ showSearchBanner: true, searchText: text })
+        : setSearchBanner({ showSearchBanner: false, searchText: "" });
+
       dispatchOperationsState({
         type: OperationReducerActionEnum.UpdateSearchText,
         value: text,
@@ -125,23 +135,26 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
   }, [props.apolloClients, setApolloClients, selectedApolloClientId]);
 };
 const ApolloClientDropDownList = () => {
-  const [selectedOption, setSelectedOption] = useState('core');
-  const [setSelectedApolloClientId,
-    apolloClients] = useTrackerStore((store) => [
-    store.setSelectedApolloClientId,
-    store.apolloClients
-  ]);
+  const [selectedOption, setSelectedOption] = useState("core");
+  const [setSelectedApolloClientId, apolloClients] = useTrackerStore(
+    (store) => [store.setSelectedApolloClientId, store.apolloClients]
+  );
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+    console.log({ value: event.target.value });
     setSelectedApolloClientId(event.target.value);
   };
 
   return (
     <div>
       <label htmlFor="dropdown">Apollo client : </label>
-      <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
-      {Object.keys(apolloClients).map((key, index) => (
+      <select
+        id="dropdown"
+        value={selectedOption}
+        onChange={handleOptionChange}
+      >
+        {Object.keys(apolloClients).map((key, index) => (
           <option key={index} value={key}>
             {key}
           </option>
@@ -149,25 +162,20 @@ const ApolloClientDropDownList = () => {
       </select>
     </div>
   );
-}
+};
 
 const useMainSlot = (
-  {
-    dispatchOperationsState,
-    operationsState
-  }: IUseMainSlotParams,
+  { dispatchOperationsState, operationsState }: IUseMainSlotParams,
   { classes }: IUseMainSlotService
 ) => {
-
-  const [searchBanner,
-    error,
-    apollOperationsData,
-    loader] = useTrackerStore((store) => [
-    store.searchBanner,
-    store.error,
-    store.apollOperationsData,
-    store.loader
-  ]);
+  const [searchBanner, error, apollOperationsData, loader] = useTrackerStore(
+    (store) => [
+      store.searchBanner,
+      store.error,
+      store.apollOperationsData,
+      store.loader,
+    ]
+  );
 
   if (error.error) {
     return (
@@ -183,28 +191,32 @@ const useMainSlot = (
       </div>
     );
   }
-  if (!!!apollOperationsData?.verboseOperations)
-  {
-    return(<div>
-      <h2>Please select below configs:</h2>
-      <ApolloClientDropDownList />
-      </div>);
+  if (!!!apollOperationsData?.verboseOperations) {
+    return (
+      <div>
+        <h2>Please select below configs:</h2>
+        <ApolloClientDropDownList />
+      </div>
+    );
   }
-  
+
   return (
     <>
-    {searchBanner.showSearchBanner && <h3>Results are filtered by search text - {searchBanner.searchText}</h3>}
-    <OperationsTrackerBody
-      dispatchOperationsState={dispatchOperationsState}
-      data={apollOperationsData}
-      operationsState={operationsState}
-    />
+      {searchBanner.showSearchBanner && (
+        <h3>Results are filtered by search text - {searchBanner.searchText}</h3>
+      )}
+      <OperationsTrackerBody
+        dispatchOperationsState={dispatchOperationsState}
+        data={apollOperationsData}
+        operationsState={operationsState}
+      />
     </>
   );
 };
 
 const useToggleRecording = () => {
-  const [selectedApolloClientId,
+  const [
+    selectedApolloClientId,
     apolloClients,
     isRecording,
     setIsRecording,
@@ -212,7 +224,8 @@ const useToggleRecording = () => {
     setLoader,
     setError,
     stopTracking,
-    setStopTracking] = useTrackerStore((store) => [
+    setStopTracking,
+  ] = useTrackerStore((store) => [
     store.selectedApolloClientId,
     store.apolloClients,
     store.isRecording,
@@ -227,38 +240,40 @@ const useToggleRecording = () => {
   return useCallback(() => {
     // setLoader({ message: "Recording operations", loading: true });
     if (!isRecording) {
+      console.log({ selectedApolloClientId });
       const apolloInspector = new ApolloInspector(
         apolloClients[selectedApolloClientId]
       );
-      //const stopTracking = apolloInspector.startTracking();
-      // const stopTracking = {};
-      setStopTracking(stopTracking);
       setApolloOperationsData(null);
       setLoader({ message: "Recording operations", loading: true });
-      setError({error: null, message: ""});
+      setError({ error: null, message: "" });
+      const stopTracking = apolloInspector.startTracking();
+      console.log({ stopTracking });
+      setStopTracking(stopTracking);
     } else {
-      //stopTracking();
       setLoader({ message: "", loading: false });
-      setApolloOperationsData(jsonOperationsData1);
+      const graphqlRequests = stopTracking();
+      console.log({ stopTracking, graphqlRequests });
+      setApolloOperationsData(graphqlRequests);
       // setLoader({ message: "Processing operations", loading: true });
     }
     setIsRecording(!isRecording);
     //setIsRecording?.((isRecording) => {
-      // if (!isRecording) {
-      //   const apolloInspector = new ApolloInspector(
-      //     apolloClients[selectedApolloClientId]
-      //   );
-      //   //const stopTracking = apolloInspector.startTracking();
-      //   // const stopTracking = {};
-      //   setStopTracking(stopTracking);
-      //   setApolloOperationsData(null);
-      //   setLoader({ message: "Recording operations", loading: true });
-      //   setError(null);
-      // } else {
-      //   stopTracking();
-      //   setApolloOperationsData(jsonData);
-      //   setLoader({ message: "Processing operations", loading: true });
-      // }
+    // if (!isRecording) {
+    //   const apolloInspector = new ApolloInspector(
+    //     apolloClients[selectedApolloClientId]
+    //   );
+    //   //const stopTracking = apolloInspector.startTracking();
+    //   // const stopTracking = {};
+    //   setStopTracking(stopTracking);
+    //   setApolloOperationsData(null);
+    //   setLoader({ message: "Recording operations", loading: true });
+    //   setError(null);
+    // } else {
+    //   stopTracking();
+    //   setApolloOperationsData(jsonData);
+    //   setLoader({ message: "Processing operations", loading: true });
+    // }
     //  return !isRecording;
     //});
   }, [
@@ -269,27 +284,6 @@ const useToggleRecording = () => {
     apolloClients,
     setStopTracking,
   ]);
-};
-
-const useSubscribeToPublisher = (
-  setError: React.Dispatch<React.SetStateAction<IError | null>>,
-  setApolloOperationsData: ISetState<IDataView | null>,
-  setLoader: ISetState<ILoader>
-) => {
-  useEffect(() => {
-    // remplSubscriber
-    //   .ns("apollo-operations-tracker")
-    //   .subscribe((data: IDataView) => {
-    //     if (data && (data as any).message) {
-    //       const typedData = data as any;
-    //       setError({ error: typedData.error, message: typedData.message });
-    //       setLoader({ message: "", loading: false });
-    //       return;
-    //     }
-    //     setApolloOperationsData(data);
-    //     setLoader({ message: "", loading: false });
-    //   });
-  }, []);
 };
 
 const getApolloClientFromWindow = (): ApolloClientsObject => {

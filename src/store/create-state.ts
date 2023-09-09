@@ -14,12 +14,13 @@ export const createState = <T>(
     set((store: IStore) => {
       
       const nextState = produce(store, (draft: IStore) => {
-        if (typeof value === "function") {
-          console.log(value);
-          draft[key] = value(store[key]);
-        } else {
-          draft[key] = value;
-        }
+        // if (typeof value === "function") {
+        //   console.log(value);
+        //   draft[key] = value(store[key]);
+        // } else {
+        //   draft[key] = value;
+        // }
+        draft[key] = value;
       });
       console.log({ key: cloneDeep(key), value: cloneDeep(value), store: cloneDeep(store), nextState: cloneDeep(nextState) });
       return nextState;
