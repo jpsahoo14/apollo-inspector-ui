@@ -50,11 +50,8 @@ export const OperationsTrackerContainer = (
     getInitialState()
   );
 
-  setApolloClients(props.apolloClients);
-  setSelectedApolloClientId("onenote");
   const classes = useStyles();
-  // useSubscribeToPublisher(setError, setApolloOperationsData, setLoader);
-  // useSetSelectedApolloClient(props);
+  useSetSelectedApolloClient(props);
 
   const toggleRecording = useToggleRecording();
 
@@ -134,6 +131,7 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
     }
   }, [props.apolloClients, setApolloClients, selectedApolloClientId]);
 };
+
 const ApolloClientDropDownList = () => {
   const [selectedOption, setSelectedOption] = useState("core");
   const [setSelectedApolloClientId, apolloClients] = useTrackerStore(

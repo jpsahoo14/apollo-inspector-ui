@@ -11,6 +11,7 @@ export interface IStore
     IErrorStore,
     ISelectedTabStore,
     IOpenDescriptionStore,
+    IFilterSetStore,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -84,6 +85,17 @@ export interface ISelectedApolloClientId {
 export interface IStopApolloInspectorTracking {
   stopApolloInspectorTracking: () => IDataView;
   setStopApolloInspectorTracking: ISetState<() => IDataView>;
+}
+
+export interface IFilterSet {
+  results: string[];
+  types: string[];
+  statuses: string[];
+}
+
+export interface IFilterSetStore {
+  filterSet: IFilterSet;
+  setFilterSet: ISetState<IFilterSet>;
 }
 
 export type ISetState<T> = (value: T | ((prevState: T) => T)) => void;

@@ -58,14 +58,14 @@ export const FilterView = React.memo((props: IFilterView) => {
     setResultFromFilter,
     setFilters,
     operationTypesFilter,
-    statusFilter,
+    statusFilter
   );
   const onStatusChange = useOnStatusChange(
     statusFilter,
     setStatusFilter,
     setFilters,
     resultFromFilter,
-    operationTypesFilter,
+    operationTypesFilter
   );
 
   const statues = Object.entries(OperationStatus)
@@ -178,28 +178,35 @@ const useOperationTypesCheckBox = ({
       }
       setOperationTypesFilter(typesFilter);
       setTimeout(() => {
-        setFilters({
-          types: typesFilter,
-          results: resultFromFilter,
-          statuses: statusFilter,
+        setFilters((prevState: IFilterSet) => {
+          console.log({
+            operationtype: "type",
+            prevState,
+            typesFilter,
+          });
+          return {
+            ...prevState,
+            types: typesFilter,
+          };
         });
       }, 0);
     },
-    [operationTypesFilter, setOperationTypesFilter, setFilters],
+    [operationTypesFilter, setOperationTypesFilter, setFilters]
   );
+
   const operationTypes = React.useMemo(() => {
     return Object.entries(OperationType)
       .filter(
         (value) =>
           !querySubTypes.includes(
-            (value as unknown as Array<string>)[0] as OperationType,
-          ),
+            (value as unknown as Array<string>)[0] as OperationType
+          )
       )
       .filter(
         (value) =>
           !fragmentSubTypes.includes(
-            (value as unknown as Array<string>)[0] as OperationType,
-          ),
+            (value as unknown as Array<string>)[0] as OperationType
+          )
       )
       .map((value, key) => {
         const checkboxValue = (value as unknown as Array<string>)[0];
@@ -222,7 +229,7 @@ const useOnStatusChange = (
   setStatusFilter: React.Dispatch<React.SetStateAction<string[]>>,
   setFilters: (filterSet: IFilterSet | null) => void,
   resultFromFilter: string[],
-  operationTypesFilter: string[],
+  operationTypesFilter: string[]
 ) =>
   React.useCallback(
     ({ target: { value } }, { checked }) => {
@@ -234,14 +241,20 @@ const useOnStatusChange = (
       }
       setStatusFilter(arr);
       setTimeout(() => {
-        setFilters({
-          results: resultFromFilter,
-          types: operationTypesFilter,
-          statuses: arr,
+        setFilters((prevState: IFilterSet) => {
+          console.log({
+            operationtype: "status",
+            prevState,
+            arr,
+          });
+          return {
+            ...prevState,
+            statuses: arr,
+          };
         });
       }, 0);
     },
-    [statusFilter, setStatusFilter],
+    [statusFilter, setStatusFilter]
   );
 
 const useOnResultChange = (
@@ -249,7 +262,7 @@ const useOnResultChange = (
   setResultFromFilter: React.Dispatch<React.SetStateAction<string[]>>,
   setFilters: (filterSet: IFilterSet | null) => void,
   operationTypesFilter: string[],
-  statusFilter: string[],
+  statusFilter: string[]
 ) =>
   React.useCallback(
     ({ target: { value } }, { checked }) => {
@@ -261,12 +274,21 @@ const useOnResultChange = (
       }
       setResultFromFilter(arr);
       setTimeout(() => {
-        setFilters({
-          results: arr,
-          types: operationTypesFilter,
-          statuses: statusFilter,
+        setFilters((prevState: IFilterSet) => {
+          console.log({
+            operationtype: "result",
+            prevState,
+            arr,
+          });
+          if (prevState != null) {
+            return {
+              ...prevState,
+              results: arr,
+            };
+          }
+          return null;
         });
       }, 0);
     },
-    [resultFromFilter, setResultFromFilter],
+    [resultFromFilter, setResultFromFilter]
   );

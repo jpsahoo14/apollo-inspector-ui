@@ -22,6 +22,8 @@ import {
   IOperationsReducerState,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
+import { useStore } from "zustand";
+import { useTrackerStore } from "../store";
 
 export interface IDataGridView {
   operations: IVerboseOperation[] | null;
@@ -65,7 +67,15 @@ export const DataGridView = (props: IDataGridView) => {
   const filteredOperations: IVerboseOperation[] =
     props.operations?.concat([]) ?? [];
 
-  const [filters, setFilters] = React.useState<IFilterSet | null>(null);
+  // const [filters, setFilters] = useTrackerStore((store) => [
+  //   store.filterSet,
+  //   store.setFilterSet,
+  // ]);
+  const [filters, setFilters] = React.useState<IFilterSet | null>({
+    types: [],
+    results: [],
+    statuses: [],
+  });
   const [filteredItems, setFilteredItems] = React.useState(operations || []);
 
   React.useEffect(() => {
