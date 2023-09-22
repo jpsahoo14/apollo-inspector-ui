@@ -70,6 +70,9 @@ export const useStyles = makeStyles({
   accordioPreWrapper: {
     maxWidth: "40rem",
   },
+  contentHeader: {
+    marginTop: "0",
+  },
 });
 
 export type stylesKeys =

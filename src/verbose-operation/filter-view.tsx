@@ -5,6 +5,7 @@ import { useStyles } from "./filter-view.styles";
 
 interface IFilterView {
   setFilters: (filterSet: IFilterSet | null) => void;
+  filters: IFilterSet
 }
 
 export enum OperationStatus {
@@ -33,8 +34,22 @@ export const fragmentSubTypes = [
   OperationType.CacheWriteFragment,
   OperationType.ClientReadFragment,
   OperationType.ClientWriteFragment,
-  OperationType.Fragment,
 ];
+
+interface IUseOperationTypesCheckBoxParams {
+  operationTypesFilter: string[];
+  setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>;
+  filters: IFilterSet| null;
+  setFilters: (filterSet: IFilterSet | null) => void;
+  resultFromFilter: string[];
+  statusFilter: string[];
+  queryChecked: boolean;
+  setQueryChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  querySubTypesChecked: OperationType[];
+  setQuerySubTypesChecked: React.Dispatch<
+    React.SetStateAction<OperationType[]>
+  >;
+}
 
 export const FilterView = React.memo((props: IFilterView) => {
   const [operationTypesFilter, setOperationTypesFilter] = React.useState<
@@ -42,15 +57,22 @@ export const FilterView = React.memo((props: IFilterView) => {
   >([]);
   const [resultFromFilter, setResultFromFilter] = React.useState<string[]>([]);
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const { setFilters } = props;
+  const { setFilters, filters } = props;
+  const [queryChecked, setQueryChecked] = React.useState(false);
+  const [querySubTypesChecked, setQuerySubTypesChecked] = React.useState([]);
   const classes = useStyles();
 
   const operationTypes = useOperationTypesCheckBox({
     operationTypesFilter,
     setOperationTypesFilter,
+    filters,
     setFilters,
     resultFromFilter,
     statusFilter,
+    queryChecked,
+    setQueryChecked,
+    querySubTypesChecked,
+    setQuerySubTypesChecked,
   });
 
   const onResultChange = useOnResultChange(
@@ -128,25 +150,29 @@ export const FilterView = React.memo((props: IFilterView) => {
   );
 });
 
-interface IUseOperationTypesCheckBoxParams {
-  operationTypesFilter: string[];
-  setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>;
-  setFilters: (filterSet: IFilterSet | null) => void;
-  resultFromFilter: string[];
-  statusFilter: string[];
-}
 const useOperationTypesCheckBox = ({
   operationTypesFilter,
   setOperationTypesFilter,
+  filters,
   setFilters,
   resultFromFilter,
   statusFilter,
+  queryChecked,
+  setQueryChecked,
+  querySubTypesChecked,
+  setQuerySubTypesChecked,
 }: IUseOperationTypesCheckBoxParams) => {
   const onOperationTypeChange = React.useCallback(
     ({ target: { value } }, { checked }) => {
       let typesFilter = operationTypesFilter.concat([]);
+      // if (value == "Query") {
+      //   setQueryChecked(checked);
+      //   console.log({ checked, querySubTypes });
+      //   setQuerySubTypesChecked(checked ? querySubTypes : []);
+      //   //console.log({ checked, querySubTypes, querySubTypesChecked });
+      // }
       if (checked) {
-        typesFilter.push(value);
+        !typesFilter.includes(value) && typesFilter.push(value);
         if (value == OperationType.Query) {
           querySubTypes.forEach((type) => {
             typesFilter.push(type);
@@ -177,24 +203,49 @@ const useOperationTypesCheckBox = ({
         }
       }
       setOperationTypesFilter(typesFilter);
-      setTimeout(() => {
-        setFilters((prevState: IFilterSet) => {
-          console.log({
-            operationtype: "type",
-            prevState,
-            typesFilter,
-          });
-          return {
-            ...prevState,
-            types: typesFilter,
-          };
+      // setTimeout(() => {
+      //   setFilters((prevState: IFilterSet) => {
+      //     console.log({
+      //       operationtype: "type",
+      //       prevState,
+      //       typesFilter,
+      //     });
+      //     return {
+      //       ...prevState,
+      //       types: typesFilter,
+      //     };
+      //   });
+      // }, 0);
+      setFilters((prevState: IFilterSet) => {
+        console.log({
+          operationtype: "type",
+          prevState,
+          typesFilter,
         });
-      }, 0);
+        return {
+          ...prevState,
+          types: typesFilter,
+        };
+      });
     },
     [operationTypesFilter, setOperationTypesFilter, setFilters]
   );
 
+  const onSubTypeChange = useOnSubTypeChange(
+    statusFilter,
+    setOperationTypesFilter,
+    filters,
+    setFilters,
+    resultFromFilter,
+    operationTypesFilter,
+    queryChecked,
+    setQueryChecked,
+    querySubTypesChecked,
+    setQuerySubTypesChecked
+  );
+
   const operationTypes = React.useMemo(() => {
+    console.log({ querySubTypesChecked });
     return Object.entries(OperationType)
       .filter(
         (value) =>
@@ -211,18 +262,102 @@ const useOperationTypesCheckBox = ({
       .map((value, key) => {
         const checkboxValue = (value as unknown as Array<string>)[0];
         return (
-          <Checkbox
-            onChange={onOperationTypeChange}
-            value={checkboxValue}
-            label={checkboxValue}
-            key={key}
-          />
+          <>
+            <Checkbox
+              onChange={onOperationTypeChange}
+              value={checkboxValue}
+              label={checkboxValue}
+              checked={filters?.types.includes(checkboxValue)}
+              key={key}
+            />
+            {checkboxValue.includes("Query") && (
+              <div style={{ marginLeft: "20px", display: "Flex", flexDirection: "column" }}>
+                {Object.entries(OperationType)
+                  .filter((value) =>
+                    querySubTypes.includes(
+                      (value as unknown as Array<string>)[0] as OperationType
+                    ) || fragmentSubTypes.includes(
+                      (value as unknown as Array<string>)[0] as OperationType
+                    ) 
+                  )
+                  .map(([key, value]) => (
+                    <Checkbox
+                      key={key}
+                      label={value}
+                      value={value}
+                      checked={filters?.types.includes(value)}
+                      onChange={onSubTypeChange}
+                    />
+                  ))}
+              </div>
+            )}
+          </>
         );
       });
   }, [onOperationTypeChange]);
 
   return operationTypes;
 };
+
+const useOnSubTypeChange = (
+  statusFilter: string[],
+  setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>,
+  filters: IFilterSet | null,
+  setFilters: (filterSet: IFilterSet | null) => void,
+  resultFromFilter: string[],
+  operationTypesFilter: string[],
+  queryChecked,
+  setQueryChecked,
+  querySubTypesChecked,
+  setQuerySubTypesChecked
+) =>
+  React.useCallback(
+    ({ target: { value } }, { checked }) => {
+      let arr = operationTypesFilter.concat([]);
+      // const updatedChildChecked = checked
+      //   ? [...querySubTypesChecked, value]
+      //   : querySubTypesChecked.filter((item) => item !== value);
+
+      // setQuerySubTypesChecked(updatedChildChecked);
+      // console.log({ updatedChildChecked, value });
+      // setQueryChecked(updatedChildChecked.length === 4);
+      if (checked) {
+        !arr.includes(value) && arr.push(value);
+        (arr.length == 8) && (!arr.includes('Query')) && arr.push('Query');
+          
+      } else {
+        arr = arr.filter((x) => x !== value);
+        if((arr.length == 1) && (arr.includes('Query')))
+          arr = arr.filter(y => y !== 'Query');
+      }
+      setOperationTypesFilter(arr);
+      // setTimeout(() => {
+      //   setFilters((prevState: IFilterSet) => {
+      //     console.log({
+      //       operationtype: "subtype",
+      //       prevState,
+      //       arr,
+      //     });
+      //     return {
+      //       ...prevState,
+      //       types: arr,
+      //     };
+      //   });
+      // }, 0);
+      setFilters((prevState: IFilterSet) => {
+        console.log({
+          operationtype: "subtype",
+          prevState,
+          arr,
+        });
+        return {
+          ...prevState,
+          types: arr,
+        };
+      });
+    },
+    [operationTypesFilter, setOperationTypesFilter]
+  );
 
 const useOnStatusChange = (
   statusFilter: string[],
@@ -240,19 +375,30 @@ const useOnStatusChange = (
         arr = arr.filter((x) => x !== value);
       }
       setStatusFilter(arr);
-      setTimeout(() => {
-        setFilters((prevState: IFilterSet) => {
-          console.log({
-            operationtype: "status",
-            prevState,
-            arr,
-          });
-          return {
-            ...prevState,
-            statuses: arr,
-          };
+      // setTimeout(() => {
+      //   setFilters((prevState: IFilterSet) => {
+      //     console.log({
+      //       operationtype: "status",
+      //       prevState,
+      //       arr,
+      //     });
+      //     return {
+      //       ...prevState,
+      //       statuses: arr,
+      //     };
+      //   });
+      // }, 0);
+      setFilters((prevState: IFilterSet) => {
+        console.log({
+          operationtype: "status",
+          prevState,
+          arr,
         });
-      }, 0);
+        return {
+          ...prevState,
+          statuses: arr,
+        };
+      });
     },
     [statusFilter, setStatusFilter]
   );
@@ -273,22 +419,36 @@ const useOnResultChange = (
         arr = arr.filter((x) => x !== value);
       }
       setResultFromFilter(arr);
-      setTimeout(() => {
-        setFilters((prevState: IFilterSet) => {
-          console.log({
-            operationtype: "result",
-            prevState,
-            arr,
-          });
-          if (prevState != null) {
-            return {
-              ...prevState,
-              results: arr,
-            };
-          }
-          return null;
+      // setTimeout(() => {
+      //   setFilters((prevState: IFilterSet) => {
+      //     console.log({
+      //       operationtype: "result",
+      //       prevState,
+      //       arr,
+      //     });
+      //     if (prevState != null) {
+      //       return {
+      //         ...prevState,
+      //         results: arr,
+      //       };
+      //     }
+      //     return null;
+      //   });
+      // }, 0);
+      setFilters((prevState: IFilterSet) => {
+        console.log({
+          operationtype: "result",
+          prevState,
+          arr,
         });
-      }, 0);
+        if (prevState != null) {
+          return {
+            ...prevState,
+            results: arr,
+          };
+        }
+        return null;
+      });
     },
     [resultFromFilter, setResultFromFilter]
   );

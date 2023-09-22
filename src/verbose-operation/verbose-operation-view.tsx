@@ -8,6 +8,17 @@ import {
   Text,
   Button,
   Body1Strong,
+  Popover,
+  makeStyles,
+  PopoverTrigger,
+  PopoverSurface,
+  Dialog,
+  DialogTrigger,
+  DialogSurface,
+  DialogBody,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@fluentui/react-components";
 import {
   IVerboseOperation,
@@ -27,6 +38,8 @@ import {
   IOperationsAction as IOperationsReducerActions,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
+import DependencyFlow from "../related-dependency/Flow";
+import MemoDependencyComponent from "../related-dependency/Flow";
 
 const spaceForStringify = 2;
 
@@ -97,6 +110,48 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           </Accordion>
         </div>
       </div>
+      {/* <Popover {...props}>
+    <PopoverTrigger disableButtonEnhancement>
+      <Button>View Related Dependencies</Button>
+    </PopoverTrigger>
+
+    <PopoverSurface>
+      <ExampleContent />
+    </PopoverSurface>
+  </Popover> */}
+
+<Dialog>
+      <DialogTrigger disableButtonEnhancement>
+        <Button>View related dependencies</Button>
+      </DialogTrigger>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>Related operations</DialogTitle>
+          <DialogContent style={{ height: '800px', width: '800px' }}>
+            <MemoDependencyComponent operation={operation}/>
+            {/* <TreeRenderer /> */}
+          </DialogContent>
+          <DialogActions>
+            <DialogTrigger disableButtonEnhancement>
+              <Button appearance="secondary">Close</Button>
+            </DialogTrigger>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
+    </div>
+  );
+};
+
+
+
+const ExampleContent = () => {
+  const styles = useStyles();
+  return (
+    <div>
+      <h3 className={styles.contentHeader}>Popover content</h3>
+
+      <div>This is some popover content</div>
     </div>
   );
 };

@@ -124,6 +124,7 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
     }
 
     case TabHeaders.AffectedQueriesView: {
+      console.log({data});
       return (
         <AffectedQueriesContainer
           affectedQueries={data.affectedQueriesOperations}
