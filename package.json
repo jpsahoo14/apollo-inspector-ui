@@ -11,7 +11,6 @@
     "test:build": "webpack --config src/__test__/test-app/webpack/webpack.config.js --env env=prod",
     "parcel:start": "parcel index.html",
     "parcel:test:start": "parcel src/__test__/index.html"
-
   },
   "dependencies": {
     "@fluentui/react-components": "^9.18.9",
@@ -21,16 +20,17 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rxjs": "^7.8.1",
     "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@apollo/client": "3.6.5",
+    "@faker-js/faker": "^8.0.2",
     "@types/lodash": "^4.14.194",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@faker-js/faker": "^8.0.2",
-    "graphql-tools": "^9.0.0",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "graphql-tools": "^9.0.0",
     "parcel": "^2.9.3",
     "process": "^0.11.10",
     "typescript": "^4.9.3",

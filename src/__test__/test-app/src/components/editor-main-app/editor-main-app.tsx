@@ -99,13 +99,10 @@ const renderUpdatePageListQueryButton = ({
 }) => {
   const updatePageList = () => {
     updateEditorPagesQuery((prevResult) => {
-      console.log({ prevResult });
       const result = produce(prevResult, (draft) => {
         draft.editor.pages[0].title = `${faker.person.firstName()}`;
         return draft;
       });
-
-      console.log({ result });
 
       return result;
     });

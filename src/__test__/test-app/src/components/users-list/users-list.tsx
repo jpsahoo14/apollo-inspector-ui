@@ -19,7 +19,6 @@ export const UsersList = () => {
   const { data, loading, error } = useQuery(users);
 
   const usersComp = React.useMemo(() => {
-    console.log({ data });
     if (data?.users?.users) {
       return data?.users?.users.map((user) => {
         return (

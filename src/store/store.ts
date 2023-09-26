@@ -7,7 +7,12 @@ import {
   getApolloOperationsDataStore,
   getSelectedApolloClientId,
   getApolloInspectorStopTracking,
+  getSearchBannerStore,
+  getErrorStore,
+  getSelectedTabStore,
+  getOpenDescriptionStore,
 } from "./states";
+import { getFilterSetStore } from "./states/get-filterset";
 
 export const useTrackerStore = create<IStore>((set: ISet) => {
   return {
@@ -17,5 +22,10 @@ export const useTrackerStore = create<IStore>((set: ISet) => {
     ...getApolloClients(set),
     ...getSelectedApolloClientId(set),
     ...getApolloInspectorStopTracking(set),
+    ...getSearchBannerStore(set),
+    ...getErrorStore(set),
+    ...getSelectedTabStore(set),
+    ...getOpenDescriptionStore(set),
+    ...getFilterSetStore(set),
   };
 });

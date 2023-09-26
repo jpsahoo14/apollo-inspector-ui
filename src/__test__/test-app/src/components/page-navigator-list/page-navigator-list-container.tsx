@@ -89,7 +89,7 @@ const setSelectedPageMutationCB = async (
     mutation: setSelectedPageMutation,
     variables: { input: { pageId } },
     optimisticResponse: optimisticData,
-    update: (cache: InMemoryCache, { data }) => {
+    update: (cache: InMemoryCache, { data }: { data: any }) => {
       const editorQueryData = readEditorQueryData(client);
 
       const updatedState = produce(editorQueryData, (draft) => {

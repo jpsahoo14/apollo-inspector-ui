@@ -64,7 +64,7 @@ export const getColumns = (
     | "selectedRow"
     | "operationText",
     string
-  >,
+  >
 ) => {
   if (anyOperationSelected) {
     return [
@@ -248,7 +248,7 @@ export const getColumns = (
 export const getFilteredItems = (
   items: IVerboseOperation[] | null | undefined,
   searchText: string,
-  filters: IFilterSet | null,
+  filters: IFilterSet | null
 ) => {
   let filteredItems = items || [];
   if (searchText.length > 0) {
@@ -260,29 +260,29 @@ export const getFilteredItems = (
       tokens.length > 0
         ? filteredItems.filter((item) => {
             return tokens.find((x) =>
-              item.operationName?.toLowerCase().includes(x.toLowerCase()),
+              item.operationName?.toLowerCase().includes(x.toLowerCase())
             );
           })
         : filteredItems;
   }
   if (filters) {
     // filtering based on types
-    let filterTypes = filters.types.concat([]).map((x) => x.toLowerCase());
-    if (filterTypes.includes(OperationType.Query.toLowerCase())) {
+    let filterTypes = filters.types?.concat([]).map((x) => x.toLowerCase());
+    if (filterTypes?.includes(OperationType.Query.toLowerCase())) {
       filterTypes = filterTypes.concat(querySubTypes);
     }
-    if (filterTypes.includes(OperationType.Fragment.toLowerCase())) {
+    if (filterTypes?.includes(OperationType.Fragment.toLowerCase())) {
       filterTypes = filterTypes.concat(fragmentSubTypes);
     }
-    if (filterTypes.length > 0) {
+    if (filterTypes?.length > 0) {
       filteredItems = filteredItems.filter((item) =>
-        filterTypes.includes(item.operationType.toLowerCase()),
+        filterTypes.includes(item.operationType.toLowerCase())
       );
     }
 
     // filtering based on results
-    const results = filters.results.concat([]).map((x) => x.toLowerCase());
-    if (results.length > 0) {
+    const results = filters.results?.concat([]).map((x) => x.toLowerCase());
+    if (results?.length > 0) {
       filteredItems = filteredItems.filter((item) => {
         const fromResult = (item.result?.[0] as IOperationResult)?.from;
         return results.includes((fromResult || "").toLowerCase());
@@ -290,10 +290,10 @@ export const getFilteredItems = (
     }
 
     // filtering based on status
-    const statuses = filters.statuses.concat([]).map((x) => x.toLowerCase());
-    if (statuses.length > 0) {
+    const statuses = filters.statuses?.concat([]).map((x) => x.toLowerCase());
+    if (statuses?.length > 0) {
       filteredItems = filteredItems.filter((item) =>
-        statuses.includes(item.status.toLowerCase()),
+        statuses.includes(item.status.toLowerCase())
       );
     }
   }

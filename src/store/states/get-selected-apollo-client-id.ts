@@ -4,11 +4,12 @@ import { createState } from "../create-state";
 export const getSelectedApolloClientId = (
   set: ISet
 ): ISelectedApolloClientId => {
-  const [selectedApolloClientId, setSelectedApolloClientId] = createState(
-    "",
-    "selectedApolloClientId",
-    set
-  );
+  const [selectedApolloClientIds, setSelectedApolloClientIds] = createState<
+    string[]
+  >([], "selectedApolloClientIds", set);
 
-  return { selectedApolloClientId, setSelectedApolloClientId };
+  return {
+    selectedApolloClientIds,
+    setSelectedApolloClientIds,
+  };
 };

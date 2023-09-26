@@ -1,5 +1,5 @@
-import { IDataView } from "apollo-inspector";
-import { ApolloClientsObject } from "../types";
+import { IApolloClientObject, IDataView } from "apollo-inspector";
+import { ApolloClientsObject, TabHeaders } from "../types";
 
 export interface IStore
   extends IApolloOperationsDataStore,
@@ -7,6 +7,11 @@ export interface IStore
     IIsRecordingStore,
     IApolloClientsStore,
     ISelectedApolloClientId,
+    ISearchBannerStore,
+    IErrorStore,
+    ISelectedTabStore,
+    IOpenDescriptionStore,
+    IFilterSetStore,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -32,24 +37,65 @@ export interface ILoader {
   loading: boolean;
 }
 
+export interface ISearchBannerStore {
+  searchBanner: ISearchBanner;
+  setSearchBanner: ISetState<ISearchBanner>;
+}
+
+export interface ISearchBanner {
+  searchText: string;
+  showSearchBanner: boolean;
+}
+
 export interface IIsRecordingStore {
   isRecording: boolean;
   setIsRecording: ISetState<boolean>;
 }
 
+export interface IError {
+  error: any;
+  message: string;
+}
+
+export interface IErrorStore {
+  error: IError;
+  setError: ISetState<IError>;
+}
+
+export interface ISelectedTabStore {
+  selectedTab: TabHeaders;
+  setSelectedTab: ISetState<TabHeaders>;
+}
+
+export interface IOpenDescriptionStore {
+  openDescription: boolean;
+  setOpenDescription: ISetState<boolean>;
+}
+
 export interface IApolloClientsStore {
-  apolloClients: ApolloClientsObject;
-  setApolloClients: ISetState<ApolloClientsObject>;
+  apolloClients: IApolloClientObject[];
+  setApolloClients: ISetState<IApolloClientObject[]>;
 }
 
 export interface ISelectedApolloClientId {
-  selectedApolloClientId: string;
-  setSelectedApolloClientId: ISetState<string>;
+  selectedApolloClientIds: string[];
+  setSelectedApolloClientIds: ISetState<string[]>;
 }
 
 export interface IStopApolloInspectorTracking {
   stopApolloInspectorTracking: () => void;
   setStopApolloInspectorTracking: ISetState<() => void>;
+}
+
+export interface IFilterSet {
+  results: string[];
+  types: string[];
+  statuses: string[];
+}
+
+export interface IFilterSetStore {
+  filterSet: IFilterSet;
+  setFilterSet: ISetState<IFilterSet>;
 }
 
 export type ISetState<T> = (value: T | ((prevState: T) => T)) => void;

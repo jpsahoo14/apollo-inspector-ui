@@ -8,11 +8,13 @@ import {
   Text,
   Button,
   Body1Strong,
+  useToolbarRadioButton_unstable,
 } from "@fluentui/react-components";
 import {
   IVerboseOperation,
   IOperationResult,
   IVerboseOperationDuration,
+  ResultsFrom,
 } from "apollo-inspector";
 import { useStyles, stylesKeys } from "./verbose-operation-view-styles";
 import { OperationVariables, WatchQueryFetchPolicy } from "@apollo/client";
@@ -22,7 +24,7 @@ import {
   sizeInBytes,
 } from "../utils/apollo-operations-tracker-utils";
 import { DocumentNode } from "graphql";
-import { ResultsFrom } from "../types";
+// import { ResultsFrom } from "../types";
 import {
   IOperationsAction as IOperationsReducerActions,
   OperationReducerActionEnum,
@@ -272,6 +274,9 @@ const getResultFromString = (from: ResultsFrom) => {
     }
     case ResultsFrom.NETWORK: {
       return "NETWORK";
+    }
+    case ResultsFrom.OPTIMISTIC_RESPONSE: {
+      return "OPTIMISTIC_RESPONSE";
     }
   }
   return "Unknown";
