@@ -3,7 +3,7 @@ import {
   ApolloClient,
   StoreObject,
 } from "@apollo/client";
-import { IDataView } from "apollo-inspector";
+import { IApolloClientObject, IDataView } from "apollo-inspector";
 import { createPublisher } from "rempl";
 
 export type Publisher = ReturnType<typeof createPublisher>;
@@ -83,7 +83,7 @@ export type ApolloOperationsTracker = {
 export type ClientRecentCacheObject = NormalizedCacheObject;
 
 export type ApolloClientsObject = {
-  [clientId: string]: ApolloClient<NormalizedCacheObject>;
+  [clientId: string]: IApolloClientObject;
 };
 
 export type FetcherParams = {

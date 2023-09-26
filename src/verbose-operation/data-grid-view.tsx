@@ -44,21 +44,7 @@ export const DataGridView = (props: IDataGridView) => {
   const [gridHeight, setGridHeight] = React.useState(400);
   const divRef = React.useRef<HTMLDivElement | null>(null);
 
-  React.useEffect(() => {
-    const height = divRef.current?.getBoundingClientRect().height;
-    setGridHeight(height ? height - ItemSize : 400);
-    const resizeObserver = new ResizeObserver(
-      debounce(() => {
-        const height = divRef.current?.getBoundingClientRect().height;
-        const calcualtedHeight = height ? height - ItemSize : 400;
-        setGridHeight(calcualtedHeight);
-      }, 300)
-    );
-    resizeObserver.observe(document.body);
-    return () => {
-      resizeObserver.unobserve(document.body);
-    };
-  }, [divRef.current, setGridHeight]);
+  useObserveGridHeight(divRef, setGridHeight);
 
   const classes = useStyles();
 
@@ -106,7 +92,7 @@ export const DataGridView = (props: IDataGridView) => {
   }, [filteredOperations]);
 
   const onClick = React.useCallback(
-    (item) => {
+    (item: IVerboseOperation) => {
       const operation = operationsMap.get(item.id);
       dispatchOperationsState({
         type: OperationReducerActionEnum.UpdateSelectedOperation,
@@ -117,14 +103,19 @@ export const DataGridView = (props: IDataGridView) => {
   );
 
   const updateFilters = React.useCallback(
-    (input: IFilterSet | null) => {
-      setFilters(input);
+    (input: React.SetStateAction<IFilterSet | null>) => {
+      setTimeout(() => {
+        setFilters(input);
+      }, 0);
     },
     [setFilters]
   );
 
   const updateVerboseOperations = React.useCallback(
-    (e, { selectedItems }) => {
+    (
+      _e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,
+      { selectedItems }: { selectedItems: number[] }
+    ) => {
       setTimeout(() => {
         const operations: IVerboseOperation[] = [];
         [...selectedItems].forEach((index) =>
@@ -143,7 +134,7 @@ export const DataGridView = (props: IDataGridView) => {
   return (
     <div className={classes.gridView} ref={divRef}>
       <div className={classes.filterViewWrapper}>
-        <FilterView setFilters={updateFilters} />
+        <FilterView setFilters={updateFilters} filters={filters} />
       </div>
       <div
         {...(operationsState.selectedOperation
@@ -153,9 +144,10 @@ export const DataGridView = (props: IDataGridView) => {
         <DataGrid
           items={filteredItems as any}
           columns={columns}
-          focusMode="cell"
+          focusMode="row_unstable"
           sortable
           resizableColumns
+          selectionAppearance="brand"
           columnSizingOptions={{
             id: {
               minWidth: 40,
@@ -238,4 +230,25 @@ export const DataGridView = (props: IDataGridView) => {
       </div>
     </div>
   );
+};
+
+const useObserveGridHeight = (
+  divRef: React.MutableRefObject<HTMLDivElement | null>,
+  setGridHeight: React.Dispatch<React.SetStateAction<number>>
+) => {
+  React.useEffect(() => {
+    const height = divRef.current?.getBoundingClientRect().height;
+    setGridHeight(height ? height - ItemSize : 400);
+    const resizeObserver = new ResizeObserver(
+      debounce(() => {
+        const height = divRef.current?.getBoundingClientRect().height;
+        const calcualtedHeight = height ? height - ItemSize : 400;
+        setGridHeight(calcualtedHeight);
+      }, 300)
+    );
+    resizeObserver.observe(document.body);
+    return () => {
+      resizeObserver.unobserve(document.body);
+    };
+  }, [divRef.current, setGridHeight]);
 };

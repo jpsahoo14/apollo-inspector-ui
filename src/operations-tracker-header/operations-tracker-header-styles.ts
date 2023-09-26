@@ -26,4 +26,9 @@ export const useStyles = makeStyles({
   buttonContainer: {
     display: "flex",
   },
+  recordingButton: {
+    color: "red",
+    ...shorthands.borderColor("red"),
+    ":hover": { color: "red", ...shorthands.borderColor("red") },
+  },
 });
