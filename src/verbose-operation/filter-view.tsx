@@ -4,6 +4,7 @@ import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
 import { selectHttpOptionsAndBodyInternal } from "@apollo/client";
 import { cloneDeep, filter } from "lodash";
+import { ColumnOptions } from "./column-options-view";
 
 interface IFilterView {
   setFilters: (input: React.SetStateAction<IFilterSet | null>) => void;
@@ -124,8 +125,9 @@ export const FilterView = React.memo((props: IFilterView) => {
     <div className={classes.filterView}>
       <div>
         <div className={classes.filters}>
-          <h3 key="operationType">{`Filters`}&nbsp;</h3>
-        </div>
+          <h3 key="operationType">{`Filters`}</h3>
+          <div style={{ textAlign: 'right' }}><ColumnOptions /></div>
+        </div> 
       </div>
       <div className={classes.type}>
         <div>

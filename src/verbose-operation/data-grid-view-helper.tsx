@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   TableCellLayout,
   createTableColumn,
-  Text,
+  TableColumnDefinition,
 } from "@fluentui/react-components";
 import {
   IOperationResult,
@@ -25,6 +25,15 @@ import {
   BookOpenRegular,
   BookLetterRegular,
 } from "@fluentui/react-icons";
+import { sampleColumnOptions } from "./column-options-view";
+
+export type ColumnOptions = {
+  key: string;
+  header: string;
+  value: (item: Item) => number | string | React.ReactNode | null;
+  compare: (a: any, b: any) => number;
+  size: {[key: string]: any;}
+}
 
 export type Duration = {
   totalTime: number;
@@ -52,197 +61,39 @@ export type Item = {
   id: number;
 };
 
+export const columnSizingOptions = (selectedColumnOptions: string[]) => {
+  let columnSizing: { [key: string]: any } = {};
+  selectedColumnOptions?.map(function (element) {
+    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
+    columnSizing[val.key] = val.size;
+  });
+  return columnSizing;
+};
+
 export const getColumns = (
   anyOperationSelected: boolean,
-  classes: Record<
-    | "gridRow"
-    | "gridBody"
-    | "gridHeader"
-    | "gridView"
-    | "selectedAndFailedRow"
-    | "failedRow"
-    | "selectedRow"
-    | "operationText",
-    string
-  >
-) => {
-  if (anyOperationSelected) {
-    return [
-      createTableColumn<Item>({
-        columnId: "id",
-        renderHeaderCell: () => {
-          return "Id";
-        },
-        compare: (a, b) => {
-          return b.id - a.id;
-        },
-        renderCell: (item) => {
-          return <TableCellLayout truncate>{item.id}</TableCellLayout>;
-        },
-      }),
-      createTableColumn<Item>({
-        columnId: "operationType",
-        renderHeaderCell: () => {
-          return "Type";
-        },
-        compare: (a, b) => {
-          return compareString(b.operationType, a.operationType);
-        },
-        renderCell: (item) => {
-          return (
-            <TableCellLayout
-              truncate
-              media={getOperationIcon(item.operationType)}
-            >
-              {item.operationType}
-            </TableCellLayout>
-          );
-        },
-      }),
-      createTableColumn<Item>({
-        columnId: "operationName",
-        renderHeaderCell: () => {
-          return "Name";
-        },
-        compare: (a, b) => {
-          return compareString(b.operationName, a.operationName);
-        },
-        renderCell: (item) => {
-          return (
-            <TableCellLayout truncate>
-              <Text truncate wrap={false} className={classes.operationText}>
-                {item.operationName}
-              </Text>
-            </TableCellLayout>
-          );
-        },
-      }),
-    ];
-  }
-  return [
-    createTableColumn<Item>({
-      columnId: "id",
-      renderHeaderCell: () => {
-        return "Id";
-      },
-      compare: (a, b) => {
-        return b.id - a.id;
-      },
-      renderCell: (item) => {
-        return <TableCellLayout truncate>{item.id}</TableCellLayout>;
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "operationType",
-      renderHeaderCell: () => {
-        return "Type";
-      },
-      compare: (a, b) => {
-        return compareString(b.operationType, a.operationType);
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout
-            truncate
-            media={getOperationIcon(item.operationType)}
-          >
-            {item.operationType}
-          </TableCellLayout>
-        );
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "operationName",
-      renderHeaderCell: () => {
-        return "Name";
-      },
-      compare: (a, b) => {
-        return compareString(b.operationName, a.operationName);
-      },
-      renderCell: (item) => {
-        return <TableCellLayout truncate>{item.operationName}</TableCellLayout>;
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "status",
-      compare: (a, b) => {
-        return compareString(b.status, a.status);
-      },
-      renderHeaderCell: () => {
-        return "Status";
-      },
-      renderCell: (item) => {
-        return <TableCellLayout truncate>{item.status}</TableCellLayout>;
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "fetchPolicy",
-      compare: (a, b) => {
-        return compareString(b.fetchPolicy, a.fetchPolicy);
-      },
-      renderHeaderCell: () => {
-        return "Fetch Policy";
-      },
-      renderCell: (item) => {
-        return <TableCellLayout truncate>{item.fetchPolicy}</TableCellLayout>;
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "totalTime",
-      compare: (a, b) => {
-        return b.duration.totalTime - a.duration.totalTime;
-      },
-      renderHeaderCell: () => {
-        return "Total Exec time";
-      },
-      renderCell: (item) => {
-        if (isNaN(item.duration.totalTime)) {
-          return <TableCellLayout truncate>{``}</TableCellLayout>;
-        }
-        return (
-          <TableCellLayout truncate>
-            {item.duration.totalTime > 1000
-              ? secondsToTime(item.duration.totalTime)
-              : `${item.duration.totalTime} ms`}
-          </TableCellLayout>
-        );
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "queuedAt",
-      compare: (a, b) => {
-        return b.timing.queuedAt - a.timing.queuedAt;
-      },
-      renderHeaderCell: () => {
-        return "Queued at";
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout truncate>
-            {item.timing.queuedAt > 1000
-              ? secondsToTime(item.timing.queuedAt)
-              : `${item.timing.queuedAt} ms`}
-          </TableCellLayout>
-        );
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "size",
-      renderHeaderCell: () => {
-        return "Size";
-      },
-      compare: (a, b) => {
-        return (b.result[0]?.size || 0) - (a.result[0]?.size || 0);
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout truncate>
-            {sizeInBytes(item.result[0]?.size)}
-          </TableCellLayout>
-        );
-      },
-    }),
-  ];
+  selectedColumnOptions: string[]
+): TableColumnDefinition<Item>[] => {
+  const tableColumn: TableColumnDefinition<Item>[] = [];
+  selectedColumnOptions?.map(function (element) {
+    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
+    !tableColumn.some((obj) => obj.columnId === val.key) &&
+      tableColumn.push(
+        createTableColumn<Item>({
+          columnId: val.key,
+          renderHeaderCell: () => val.header,
+          compare: (a, b) => val.compare(a, b),
+          renderCell: (item) => {
+            return (
+              <TableCellLayout truncate media={val.key === "type" && getOperationIcon(item.operationType)}>{val.value(item)}</TableCellLayout>
+            );
+          },
+        })
+      );
+  });
+  console.log({ tableColumn });
+
+  return tableColumn;
 };
 
 export const getFilteredItems = (
