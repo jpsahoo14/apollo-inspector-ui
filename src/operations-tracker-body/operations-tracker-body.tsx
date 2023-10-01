@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TabList, Tab } from "@fluentui/react-components";
 import { IDataView } from "apollo-inspector";
-import { TabHeaders } from "../types";
+import { CopyType, ICopyData, TabHeaders } from "../types";
 import { VerboseOperationsContainer } from "../verbose-operation/verbose-operations-container";
 import { useStyles } from "./operations-tracker-body-styles";
 import {
@@ -14,6 +14,7 @@ import {
   IOperationsAction,
   IOperationsReducerState,
 } from "../operations-tracker-container-helper";
+import { ApolloClientSelection } from "../apollo-clients-selection/apollo-clients-selection";
 
 export interface IOperationViewRendererProps {
   selectedTab: TabHeaders;
@@ -21,23 +22,38 @@ export interface IOperationViewRendererProps {
   operationsState: IOperationsReducerState;
   dispatchOperationsCount: React.Dispatch<ICountReducerAction>;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
+  apolloClientIds: string[];
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
 }
 
 export interface IOperationViewContainer {
   data: IDataView | null;
   operationsState: IOperationsReducerState;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
+  apolloClientIds: string[];
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
 }
 
-const tabHeaders = [
+interface ITabHeader {
+  key: TabHeaders;
+  name: string;
+}
+const tabHeaders: ITabHeader[] = [
   { key: TabHeaders.AllOperationsView, name: "All operations" },
   { key: TabHeaders.OperationsView, name: "Only Cache operations" },
   { key: TabHeaders.VerboseOperationView, name: "Operations" },
   { key: TabHeaders.AffectedQueriesView, name: "Affected Queries" },
+  { key: TabHeaders.ConfigPage, name: "Configuration" },
 ];
 
 export const OperationsTrackerBody = (props: IOperationViewContainer) => {
-  const { data, operationsState, dispatchOperationsState } = props;
+  const {
+    data,
+    operationsState,
+    dispatchOperationsState,
+    apolloClientIds,
+    onCopy,
+  } = props;
   const [selectedTab, setSelectedTab] = React.useState(
     TabHeaders.VerboseOperationView
   );
@@ -54,20 +70,18 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
     const newTabHeaders = tabHeaders.filter(
       (tabHeader) =>
         tabHeader.key === TabHeaders.VerboseOperationView ||
-        tabHeader.key === TabHeaders.AffectedQueriesView
+        tabHeader.key === TabHeaders.AffectedQueriesView ||
+        tabHeader.key === TabHeaders.ConfigPage
     );
 
     return newTabHeaders;
   }, []);
+
   const tabs = React.useMemo(() => {
-    const items = updatedTabItems.map((item) => {
+    const items = updatedTabItems.map((item: ITabHeader) => {
       return (
         <Tab key={item.key} value={item.key}>
-          {`${item.name} ${
-            item.key === TabHeaders.AffectedQueriesView
-              ? ``
-              : `(${getCount(item.key, state)})`
-          }`}
+          {getTabHeaderName(item, state)}
         </Tab>
       );
     });
@@ -96,6 +110,8 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
         operationsState={operationsState}
         dispatchOperationsCount={dispatchOperationsCount}
         dispatchOperationsState={dispatchOperationsState}
+        apolloClientIds={apolloClientIds}
+        onCopy={onCopy}
       />
     </div>
   );
@@ -108,6 +124,8 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
     operationsState,
     dispatchOperationsCount,
     dispatchOperationsState,
+    apolloClientIds,
+    onCopy,
   } = props;
 
   switch (selectedTab) {
@@ -127,6 +145,12 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
         <AffectedQueriesContainer
           affectedQueries={data.affectedQueriesOperations}
         />
+      );
+    }
+
+    case TabHeaders.ConfigPage: {
+      return (
+        <ApolloClientSelection clientIds={apolloClientIds} onCopy={onCopy} />
       );
     }
 
@@ -183,4 +207,15 @@ const computeInitialReducerState = (
     verboseOperationsCount: data?.verboseOperations?.length || 0,
     cacheOperationsCount: data?.operations?.length || 0,
   };
+};
+
+const getTabHeaderName = (item: ITabHeader, state: ICountReducerState) => {
+  switch (item.key) {
+    case TabHeaders.VerboseOperationView: {
+      return `${item.name} ${`(${getCount(item.key, state)})`}`;
+    }
+    default: {
+      return `${item.name} `;
+    }
+  }
 };

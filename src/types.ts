@@ -3,10 +3,11 @@ import {
   ApolloClient,
   StoreObject,
 } from "@apollo/client";
-import { IApolloClientObject, IDataView } from "apollo-inspector";
-import { createPublisher } from "rempl";
-
-export type Publisher = ReturnType<typeof createPublisher>;
+import {
+  IApolloClientObject,
+  IDataView,
+  IVerboseOperation,
+} from "apollo-inspector";
 
 export type WrapperCallbackParams = {
   clientObjects: ClientObject[];
@@ -23,6 +24,19 @@ export type ApolloGlobalOperations = {
   globalMutations: string[];
   globalSubscriptions: string[];
 };
+
+export enum CopyType {
+  SelectedOperation = "CurrentlyOpened",
+  AllOperations = "AllOperations",
+  FilteredOperations = "FilteredOperations",
+  CheckedOperations = "CheckedOperations",
+  WholeApolloCache = "WholeApolloCache",
+}
+
+export interface ICopyData {
+  operations?: IVerboseOperation[];
+  clientId?: string | null;
+}
 
 export type ApolloKeyFields = Record<string, string[]>;
 
@@ -41,6 +55,13 @@ export type RecentActivity<Data> = {
   type: string;
   data: Data;
 };
+
+export enum RecordingState {
+  Initial = "Initial",
+  RecordingStarted = "RecordingStarted",
+  RecordingStopped = "RecordingStopped",
+}
+
 export type CacheStoreObject = { __activity_key: string } & StoreObject;
 export type RecentActivities = {
   queries: RecentActivity<WatchedQuery>[];
@@ -105,6 +126,7 @@ export enum TabHeaders {
   OperationsView,
   VerboseOperationView,
   AffectedQueriesView,
+  ConfigPage,
 }
 
 export type WatchedQuery = Query & {

@@ -17,7 +17,7 @@ export interface IVerboseOperationsContainerProps {
 }
 
 export const VerboseOperationsContainer = (
-  props: IVerboseOperationsContainerProps,
+  props: IVerboseOperationsContainerProps
 ) => {
   const {
     operations,
@@ -27,6 +27,7 @@ export const VerboseOperationsContainer = (
   } = props;
 
   const classes = useStyles();
+
   return (
     <div className={classes.root}>
       <div className={classes.operations}>

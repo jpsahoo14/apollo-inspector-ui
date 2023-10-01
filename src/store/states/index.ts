@@ -1,6 +1,6 @@
 export { getApolloOperationsDataStore } from "./apollo-operations-data";
 export { getApolloClients } from "./get-apollo-clients";
-export { getIsRecordingStore } from "./get-is-recording";
+export { getRecordingStateStore as getIsRecordingStore } from "./get-recording-state";
 export { getLoaderStore } from "./get-loader";
 export { getErrorStore } from "./get-error";
 export { getSearchBannerStore } from "./get-search-banner";
