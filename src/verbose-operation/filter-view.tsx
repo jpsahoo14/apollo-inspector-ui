@@ -2,8 +2,6 @@ import * as React from "react";
 import { Checkbox } from "@fluentui/react-components";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
-import { selectHttpOptionsAndBodyInternal } from "@apollo/client";
-import { cloneDeep, filter } from "lodash";
 
 interface IFilterView {
   setFilters: (input: React.SetStateAction<IFilterSet | null>) => void;

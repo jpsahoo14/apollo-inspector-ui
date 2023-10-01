@@ -28,11 +28,22 @@ const apolloUIComponent = (
     <FluentProvider theme={teamsLightTheme}>
       <EditorMainApp />
       <OperationsTrackerContainer
-        apolloClients={[
-          { cliendId: "client-1", client: apolloClient },
-          { cliendId: "client-2", client: apolloClient },
+        apolloClientIds={[
+          "client-1",
+          "client-2",
+          "client-3",
+          "client-4",
+          "client-5",
+          "client-6",
+          "client-7",
+          "client-8",
+          "client-9",
+          "client-10",
+          "client-11",
         ]}
-        onCopy={() => {}}
+        onCopy={(...args) => {
+          console.log(`jps onCopy args`, { args });
+        }}
         onRecordStart={onRecordStart}
         onRecordStop={onStopRecording}
       />

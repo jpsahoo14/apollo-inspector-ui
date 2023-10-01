@@ -3,18 +3,20 @@ import { Button } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { Search } from "../search/search";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
-import { useTrackerStore, ISetState } from "../store";
+import { useTrackerStore, ISetState, IErrorType } from "../store";
 import { Observable } from "rxjs";
-import { IApolloClientObject, IDataView } from "apollo-inspector";
+import { IDataView } from "apollo-inspector";
+import { CopyType, ICopyData, RecordingState } from "../types";
 
 export interface IOperationsTrackerHeaderProps {
   setSearchText: (text: string) => void;
   operationsState: IOperationsReducerState;
   onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
   onRecordStop: () => void;
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
 }
 
 export const OperationsTrackerHeader = React.memo(
@@ -23,13 +25,13 @@ export const OperationsTrackerHeader = React.memo(
     const {
       openDescription,
       setOpenDescription,
-      toggleRecording,
+      startRecording,
+      stopRecording,
       debouncedFilter,
-      showClear,
       clearApolloOperations,
-      isRecording,
+      recordingState,
       operationsState,
-      apollOperationsData,
+      onCopy,
     } = useOperationsTrackerheader(props);
 
     return (
@@ -37,19 +39,14 @@ export const OperationsTrackerHeader = React.memo(
         <div className={classes.header}>
           <div className={classes.buttonContainer}>
             {renderInfoButton(
-              { openDescription, isRecording },
-              { classes, setOpenDescription, toggleRecording }
+              { openDescription, recordingState },
+              { classes, setOpenDescription, startRecording, stopRecording }
             )}
-            <CopyButton
-              hideCopy={isRecording || !showClear}
-              operationsState={operationsState}
-              apolloOperationsData={apollOperationsData}
-            />
-            {isRecording || !showClear ? null : (
+            <CopyButton operationsState={operationsState} onCopy={onCopy} />
+            {recordingState === RecordingState.Initial ? null : (
               <Button
                 style={{ marginLeft: "0.5rem" }}
                 onClick={clearApolloOperations}
-                disabled={!showClear}
               >
                 Clear All
               </Button>
@@ -75,100 +72,140 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
   const {
     setApolloOperationsData,
     setError,
-    setIsRecording,
+    setRecordingState,
     setLoader,
-    isRecording,
+    store,
+    apolloOperationsData,
   } = useTrackerStore((store) => ({
-    setIsRecording: store.setIsRecording,
+    setRecordingState: store.setRecordingState,
     setApolloOperationsData: store.setApolloOperationsData,
     setLoader: store.setLoader,
     setError: store.setError,
-    isRecording: store.isRecording,
+    store,
+    apolloOperationsData: store.apolloOperationsData,
   }));
-
-  const { selectedApolloClientIds, apolloClients } = useTrackerStore(
-    (store) => ({
-      selectedApolloClientIds: store.selectedApolloClientIds,
-      apolloClients: store.apolloClients,
-    })
-  );
+  ({ store });
+  const { selectedApolloClientIds } = useTrackerStore((store) => ({
+    selectedApolloClientIds: store.selectedApolloClientIds,
+    apolloClients: store.apolloClients,
+  }));
   const [stopTracking, setStopTracking] = useTrackerStore((store) => [
     store.stopApolloInspectorTracking,
     store.setStopApolloInspectorTracking,
   ]);
 
-  return useCallback(() => {
-    if (!isRecording) {
-      const apolloClientsObjs: IApolloClientObject[] = [];
-      selectedApolloClientIds.forEach((apolloClientId) => {
-        const apolloClientObj = apolloClients.find(
-          (apolloClientObj) => apolloClientObj.cliendId == apolloClientId
-        );
-        if (apolloClientObj) {
-          apolloClientsObjs.push(apolloClientObj);
-        }
+  const startRecording = React.useCallback(() => {
+    if (selectedApolloClientIds.length === 0) {
+      setError({
+        error: new Error("No apolloClients selected"),
+        message: "Please select atleast one apollo client",
+        type: IErrorType.Normal,
       });
-      const observable = onRecordStart(selectedApolloClientIds);
-      const subscription = observable.subscribe({
-        next: (data: IDataView) => {
-          setApolloOperationsData(data);
-          setLoader({ loading: false, message: "" });
-        },
-        error: () => {
-          setIsRecording(false);
-          setError({ error: true, message: "Something went wrong" });
-          setLoader({ loading: false, message: "" });
-          subscription.unsubscribe();
-        },
-        complete: () => {
-          setIsRecording(false);
-          setError({ error: false, message: "" });
-          setLoader({ loading: false, message: "" });
-          subscription.unsubscribe();
-        },
-      });
-      setLoader({ loading: true, message: "Recording operations" });
-      setIsRecording(true);
-      setApolloOperationsData(null);
-      const unsubscribe = () => subscription.unsubscribe();
-      setStopTracking(() => unsubscribe);
-    } else {
-      stopTracking();
-      setIsRecording(false);
-      onRecordStop();
-      setError({ error: false, message: "" });
-      setLoader({ loading: false, message: "" });
+      setTimeout(() => {
+        setError({
+          error: null,
+          message: "",
+          type: IErrorType.Normal,
+        });
+      }, 2000);
+      return;
     }
+
+    const observable = onRecordStart(selectedApolloClientIds);
+    const subscription = observable.subscribe({
+      next: (data: IDataView) => {
+        setApolloOperationsData(data);
+        setLoader({ loading: false, message: "" });
+      },
+      error: () => {
+        setRecordingState(RecordingState.RecordingStopped);
+        setError({
+          error: new Error("Something went wrong"),
+          message: "Something went wrong",
+          type: IErrorType.FullPage,
+        });
+        setLoader({ loading: false, message: "" });
+        subscription.unsubscribe();
+      },
+      complete: () => {
+        setRecordingState(RecordingState.RecordingStopped);
+        setError({ error: null, message: "", type: IErrorType.FullPage });
+        setLoader({ loading: false, message: "" });
+        subscription.unsubscribe();
+      },
+    });
+    setLoader({ loading: true, message: "Recording operations" });
+    setRecordingState(RecordingState.RecordingStarted);
+    setApolloOperationsData(null);
+    const unsubscribe = () => subscription.unsubscribe();
+    setStopTracking(() => unsubscribe);
   }, [
-    isRecording,
+    setStopTracking,
+    setApolloOperationsData,
+    setRecordingState,
+    setLoader,
+    setError,
     onRecordStart,
     selectedApolloClientIds,
-    setError,
-    setIsRecording,
-    setLoader,
-    stopTracking,
   ]);
+
+  const stopRecording = React.useCallback(() => {
+    stopTracking();
+    setRecordingState(RecordingState.RecordingStopped);
+    onRecordStop();
+    setError({ error: null, message: "", type: IErrorType.FullPage });
+    setLoader({ loading: false, message: "" });
+    if (!apolloOperationsData) {
+      setRecordingState(RecordingState.Initial);
+    }
+  }, [
+    stopTracking,
+    setRecordingState,
+    onRecordStop,
+    setError,
+    setLoader,
+    apolloOperationsData,
+  ]);
+
+  return { startRecording, stopRecording };
 };
 
 const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
-  const { setSearchText, operationsState } = props;
+  const { setSearchText, operationsState, onCopy } = props;
 
   const [openDescription, setOpenDescription] = useTrackerStore((store) => [
     store.openDescription,
     store.setOpenDescription,
   ]);
-  const { isRecording, apollOperationsData, setApolloOperationsData } =
-    useTrackerStore((store) => ({
-      isRecording: store.isRecording,
-      apollOperationsData: store.apollOperationsData,
-      setApolloOperationsData: store.setApolloOperationsData,
-    }));
+  const {
+    recordingState,
+    apollOperationsData,
+    setApolloOperationsData,
+    setRecordingState,
+  } = useTrackerStore((store) => ({
+    recordingState: store.recordingState,
+    apollOperationsData: store.apolloOperationsData,
+    setApolloOperationsData: store.setApolloOperationsData,
+    setRecordingState: store.setRecordingState,
+  }));
 
-  const toggleRecording = useToggleRecording(props);
+  const { startRecording, stopRecording } = useToggleRecording(props);
 
   const clearApolloOperations = useCallback(() => {
     setApolloOperationsData(null);
-  }, [setApolloOperationsData]);
+    if (recordingState === RecordingState.RecordingStarted) {
+      stopRecording();
+      startRecording();
+    } else {
+      setRecordingState(RecordingState.Initial);
+    }
+  }, [
+    setApolloOperationsData,
+    stopRecording,
+    startRecording,
+    recordingState,
+    setRecordingState,
+  ]);
 
   const showClear = !!apollOperationsData?.verboseOperations;
 
@@ -183,45 +220,76 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
   return {
     openDescription,
     setOpenDescription,
-    toggleRecording,
+    startRecording,
+    stopRecording,
     debouncedFilter,
     showClear,
     clearApolloOperations,
-    isRecording,
+    recordingState,
     operationsState,
     apollOperationsData,
+    onCopy,
   };
 };
 
 interface IRenderInfoButtonParams {
   openDescription: boolean;
-  isRecording: boolean;
+  recordingState: RecordingState;
 }
 
 interface IRenderInfoButtonServices {
   classes: any;
   setOpenDescription: ISetState<boolean>;
-  toggleRecording: () => void;
+  startRecording: () => void;
+  stopRecording: () => void;
 }
 
 const renderInfoButton = (
-  { openDescription, isRecording }: IRenderInfoButtonParams,
-  { classes, setOpenDescription, toggleRecording }: IRenderInfoButtonServices
-) => (
-  <>
-    <Button
-      title="Information"
-      tabIndex={0}
-      className={classes.infoButton}
-      onClick={() => setOpenDescription(!openDescription)}
-    >
-      <Info20Regular />
-    </Button>
-    <Button
-      className={isRecording ? classes.recordingButton : ""}
-      onClick={toggleRecording}
-    >
-      {isRecording ? "Stop" : "Record"}
-    </Button>
-  </>
-);
+  { openDescription, recordingState }: IRenderInfoButtonParams,
+  {
+    classes,
+    setOpenDescription,
+    startRecording,
+    stopRecording,
+  }: IRenderInfoButtonServices
+) => {
+  const recordingString = getRecordingString(recordingState);
+
+  return (
+    <>
+      <Button
+        title="Information"
+        tabIndex={0}
+        className={classes.infoButton}
+        onClick={() => setOpenDescription(!openDescription)}
+      >
+        <Info20Regular />
+      </Button>
+      <Button
+        className={
+          recordingState === RecordingState.RecordingStarted
+            ? classes.recordingButton
+            : ""
+        }
+        onClick={
+          recordingState !== RecordingState.RecordingStarted
+            ? startRecording
+            : stopRecording
+        }
+      >
+        {recordingString}
+      </Button>
+    </>
+  );
+};
+
+const getRecordingString = (recordingState: RecordingState) => {
+  if (
+    recordingState === RecordingState.Initial ||
+    recordingState === RecordingState.RecordingStopped
+  ) {
+    return "Start Recording";
+  } else {
+    return "Stop Recording";
+  }
+};

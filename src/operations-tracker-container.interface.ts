@@ -1,8 +1,10 @@
-import { IDataView } from "apollo-inspector";
+import { Observable } from "rxjs";
 import {
   IOperationsAction,
   IOperationsReducerState,
 } from "./operations-tracker-container-helper";
+import { CopyType, ICopyData } from "./types";
+import { IDataView } from "apollo-inspector";
 
 export interface IError {
   error: any;
@@ -22,9 +24,17 @@ export type stylesClasses =
   | "label"
   | "centerDiv";
 
+export interface IOperationsTrackerContainer {
+  apolloClientIds: string[];
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
+  onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
+  onRecordStop: () => void;
+}
+
 export interface IUseMainSlotParams {
   operationsState: IOperationsReducerState;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
+  props: IOperationsTrackerContainer;
 }
 
 export interface IUseMainSlotService {

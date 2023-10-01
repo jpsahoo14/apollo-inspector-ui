@@ -4,6 +4,7 @@ import { OperationsTrackerBody } from "./operations-tracker-body/operations-trac
 import { useStyles } from "./operations-tracker-container-styles";
 import { OperationsTrackerHeader } from "./operations-tracker-header/operations-tracker-header";
 import {
+  IOperationsTrackerContainer,
   IUseMainSlotParams,
   IUseMainSlotService,
 } from "./operations-tracker-container.interface";
@@ -13,21 +14,15 @@ import {
   OperationReducerActionEnum,
   reducers,
 } from "./operations-tracker-container-helper";
-import { useTrackerStore } from "./store";
-import { IApolloClientObject, IDataView } from "apollo-inspector";
-import { Observable } from "rxjs";
+import { IErrorType, useTrackerStore } from "./store";
+import { RecordingState } from "./types";
+import { ApolloClientSelection } from "./apollo-clients-selection/apollo-clients-selection";
 
-interface IOperationsTrackerContainer {
-  apolloClients: IApolloClientObject[];
-  onCopy: () => void;
-  onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
-  onRecordStop: () => void;
-}
 export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
   const classes = useStyles();
-  const { apolloClients, onCopy, onRecordStart, onRecordStop } = props;
+  const { onCopy, onRecordStart, onRecordStop } = props;
   const {
     openDescription,
     operationsState,
@@ -39,6 +34,7 @@ export const OperationsTrackerContainer = (
     {
       operationsState,
       dispatchOperationsState,
+      props,
     },
     { classes }
   );
@@ -57,6 +53,7 @@ export const OperationsTrackerContainer = (
             operationsState={operationsState}
             onRecordStart={onRecordStart}
             onRecordStop={onRecordStop}
+            onCopy={onCopy}
           />
           {mainSlot}
         </div>
@@ -77,17 +74,17 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
   ]);
 
   React.useEffect(() => {
-    const currentApolloClients = props.apolloClients;
+    const currentApolloClients = props.apolloClientIds;
     setApolloClients(currentApolloClients);
-  }, [props.apolloClients]);
+  }, [props.apolloClientIds]);
 
   React.useEffect(() => {
-    const currentApolloClients = props.apolloClients;
+    const currentApolloClientsIds = props.apolloClientIds;
     if (selectedApolloClientIds.length !== 0) {
       const finalSelectedApolloClientsIds: string[] = [];
       selectedApolloClientIds.forEach((apolloClientId) => {
-        const result = currentApolloClients.find(
-          (ac) => ac.cliendId === apolloClientId
+        const result = currentApolloClientsIds.find(
+          (cliendId) => cliendId === apolloClientId
         );
         if (result) {
           finalSelectedApolloClientsIds.push(apolloClientId);
@@ -98,22 +95,38 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
       ) {
         setSelectedApolloClientIds(finalSelectedApolloClientsIds);
       }
-    } else {
-      setSelectedApolloClientIds([currentApolloClients[0].cliendId]);
     }
-  }, [props.apolloClients, setApolloClients, selectedApolloClientIds]);
+  }, [
+    props.apolloClientIds,
+    setApolloClients,
+    selectedApolloClientIds,
+    setSelectedApolloClientIds,
+  ]);
 };
 
 const useMainSlot = (
-  { dispatchOperationsState, operationsState }: IUseMainSlotParams,
+  { dispatchOperationsState, operationsState, props }: IUseMainSlotParams,
   { classes }: IUseMainSlotService
 ) => {
-  const { apollOperationsData, error, loader } = useTrackerStore((store) => ({
-    apollOperationsData: store.apollOperationsData,
-    error: store.error,
-    loader: store.loader,
-  }));
-  if (error.error) {
+  const { onCopy, apolloClientIds } = props;
+  const { apollOperationsData, error, loader, recordingState } =
+    useTrackerStore((store) => ({
+      apollOperationsData: store.apolloOperationsData,
+      error: store.error,
+      loader: store.loader,
+      recordingState: store.recordingState,
+      selectedApolloClientIds: store.selectedApolloClientIds,
+    }));
+
+  if (
+    recordingState == RecordingState.Initial ||
+    (!apollOperationsData && recordingState === RecordingState.RecordingStopped)
+  ) {
+    return (
+      <ApolloClientSelection clientIds={apolloClientIds} onCopy={onCopy} />
+    );
+  }
+  if (error.error && error.type === IErrorType.FullPage) {
     return (
       <div className={classes.centerDiv}>
         <Title2>{error.message}</Title2>
@@ -127,12 +140,13 @@ const useMainSlot = (
       </div>
     );
   }
-
   return (
     <OperationsTrackerBody
       dispatchOperationsState={dispatchOperationsState}
       data={apollOperationsData}
       operationsState={operationsState}
+      apolloClientIds={apolloClientIds}
+      onCopy={onCopy}
     />
   );
 };

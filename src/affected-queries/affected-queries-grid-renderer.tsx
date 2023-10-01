@@ -17,7 +17,7 @@ import {
   DataGridHeaderCell,
 } from "@fluentui/react-data-grid-react-window";
 import { useStyles } from "./affected-queries-grid-renderer-styles";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 
 const ItemSize = 40;
 export interface IAffectedQueriesGridRenderers {

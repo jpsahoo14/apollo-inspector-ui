@@ -15,7 +15,7 @@ import {
   CountReducerActionEnum,
 } from "../operations-tracker-body";
 import { FilterView, IFilterSet } from "./filter-view";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 import { getColumns, getFilteredItems, Item } from "./data-grid-view-helper";
 import {
   IOperationsAction,
@@ -48,8 +48,9 @@ export const DataGridView = (props: IDataGridView) => {
 
   const classes = useStyles();
 
-  const filteredOperations: IVerboseOperation[] =
-    props.operations?.concat([]) ?? [];
+  const filteredOperations: IVerboseOperation[] = React.useMemo(() => {
+    return props.operations?.concat([]) ?? [];
+  }, [props.operations]);
 
   const [filters, setFilters] = React.useState<IFilterSet | null>(null);
   const [filteredItems, setFilteredItems] = React.useState(operations || []);
@@ -113,7 +114,7 @@ export const DataGridView = (props: IDataGridView) => {
 
   const updateVerboseOperations = React.useCallback(
     (
-      _e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,
+      e: React.MouseEvent | React.KeyboardEvent,
       { selectedItems }: { selectedItems: number[] }
     ) => {
       setTimeout(() => {
@@ -144,7 +145,7 @@ export const DataGridView = (props: IDataGridView) => {
         <DataGrid
           items={filteredItems as any}
           columns={columns}
-          focusMode="row_unstable"
+          focusMode="cell"
           sortable
           resizableColumns
           selectionAppearance="brand"
@@ -173,7 +174,7 @@ export const DataGridView = (props: IDataGridView) => {
             },
           }}
           selectionMode="multiselect"
-          onSelectionChange={updateVerboseOperations}
+          onSelectionChange={updateVerboseOperations as any}
         >
           <DataGridHeader
             style={{
@@ -215,7 +216,7 @@ export const DataGridView = (props: IDataGridView) => {
                   className={rowClassName}
                 >
                   {({ renderCell }) => {
-                    const cb = React.useCallback(() => onClick(item), [item]);
+                    const cb = () => onClick(item);
                     return (
                       <DataGridCell onClick={cb}>
                         {renderCell(item as Item)}
@@ -250,5 +251,5 @@ const useObserveGridHeight = (
     return () => {
       resizeObserver.unobserve(document.body);
     };
-  }, [divRef.current, setGridHeight]);
+  }, [setGridHeight, divRef]);
 };
