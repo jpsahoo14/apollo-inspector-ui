@@ -8,7 +8,6 @@ import {
   Text,
   Button,
   Body1Strong,
-  useToolbarRadioButton_unstable,
 } from "@fluentui/react-components";
 import {
   IVerboseOperation,
@@ -44,7 +43,7 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
 
   const accordionItems = React.useMemo(() => {
     if (!operation) {
-      return null;
+      return [];
     }
 
     return getAccordionItems(operation, classes);
@@ -118,19 +117,38 @@ const getAccordionItems = (
     fetchPolicy,
     error,
     warning,
+    clientId,
+    affectedQueriesDueToOptimisticResponse,
   } = operation;
-  const items = [];
+  const items: React.JSX.Element[] = [];
 
   items.push(getOperationNamePanel(operationName, operationString, classes));
   items.push(getVariablesPanel(variables, classes));
+  clientId && items.push(getClientIdPanel(clientId, classes));
   fetchPolicy && items.push(getFetchPolicyPanel(fetchPolicy, classes));
   items.push(getDurationPanel(duration, classes));
   items.push(getResultPanel(isOptimistic, result, classes));
   error && items.push(getErrorPanel(error, classes));
   warning && items.push(getWarningPanel(warning, classes));
   items.push(
-    getAffectedQueriesPanel(affectedQueries as DocumentNode[], classes)
+    getAffectedQueriesPanel(
+      affectedQueries as DocumentNode[],
+      classes,
+      "affectedQueries",
+      "Watch queries which are going to re-render due to the result of current operation",
+      "Affected watch queries"
+    )
   );
+  affectedQueriesDueToOptimisticResponse &&
+    items.push(
+      getAffectedQueriesPanel(
+        affectedQueriesDueToOptimisticResponse as DocumentNode[],
+        classes,
+        "affectedQueriesDueToOptimisticResponse",
+        "Watch queries which are going to re-render due to the optimistic result of current operation",
+        "Affected watch queries due to optimistic result"
+      )
+    );
 
   return items;
 };
@@ -170,6 +188,22 @@ const getVariablesPanel = (
   </AccordionItem>
 );
 
+const getClientIdPanel = (
+  clientId: string,
+  classes: Record<stylesKeys, string>
+) => (
+  <AccordionItem value="clientId" key="clientId">
+    <Tooltip content={"Apollo Client Id"} relationship="label">
+      <AccordionHeader>
+        <Text style={{ fontWeight: "bold" }}>{`ClientId`}</Text>
+      </AccordionHeader>
+    </Tooltip>
+    <AccordionPanel>
+      <div className={classes.fetchPolicyAccPanel}> {clientId}</div>
+    </AccordionPanel>
+  </AccordionItem>
+);
+
 const getFetchPolicyPanel = (
   fetchPolicy: WatchQueryFetchPolicy | undefined,
   classes: Record<stylesKeys, string>
@@ -190,7 +224,10 @@ const getFetchPolicyPanel = (
 
 const getAffectedQueriesPanel = (
   affectedQueries: DocumentNode[],
-  classes: Record<stylesKeys, string>
+  classes: Record<stylesKeys, string>,
+  value: string,
+  tooltipContent: string,
+  accordionHeaderString: string
 ) => {
   const affectedQueriesItems = affectedQueries.map((item, index) => ({
     key: index,
@@ -198,17 +235,12 @@ const getAffectedQueriesPanel = (
   }));
 
   return (
-    <AccordionItem value="affectedQueries" key="affectedQueries">
-      <Tooltip
-        content={
-          "Watch queries which are going to re-render due to the result of current operation"
-        }
-        relationship="label"
-      >
+    <AccordionItem value={value} key={value}>
+      <Tooltip content={tooltipContent} relationship="label">
         <AccordionHeader>
           <Text
             style={{ fontWeight: "bold" }}
-          >{`Affected watch queries (${affectedQueriesItems.length})`}</Text>
+          >{`${accordionHeaderString} (${affectedQueriesItems.length})`}</Text>
         </AccordionHeader>
       </Tooltip>
       <AccordionPanel>

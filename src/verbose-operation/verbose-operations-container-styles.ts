@@ -41,4 +41,7 @@ export const useStyles = makeStyles({
     overflowY: "hidden",
     whiteSpace: "nowrap",
   },
+  filterLabelMsg: {
+    color: "#5b5fc7",
+  },
 });

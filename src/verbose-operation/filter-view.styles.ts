@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   filterView: {
@@ -16,18 +16,18 @@ export const useStyles = makeStyles({
   filters: {
     display: "flex",
     alignItems: "center",
-    borderBottom: "0.5px solid grey" as any,
+    ...shorthands.borderBottom("0.5px", "solid", "gray"),
   },
   type: {
     display: "flex",
     flexDirection: "column",
-    borderBottom: "0.5px solid grey" as any,
+    ...shorthands.borderBottom("0.5px", "solid", "gray"),
     paddingBottom: "10px",
   },
   operationType: {
     display: "flex",
     flexDirection: "column",
-    borderBottom: "0.5px solid grey" as any,
+    ...shorthands.borderBottom("0.5px", "solid", "gray"),
     paddingBottom: "10px",
   },
 });
