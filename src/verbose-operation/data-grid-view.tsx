@@ -16,12 +16,13 @@ import {
 } from "../operations-tracker-body";
 import { FilterView, IFilterSet } from "./filter-view";
 import { debounce } from "lodash-es";
-import { getColumns, getFilteredItems, Item } from "./data-grid-view-helper";
+import { columnSizingOptions, getColumns, getFilteredItems, Item } from "./data-grid-view-helper";
 import {
   IOperationsAction,
   IOperationsReducerState,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
+import { useTrackerStore } from "../store";
 
 export interface IDataGridView {
   operations: IVerboseOperation[] | null;
@@ -40,6 +41,9 @@ export const DataGridView = (props: IDataGridView) => {
     dispatchOperationsState,
   } = props;
   const { targetDocument } = useFluent();
+  const [selectedColumnOptions] = useTrackerStore(
+    (store) => [store.selectedColumnOptions]
+  );
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
   const [gridHeight, setGridHeight] = React.useState(400);
   const divRef = React.useRef<HTMLDivElement | null>(null);
@@ -80,8 +84,12 @@ export const DataGridView = (props: IDataGridView) => {
   ]);
 
   const columns = React.useMemo(
-    () => getColumns(!!operationsState.selectedOperation, classes),
-    [operationsState.selectedOperation, classes]
+    () => getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
+    [operationsState.selectedOperation, selectedColumnOptions]
+  );
+
+  const columnSizing = React.useMemo(() => columnSizingOptions(selectedColumnOptions),
+  [selectedColumnOptions]
   );
 
   const operationsMap = React.useMemo(() => {
@@ -132,6 +140,8 @@ export const DataGridView = (props: IDataGridView) => {
     [dispatchOperationsState, filteredItems]
   );
 
+  console.log({selectedColumnOptions});
+  console.log({columnSizing});
   return (
     <div className={classes.gridView} ref={divRef}>
       <div className={classes.filterViewWrapper}>
@@ -140,7 +150,7 @@ export const DataGridView = (props: IDataGridView) => {
       <div
         {...(operationsState.selectedOperation
           ? { className: classes.selectedOperationGridWrapper }
-          : { className: classes.filterViewWrapper })}
+          : { className: classes.gridWrapper })}
       >
         <DataGrid
           items={filteredItems as any}
@@ -149,30 +159,7 @@ export const DataGridView = (props: IDataGridView) => {
           sortable
           resizableColumns
           selectionAppearance="brand"
-          columnSizingOptions={{
-            id: {
-              minWidth: 40,
-              defaultWidth: 50,
-            },
-            status: {
-              minWidth: 30,
-              defaultWidth: 80,
-            },
-            fetchPolicy: {
-              minWidth: 30,
-            },
-            totalTime: {
-              minWidth: 30,
-              defaultWidth: 70,
-            },
-            queuedAt: {
-              minWidth: 30,
-              defaultWidth: 90,
-            },
-            size: {
-              minWidth: 30,
-            },
-          }}
+          columnSizingOptions={columnSizing}
           selectionMode="multiselect"
           onSelectionChange={updateVerboseOperations as any}
         >

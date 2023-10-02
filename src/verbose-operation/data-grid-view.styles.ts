@@ -69,10 +69,12 @@ export const useStyles = makeStyles({
     flexGrow: 2,
   },
   gridWrapper: {
-    flexGrow: 2,
+    flexGrow: 1,
+    minWidth: 0,
   },
   filterViewWrapper: {
     flexGrow: 1,
     minWidth: 0,
+    maxWidth: "300px",
   },
 });

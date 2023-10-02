@@ -12,6 +12,7 @@ export interface IStore
     ISelectedTabStore,
     IOpenDescriptionStore,
     IFilterSetStore,
+    IColumnOptions,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -30,6 +31,11 @@ export interface IApolloOperationsDataStore {
 export interface ILoaderStore {
   loader: ILoader;
   setLoader: ISetState<ILoader>;
+}
+
+export interface IColumnOptions {
+  selectedColumnOptions: string[];
+  setSelectedColumnOptions: ISetState<string[]>;
 }
 
 export interface ILoader {

@@ -13,6 +13,7 @@ import {
   getOpenDescriptionStore,
 } from "./states";
 import { getFilterSetStore } from "./states/get-filterset";
+import { getColumnOptions } from "./states/get-column-options";
 
 export const useTrackerStore = create<IStore>((set: ISet) => {
   return {
@@ -27,5 +28,6 @@ export const useTrackerStore = create<IStore>((set: ISet) => {
     ...getSelectedTabStore(set),
     ...getOpenDescriptionStore(set),
     ...getFilterSetStore(set),
+    ...getColumnOptions(set),
   };
 });
