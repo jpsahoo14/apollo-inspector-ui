@@ -136,7 +136,7 @@ export const ColumnOptions = () => {
   );
 
   return (
-    <Dialog>
+    <Dialog modalType="non-modal">
       <DialogTrigger disableButtonEnhancement>
         <Button>Column Options</Button>
       </DialogTrigger>
