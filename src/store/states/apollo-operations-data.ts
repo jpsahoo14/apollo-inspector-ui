@@ -6,11 +6,11 @@ export const getApolloOperationsDataStore = (
   set: ISet
 ): IApolloOperationsDataStore => {
   return {
-    apollOperationsData: null,
+    apolloOperationsData: null,
     setApolloOperationsData: (data: IDataView | null) => {
       return set((state: IStore) => {
         return produce(state, (draft: IStore) => {
-          draft.apollOperationsData = data;
+          draft.apolloOperationsData = data;
         });
       });
     },

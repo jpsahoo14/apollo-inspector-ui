@@ -6,70 +6,55 @@ import {
   MenuTrigger,
   SplitButton,
   MenuButtonProps,
-  Button,
 } from "@fluentui/react-components";
 import * as React from "react";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { useStyles } from "./operations-copy-button-styles";
-import { IDataView } from "apollo-inspector";
+import { useTrackerStore } from "../store";
+import { CopyType, ICopyData, RecordingState } from "../types";
+import { cloneDeep } from "lodash-es";
 
-const remplSubscriber: any = {
-  callRemote: () => {},
-};
 export interface ICopyButtonProps {
-  hideCopy: boolean;
   operationsState: IOperationsReducerState;
-  apolloOperationsData: IDataView | null;
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
 }
 
 export const CopyButton = (props: ICopyButtonProps) => {
   const classes = useStyles();
-  const { operationsState, hideCopy, apolloOperationsData } = props;
+  const { operationsState, onCopy } = props;
+  const { apolloOperationsData, recordingState } = useTrackerStore((store) => ({
+    apolloOperationsData: store.apolloOperationsData,
+    recordingState: store.recordingState,
+  }));
 
   const copyAll = React.useCallback(() => {
-    const ids: number[] = [];
-    apolloOperationsData?.verboseOperations?.forEach((op) => {
-      ids.push(op.id);
+    onCopy(CopyType.AllOperations, {
+      operations: cloneDeep(apolloOperationsData?.verboseOperations) || [],
     });
-    remplSubscriber.callRemote("copyOperationsData", ids);
-  }, [apolloOperationsData]);
+  }, [apolloOperationsData, onCopy]);
 
   const copyFiltered = React.useCallback(() => {
-    const ids: number[] = [];
-    operationsState.filteredOperations?.forEach((op) => {
-      ids.push(op.id);
+    onCopy(CopyType.FilteredOperations, {
+      operations: cloneDeep(operationsState.filteredOperations) || [],
     });
-
-    remplSubscriber.callRemote("copyOperationsData", ids);
-  }, [operationsState]);
+  }, [operationsState, onCopy]);
 
   const copyChecked = React.useCallback(() => {
-    const ids: number[] = [];
-    operationsState.checkedOperations?.forEach((op) => {
-      ids.push(op.id);
+    onCopy(CopyType.CheckedOperations, {
+      operations: cloneDeep(operationsState.checkedOperations) || [],
     });
-
-    remplSubscriber.callRemote("copyOperationsData", ids);
-  }, [operationsState]);
+  }, [operationsState, onCopy]);
 
   const copySelected = React.useCallback(() => {
     if (operationsState.selectedOperation?.id) {
-      const ids: number[] = [operationsState.selectedOperation.id];
-
-      remplSubscriber.callRemote("copyOperationsData", ids);
+      onCopy(CopyType.CheckedOperations, {
+        operations: cloneDeep([operationsState?.selectedOperation]) || [],
+      });
     }
-  }, [operationsState]);
+  }, [operationsState, onCopy]);
 
-  const copyCache = React.useCallback(() => {
-    remplSubscriber.callRemote("copyOperationsData", [-1]);
-  }, [operationsState]);
-
-  if (hideCopy) {
-    return (
-      <div className={classes.button}>
-        <Button onClick={copyCache}>Copy Whole Apollo Cache</Button>
-      </div>
-    );
+  if (recordingState === RecordingState.Initial) {
+    return null;
   }
 
   return (
@@ -77,11 +62,7 @@ export const CopyButton = (props: ICopyButtonProps) => {
       <Menu positioning="below-end">
         <MenuTrigger disableButtonEnhancement>
           {(triggerProps: MenuButtonProps) => (
-            <SplitButton
-              disabled={hideCopy}
-              onClick={copyAll}
-              menuButton={triggerProps}
-            >
+            <SplitButton onClick={copyAll} menuButton={triggerProps}>
               Copy All
             </SplitButton>
           )}
@@ -103,7 +84,6 @@ export const CopyButton = (props: ICopyButtonProps) => {
                 Copy currently Opened Operation
               </MenuItem>
             ) : null}
-            <MenuItem onClick={copyCache}>Copy Whole Apollo Cache</MenuItem>
           </MenuList>
         </MenuPopover>
       </Menu>

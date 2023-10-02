@@ -1,10 +1,10 @@
 import { IApolloClientObject, IDataView } from "apollo-inspector";
-import { ApolloClientsObject, TabHeaders } from "../types";
+import { ApolloClientsObject, TabHeaders, RecordingState } from "../types";
 
 export interface IStore
   extends IApolloOperationsDataStore,
     ILoaderStore,
-    IIsRecordingStore,
+    IRecordingStateStore,
     IApolloClientsStore,
     ISelectedApolloClientId,
     ISearchBannerStore,
@@ -24,7 +24,7 @@ export type ISet = (
 ) => void;
 
 export interface IApolloOperationsDataStore {
-  apollOperationsData: IDataView | null;
+  apolloOperationsData: IDataView | null;
   setApolloOperationsData: ISetState<IDataView | null>;
 }
 
@@ -53,14 +53,20 @@ export interface ISearchBanner {
   showSearchBanner: boolean;
 }
 
-export interface IIsRecordingStore {
-  isRecording: boolean;
-  setIsRecording: ISetState<boolean>;
+export interface IRecordingStateStore {
+  recordingState: RecordingState;
+  setRecordingState: ISetState<RecordingState>;
 }
 
 export interface IError {
-  error: any;
+  error: Error | null;
   message: string;
+  type: IErrorType;
+}
+
+export enum IErrorType {
+  FullPage,
+  Normal,
 }
 
 export interface IErrorStore {
@@ -79,8 +85,8 @@ export interface IOpenDescriptionStore {
 }
 
 export interface IApolloClientsStore {
-  apolloClients: IApolloClientObject[];
-  setApolloClients: ISetState<IApolloClientObject[]>;
+  apolloClients: string[];
+  setApolloClients: ISetState<string[]>;
 }
 
 export interface ISelectedApolloClientId {

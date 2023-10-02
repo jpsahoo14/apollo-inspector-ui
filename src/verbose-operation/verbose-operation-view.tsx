@@ -39,17 +39,16 @@ interface IVerboseOperationViewProps {
 
 export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
   const { operation, dispatchOperationsState } = props;
-  if (!operation) {
-    return <></>;
-  }
+
   const classes = useStyles();
 
-  const { operationType, operationName } = operation;
+  const accordionItems = React.useMemo(() => {
+    if (!operation) {
+      return null;
+    }
 
-  const accordionItems = React.useMemo(
-    () => getAccordionItems(operation, classes),
-    [operation, classes]
-  );
+    return getAccordionItems(operation, classes);
+  }, [operation, classes]);
 
   const closePreview = React.useCallback(() => {
     dispatchOperationsState({
@@ -61,6 +60,7 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
   if (!operation) {
     return null;
   }
+  const { operationType, operationName } = operation;
 
   return (
     <div className={classes.operationView} key="verboseOperationView">
