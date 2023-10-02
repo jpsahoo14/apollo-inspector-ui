@@ -17,14 +17,7 @@ import {
   sizeInBytes,
 } from "../utils/apollo-operations-tracker-utils";
 import { ColumnOptions } from "./data-grid-view-helper";
-
-const useStyles = makeStyles({
-  content: {
-    display: "flex",
-    flexDirection: "column",
-    rowGap: "10px",
-  },
-});
+import { useStyles } from "./column-options-view.styles";
 
 export const sampleColumnOptions : ColumnOptions[] = [
   {
@@ -143,14 +136,14 @@ export const ColumnOptions = () => {
   );
 
   return (
-    <Dialog modalType="non-modal">
+    <Dialog>
       <DialogTrigger disableButtonEnhancement>
         <Button>Column Options</Button>
       </DialogTrigger>
       <DialogSurface aria-describedby={undefined}>
         <DialogBody>
           <DialogTitle>Column options</DialogTitle>
-          <DialogContent className={styles.content}>
+          <DialogContent className={styles.main}>
             <Label>Add or remove columns.</Label>
             <div style={{ display: "flex", flexDirection: "column" }}>
               {columnOptionCheckbox}
