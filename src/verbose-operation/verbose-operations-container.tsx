@@ -8,6 +8,8 @@ import {
   IOperationsAction,
   IOperationsReducerState,
 } from "../operations-tracker-container-helper";
+import { Label } from "@fluentui/react-components";
+import { debounce } from "lodash-es";
 
 export interface IVerboseOperationsContainerProps {
   operations: IVerboseOperation[] | null;
@@ -27,9 +29,41 @@ export const VerboseOperationsContainer = (
   } = props;
 
   const classes = useStyles();
+  const [filterLabelMsg, setFilterLabelMsg] =
+    React.useState<React.ReactElement | null>(null);
+  const setFilterRef = React.useRef(
+    debounce((operations, filteredOperations, filterLabelMsg) => {
+      console.log(`jps filter`, {
+        opLength: operations?.length,
+        filtLength: filteredOperations?.length,
+      });
+      if (operations?.length !== filteredOperations?.length) {
+        if (!filterLabelMsg) {
+          setFilterLabelMsg(
+            <Label
+              size="large"
+              weight="semibold"
+              className={classes.filterLabelMsg}
+            >{`You're viewing filtered operations`}</Label>
+          );
+        }
 
+        return;
+      }
+      setFilterLabelMsg(null);
+    }, 500)
+  );
+
+  React.useEffect(() => {
+    setFilterRef.current(
+      operations,
+      operationsState.filteredOperations,
+      filterLabelMsg
+    );
+  }, [operations, operationsState.filteredOperations, filterLabelMsg]);
   return (
     <div className={classes.root}>
+      {filterLabelMsg}
       <div className={classes.operations}>
         <DataGridView
           key={"OperationsDataGridView"}

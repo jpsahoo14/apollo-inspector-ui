@@ -156,14 +156,7 @@ export const FilterView = React.memo((props: IFilterView) => {
 const useOperationTypesCheckBox = ({
   operationTypesFilter,
   setOperationTypesFilter,
-  filters,
   setFilters,
-  resultFromFilter,
-  statusFilter,
-  queryChecked,
-  setQueryChecked,
-  querySubTypesChecked,
-  setQuerySubTypesChecked,
 }: IUseOperationTypesCheckBoxParams) => {
   const onOperationTypeChange = useOnOperationTypeFilterChange(
     operationTypesFilter,
@@ -238,7 +231,7 @@ const useOperationTypesCheckBox = ({
           </>
         );
       });
-  }, [onOperationTypeChange, filters, onSubTypeChange, operationTypesFilter]);
+  }, [onOperationTypeChange, onSubTypeChange, operationTypesFilter]);
 
   return operationTypes;
 };
@@ -284,9 +277,7 @@ const useOnSubTypeChange = ({
 const useOnStatusChange = (
   statusFilter: string[],
   setStatusFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (filterSet: IFilterSet | null) => void,
-  resultFromFilter: string[],
-  operationTypesFilter: string[]
+  setFilters: (filterSet: IFilterSet | null) => void
 ) =>
   React.useCallback(
     ({ target: { value } }, { checked }) => {
@@ -311,9 +302,7 @@ const useOnStatusChange = (
 const useOnResultChange = (
   resultFromFilter: string[],
   setResultFromFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (filterSet: IFilterSet | null) => void,
-  operationTypesFilter: string[],
-  statusFilter: string[]
+  setFilters: (filterSet: IFilterSet | null) => void
 ) =>
   React.useCallback(
     ({ target: { value } }, { checked }) => {

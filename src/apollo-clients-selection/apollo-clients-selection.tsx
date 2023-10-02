@@ -57,7 +57,7 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
       };
       const shouldDisable = recordingState === RecordingState.RecordingStarted;
       return (
-        <div className={classes.checkboxWrapper}>
+        <div className={classes.checkboxWrapper} key={clientId}>
           <Checkbox
             checked={!!checked}
             label={clientId}

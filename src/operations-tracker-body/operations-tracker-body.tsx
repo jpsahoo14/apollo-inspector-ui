@@ -132,7 +132,7 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
     case TabHeaders.VerboseOperationView: {
       return (
         <VerboseOperationsContainer
-          operations={data.verboseOperations}
+          operations={data.operations}
           operationsState={operationsState}
           dispatchOperationsCount={dispatchOperationsCount}
           dispatchOperationsState={dispatchOperationsState}
