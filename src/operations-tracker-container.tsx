@@ -76,7 +76,7 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
   React.useEffect(() => {
     const currentApolloClients = props.apolloClientIds;
     setApolloClients(currentApolloClients);
-  }, [props.apolloClientIds]);
+  }, [props.apolloClientIds, setApolloClients]);
 
   React.useEffect(() => {
     const currentApolloClientsIds = props.apolloClientIds;

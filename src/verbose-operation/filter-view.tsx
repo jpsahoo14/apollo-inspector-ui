@@ -2,8 +2,6 @@ import * as React from "react";
 import { Checkbox } from "@fluentui/react-components";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
-import { selectHttpOptionsAndBodyInternal } from "@apollo/client";
-import { cloneDeep, filter } from "lodash";
 import { ColumnOptions } from "./column-options-view";
 
 interface IFilterView {
@@ -83,16 +81,12 @@ export const FilterView = React.memo((props: IFilterView) => {
   const onResultChange = useOnResultChange(
     resultFromFilter,
     setResultFromFilter,
-    setFilters,
-    operationTypesFilter,
-    statusFilter
+    setFilters
   );
   const onStatusChange = useOnStatusChange(
     statusFilter,
     setStatusFilter,
-    setFilters,
-    resultFromFilter,
-    operationTypesFilter
+    setFilters
   );
 
   const statues = Object.entries(OperationStatus)
@@ -123,36 +117,10 @@ export const FilterView = React.memo((props: IFilterView) => {
 
   return (
     <div className={classes.filterView}>
-      <div>
-        <div className={classes.filters}>
-          <h3 key="operationType">{`Filters`}</h3>
-          <div style={{ textAlign: 'right' }}><ColumnOptions /></div>
-        </div> 
-      </div>
-      <div className={classes.type}>
-        <div>
-          <h5 key="operationType">{`Type`}&nbsp;</h5>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {operationTypes}
-        </div>
-      </div>
-      <div className={classes.operationType}>
-        <div>
-          <h5 key="operationType">{`Result from`}&nbsp;</h5>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {resultsFrom}
-        </div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div>
-          <h5 key="operationType">{`Status`}&nbsp;</h5>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {statues}
-        </div>
-      </div>
+      {renderFilterViewHeader(classes)}
+      {renderOperationTypeFilter(classes, operationTypes)}
+      {renderResultsFromFiter(classes, resultsFrom)}
+      {renderOperationStatusFilter(statues)}
     </div>
   );
 });
@@ -381,3 +349,53 @@ const useOnOperationTypeFilterChange = (
     },
     [operationTypesFilter, setOperationTypesFilter, setFilters]
   );
+
+const renderResultsFromFiter = (
+  classes: Record<"filters" | "filterView" | "type" | "operationType", string>,
+  resultsFrom: React.JSX.Element[]
+) => (
+  <div className={classes.operationType}>
+    <div>
+      <h5 key="operationType">{`Result from`}&nbsp;</h5>
+    </div>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {resultsFrom}
+    </div>
+  </div>
+);
+
+const renderOperationStatusFilter = (statues: React.JSX.Element[]) => (
+  <div style={{ display: "flex", flexDirection: "column" }}>
+    <div>
+      <h5 key="status">{`Status`}&nbsp;</h5>
+    </div>
+    <div style={{ display: "flex", flexDirection: "column" }}>{statues}</div>
+  </div>
+);
+
+const renderOperationTypeFilter = (
+  classes: Record<"operationType" | "type" | "filters" | "filterView", string>,
+  operationTypes: React.JSX.Element[]
+) => (
+  <div className={classes.type}>
+    <div>
+      <h5 key="operationType">{`Type`}&nbsp;</h5>
+    </div>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {operationTypes}
+    </div>
+  </div>
+);
+
+const renderFilterViewHeader = (
+  classes: Record<"filters" | "filterView" | "type" | "operationType", string>
+) => (
+  <div>
+    <div className={classes.filters}>
+      <h3 key="operationType">{`Filters`}</h3>
+      <div style={{ textAlign: "right" }}>
+        <ColumnOptions />
+      </div>
+    </div>
+  </div>
+);

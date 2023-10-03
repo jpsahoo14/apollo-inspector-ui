@@ -8,7 +8,6 @@ import {
   DialogBody,
   Button,
   Label,
-  makeStyles,
   Checkbox,
 } from "@fluentui/react-components";
 import { ISetState, useTrackerStore } from "../store";
@@ -16,10 +15,11 @@ import {
   secondsToTime,
   sizeInBytes,
 } from "../utils/apollo-operations-tracker-utils";
-import { ColumnOptions } from "./data-grid-view-helper";
 import { useStyles } from "./column-options-view.styles";
+import { IColumnOptions } from "./data-grid.interface";
+import { ToolboxRegular } from "@fluentui/react-icons";
 
-export const sampleColumnOptions : ColumnOptions[] = [
+export const sampleColumnOptions: IColumnOptions[] = [
   {
     key: "id",
     header: "ID",
@@ -35,6 +35,14 @@ export const sampleColumnOptions : ColumnOptions[] = [
     header: "Type",
     value: (item) => item.operationType,
     compare: (a, b) => compareString(b.operationType, a.operationType),
+    size: { minWidth: 100, defaultWidth: 100 },
+  },
+
+  {
+    key: "clientId",
+    header: "ClientId",
+    value: (item) => item.clientId,
+    compare: (a, b) => compareString(b.clientId, a.clientId),
     size: { minWidth: 100, defaultWidth: 100 },
   },
   {
@@ -66,7 +74,7 @@ export const sampleColumnOptions : ColumnOptions[] = [
   },
   {
     key: "totalExecTime",
-    header: "Exec Time",
+    header: "Total Exec Time",
     value: (item) =>
       item.duration.totalTime > 1000
         ? secondsToTime(item.duration.totalTime)
@@ -112,7 +120,6 @@ export const ColumnOptions = () => {
     (store) => [store.selectedColumnOptions, store.setSelectedColumnOptions]
   );
 
-  console.log({ selectedColumnOptions });
   const onColumnOptionsChange = useOnColumnOptionsChange(
     selectedColumnOptions,
     setSelectedColumnOptions
@@ -121,7 +128,6 @@ export const ColumnOptions = () => {
   const columnOptionCheckbox = Object.entries(sampleColumnOptions).map(
     (value, key) => {
       const checkboxValue = value[1];
-      const temp = checkboxValue.header;
       return (
         <Checkbox
           onChange={onColumnOptionsChange}
@@ -138,7 +144,7 @@ export const ColumnOptions = () => {
   return (
     <Dialog modalType="non-modal">
       <DialogTrigger disableButtonEnhancement>
-        <Button>Column Options</Button>
+        <Button icon={<ToolboxRegular />}>Column Options</Button>
       </DialogTrigger>
       <DialogSurface aria-describedby={undefined}>
         <DialogBody>
@@ -168,7 +174,6 @@ const useOnColumnOptionsChange = (
         arr = arr.filter((x) => x !== value);
       }
 
-      console.log({ selectedColumnOptions });
       setSelectedColumnOptions(arr);
     },
     [selectedColumnOptions, setSelectedColumnOptions]

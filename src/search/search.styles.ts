@@ -5,7 +5,6 @@ export const searchStyles = makeStyles({
     position: "relative",
     width: "90%",
     maxWidth: "300px",
-    color: "#646464",
   },
   input: {
     display: "inline-block",

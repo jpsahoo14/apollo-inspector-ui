@@ -16,7 +16,12 @@ import {
 } from "../operations-tracker-body";
 import { FilterView, IFilterSet } from "./filter-view";
 import { debounce } from "lodash-es";
-import { columnSizingOptions, getColumns, getFilteredItems, Item } from "./data-grid-view-helper";
+import {
+  columnSizingOptions,
+  getColumns,
+  getFilteredItems,
+  Item,
+} from "./data-grid-view-helper";
 import {
   IOperationsAction,
   IOperationsReducerState,
@@ -41,9 +46,9 @@ export const DataGridView = (props: IDataGridView) => {
     dispatchOperationsState,
   } = props;
   const { targetDocument } = useFluent();
-  const [selectedColumnOptions] = useTrackerStore(
-    (store) => [store.selectedColumnOptions]
-  );
+  const [selectedColumnOptions] = useTrackerStore((store) => [
+    store.selectedColumnOptions,
+  ]);
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
   const [gridHeight, setGridHeight] = React.useState(400);
   const divRef = React.useRef<HTMLDivElement | null>(null);
@@ -84,12 +89,14 @@ export const DataGridView = (props: IDataGridView) => {
   ]);
 
   const columns = React.useMemo(
-    () => getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
+    () =>
+      getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
     [operationsState.selectedOperation, selectedColumnOptions]
   );
 
-  const columnSizing = React.useMemo(() => columnSizingOptions(selectedColumnOptions),
-  [selectedColumnOptions]
+  const columnSizing = React.useMemo(
+    () => columnSizingOptions(selectedColumnOptions),
+    [selectedColumnOptions]
   );
 
   const operationsMap = React.useMemo(() => {
@@ -140,8 +147,6 @@ export const DataGridView = (props: IDataGridView) => {
     [dispatchOperationsState, filteredItems]
   );
 
-  console.log({selectedColumnOptions});
-  console.log({columnSizing});
   return (
     <div className={classes.gridView} ref={divRef}>
       <div className={classes.filterViewWrapper}>

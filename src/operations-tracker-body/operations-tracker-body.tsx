@@ -81,12 +81,12 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
     const items = updatedTabItems.map((item: ITabHeader) => {
       return (
         <Tab key={item.key} value={item.key}>
-          {getTabHeaderName(item, state)}
+          {getTabHeaderName(item, state, data)}
         </Tab>
       );
     });
     return items;
-  }, [updatedTabItems, state]);
+  }, [updatedTabItems, state, data]);
 
   const onTabSelect = React.useCallback((_, props) => {
     setSelectedTab(props.value);
@@ -204,15 +204,21 @@ const computeInitialReducerState = (
 ): ICountReducerState => {
   return {
     allOperationsCount: data?.allOperations?.length || 0,
-    verboseOperationsCount: data?.verboseOperations?.length || 0,
+    verboseOperationsCount: data?.operations?.length || 0,
     cacheOperationsCount: data?.operations?.length || 0,
   };
 };
 
-const getTabHeaderName = (item: ITabHeader, state: ICountReducerState) => {
+const getTabHeaderName = (
+  item: ITabHeader,
+  state: ICountReducerState,
+  data: IDataView
+) => {
   switch (item.key) {
     case TabHeaders.VerboseOperationView: {
-      return `${item.name} ${`(${getCount(item.key, state)})`}`;
+      return `${item.name} ${`(${getCount(item.key, state)} of ${
+        data.operations?.length
+      })`}`;
     }
     default: {
       return `${item.name} `;
