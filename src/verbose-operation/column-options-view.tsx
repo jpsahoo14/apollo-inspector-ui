@@ -18,8 +18,9 @@ import {
 import { useStyles } from "./column-options-view.styles";
 import { IColumnOptions } from "./data-grid.interface";
 import { ToolboxRegular } from "@fluentui/react-icons";
+import { compareString } from "./data-grid-view-helper";
 
-export const sampleColumnOptions: IColumnOptions[] = [
+export const sampleColumnOptions : IColumnOptions[] = [
   {
     key: "id",
     header: "ID",
@@ -27,7 +28,7 @@ export const sampleColumnOptions: IColumnOptions[] = [
     compare: (a, b) => b.id - a.id,
     size: {
       minWidth: 30,
-      defaultWidth: 30,
+      idealWidth: 50,
     },
   },
   {
@@ -35,22 +36,21 @@ export const sampleColumnOptions: IColumnOptions[] = [
     header: "Type",
     value: (item) => item.operationType,
     compare: (a, b) => compareString(b.operationType, a.operationType),
-    size: { minWidth: 100, defaultWidth: 100 },
+    size: { minWidth: 120, idealWidth: 150 },
   },
-
   {
     key: "clientId",
     header: "ClientId",
     value: (item) => item.clientId,
     compare: (a, b) => compareString(b.clientId, a.clientId),
-    size: { minWidth: 100, defaultWidth: 100 },
+    size: { minWidth: 100, idealWidth: 100 },
   },
   {
     key: "name",
     header: "Name",
     value: (item) => item.operationName,
     compare: (a, b) => compareString(b.operationName, a.operationName),
-    size: { minWidth: 100, defaultWidth: 100 },
+    size: { minWidth: 120, idealWidth: 150 },
   },
   {
     key: "status",
@@ -58,8 +58,8 @@ export const sampleColumnOptions: IColumnOptions[] = [
     value: (item) => item.status,
     compare: (a, b) => compareString(b.status, a.status),
     size: {
-      minWidth: 30,
-      defaultWidth: 60,
+      minWidth: 80,
+      idealWidth: 90,
     },
   },
   {
@@ -68,21 +68,21 @@ export const sampleColumnOptions: IColumnOptions[] = [
     value: (item) => item.fetchPolicy,
     compare: (a, b) => compareString(b.fetchPolicy, a.fetchPolicy),
     size: {
-      minWidth: 30,
-      defaultWidth: 80,
+      minWidth: 90,
+      idealWidth: 100,
     },
   },
   {
     key: "totalExecTime",
-    header: "Total Exec Time",
+    header: "Exec Time",
     value: (item) =>
       item.duration.totalTime > 1000
         ? secondsToTime(item.duration.totalTime)
         : `${item.duration.totalTime} ms`,
     compare: (a, b) => b.duration.totalTime - a.duration.totalTime,
     size: {
-      minWidth: 30,
-      defaultWidth: 70,
+      minWidth: 60,
+      idealWidth: 90,
     },
   },
   {
@@ -94,8 +94,8 @@ export const sampleColumnOptions: IColumnOptions[] = [
         : `${item.timing.queuedAt} ms`,
     compare: (a, b) => b.timing.queuedAt - a.timing.queuedAt,
     size: {
-      minWidth: 30,
-      defaultWidth: 80,
+      minWidth: 60,
+      idealWidth: 90,
     },
   },
   {
@@ -104,15 +104,11 @@ export const sampleColumnOptions: IColumnOptions[] = [
     value: (item) => sizeInBytes(item.result[0]?.size),
     compare: (a, b) => (b.result[0]?.size || 0) - (a.result[0]?.size || 0),
     size: {
-      minWidth: 30,
-      defaultWidth: 80,
+      minWidth: 80,
+      idealWidth: 90,
     },
   },
 ];
-
-const compareString = (a: string | undefined, b: string | undefined) => {
-  return (a || "").localeCompare(b || "");
-};
 
 export const ColumnOptions = () => {
   const styles = useStyles();

@@ -1,9 +1,17 @@
+type ColumnWidthState = {
+  minWidth: number;
+  padding: number;
+  idealWidth: number;
+}
+
+export type CustomColumnWidthOptions = Partial<Pick<ColumnWidthState, "minWidth" | "padding" | "idealWidth">> & { defaultWidth?: number | undefined; };
+
 export type IColumnOptions = {
   key: string;
   header: string;
   value: (item: Item) => number | string | React.ReactNode | null;
   compare: (a: any, b: any) => number;
-  size: { [key: string]: any };
+  size: CustomColumnWidthOptions;
 };
 
 export type Item = {

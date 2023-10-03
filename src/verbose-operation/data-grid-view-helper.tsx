@@ -22,10 +22,10 @@ import {
   BookLetterRegular,
 } from "@fluentui/react-icons";
 import { sampleColumnOptions } from "./column-options-view";
-import { Item } from "./data-grid.interface";
+import { CustomColumnWidthOptions, Item } from "./data-grid.interface";
 
 export const columnSizingOptions = (selectedColumnOptions: string[]) => {
-  let columnSizing: { [key: string]: any } = {};
+  const columnSizing: { [key: any]: CustomColumnWidthOptions } = {};
   selectedColumnOptions?.map(function (element) {
     const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
     columnSizing[val.key] = val.size;
@@ -153,6 +153,6 @@ const getOperationIcon = (type: string) => {
   return null;
 };
 
-const compareString = (a: string | undefined, b: string | undefined) => {
+export const compareString = (a: string | undefined, b: string | undefined) => {
   return (a || "").localeCompare(b || "");
 };
