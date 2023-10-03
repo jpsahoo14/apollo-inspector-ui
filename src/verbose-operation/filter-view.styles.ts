@@ -16,6 +16,8 @@ export const useStyles = makeStyles({
   filters: {
     display: "flex",
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     ...shorthands.borderBottom("0.5px", "solid", "gray"),
   },
   type: {

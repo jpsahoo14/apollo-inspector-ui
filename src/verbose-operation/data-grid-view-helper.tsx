@@ -11,10 +11,6 @@ import {
 } from "apollo-inspector";
 import { fragmentSubTypes, IFilterSet, querySubTypes } from "./filter-view";
 import {
-  secondsToTime,
-  sizeInBytes,
-} from "../utils/apollo-operations-tracker-utils";
-import {
   EditRegular,
   ReadingListRegular,
   PipelineRegular,
@@ -26,40 +22,7 @@ import {
   BookLetterRegular,
 } from "@fluentui/react-icons";
 import { sampleColumnOptions } from "./column-options-view";
-
-export type ColumnOptions = {
-  key: string;
-  header: string;
-  value: (item: Item) => number | string | React.ReactNode | null;
-  compare: (a: any, b: any) => number;
-  size: {[key: string]: any;}
-}
-
-export type Duration = {
-  totalTime: number;
-};
-
-export type Timing = {
-  queuedAt: number;
-  dataWrittenToCacheCompletedAt: number;
-  responseReceivedFromServerAt: number;
-};
-
-export type Result = {
-  size: number;
-};
-
-export type Item = {
-  operationType: string;
-  operationName: string;
-  isActive: boolean;
-  duration: Duration;
-  timing: Timing;
-  status: string;
-  fetchPolicy: string;
-  result: Result[];
-  id: number;
-};
+import { Item } from "./data-grid.interface";
 
 export const columnSizingOptions = (selectedColumnOptions: string[]) => {
   let columnSizing: { [key: string]: any } = {};
@@ -85,13 +48,19 @@ export const getColumns = (
           compare: (a, b) => val.compare(a, b),
           renderCell: (item) => {
             return (
-              <TableCellLayout truncate media={val.key === "type" && getOperationIcon(item.operationType)}>{val.value(item)}</TableCellLayout>
+              <TableCellLayout
+                truncate
+                media={
+                  val.key === "type" && getOperationIcon(item.operationType)
+                }
+              >
+                {val.value(item)}
+              </TableCellLayout>
             );
           },
         })
       );
   });
-  console.log({ tableColumn });
 
   return tableColumn;
 };
