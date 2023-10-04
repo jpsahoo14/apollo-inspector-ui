@@ -25,7 +25,7 @@ import { sampleColumnOptions } from "./column-options-view";
 import { Item } from "./data-grid.interface";
 
 export const columnSizingOptions = (selectedColumnOptions: string[]) => {
-  let columnSizing: { [key: string]: any } = {};
+  const columnSizing: { [key: string]: any } = {};
   selectedColumnOptions?.map(function (element) {
     const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
     columnSizing[val.key] = val.size;
@@ -37,32 +37,11 @@ export const getColumns = (
   anyOperationSelected: boolean,
   selectedColumnOptions: string[]
 ): TableColumnDefinition<Item>[] => {
-  const tableColumn: TableColumnDefinition<Item>[] = [];
-  selectedColumnOptions?.map(function (element) {
-    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
-    !tableColumn.some((obj) => obj.columnId === val.key) &&
-      tableColumn.push(
-        createTableColumn<Item>({
-          columnId: val.key,
-          renderHeaderCell: () => val.header,
-          compare: (a, b) => val.compare(a, b),
-          renderCell: (item) => {
-            return (
-              <TableCellLayout
-                truncate
-                media={
-                  val.key === "type" && getOperationIcon(item.operationType)
-                }
-              >
-                {val.value(item)}
-              </TableCellLayout>
-            );
-          },
-        })
-      );
-  });
-
-  return tableColumn;
+  if (anyOperationSelected) {
+    return getSelectedColumns(["id", "clientId", "type", "name"]);
+  } else {
+    return getSelectedColumns(selectedColumnOptions);
+  }
 };
 
 export const getFilteredItems = (
@@ -156,3 +135,31 @@ const getOperationIcon = (type: string) => {
 const compareString = (a: string | undefined, b: string | undefined) => {
   return (a || "").localeCompare(b || "");
 };
+function getSelectedColumns(selectedColumnOptions: string[]) {
+  const tableColumn: TableColumnDefinition<Item>[] = [];
+  selectedColumnOptions?.map(function (element) {
+    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
+    !tableColumn.some((obj) => obj.columnId === val.key) &&
+      tableColumn.push(
+        createTableColumn<Item>({
+          columnId: val.key,
+          renderHeaderCell: () => val.header,
+          compare: (a, b) => val.compare(a, b),
+          renderCell: (item) => {
+            return (
+              <TableCellLayout
+                truncate
+                media={
+                  val.key === "type" && getOperationIcon(item.operationType)
+                }
+              >
+                {val.value(item)}
+              </TableCellLayout>
+            );
+          },
+        })
+      );
+  });
+
+  return tableColumn;
+}
