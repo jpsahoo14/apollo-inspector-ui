@@ -1,6 +1,8 @@
 # Operations Tracker
 
 Records all operations being executed via Apollo client in a given time and shows info about each operation.
+This UI is using [apollo-inspector](https://www.npmjs.com/package/apollo-inspector?activeTab=readme) library<br>
+
 ![plot](./docs/operation-tracker-result.png)
 
 ## What kind of issues can be debugged using the tool
@@ -78,3 +80,7 @@ This view shows what operations led to re-render of a given query.
 On the left side is the list of queries which have been re-rendered and on the right side, it shows what all operation caused it.
 
 ![plot](./docs/affected-queries-view.png)
+
+# Demo
+
+Run `yarn parcel:test:start` to see the demo the tool working
