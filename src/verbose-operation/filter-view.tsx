@@ -3,10 +3,12 @@ import { Checkbox } from "@fluentui/react-components";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
 import { ColumnOptions } from "./column-options-view";
+import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
 interface IFilterView {
   setFilters: (input: React.SetStateAction<IFilterSet | null>) => void;
   filters: IFilterSet | null;
+  operationsState: IOperationsReducerState;
 }
 
 export enum OperationStatus {
@@ -58,7 +60,7 @@ export const FilterView = React.memo((props: IFilterView) => {
   >([]);
   const [resultFromFilter, setResultFromFilter] = React.useState<string[]>([]);
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const { setFilters, filters } = props;
+  const { setFilters, filters, operationsState } = props;
   const [queryChecked, setQueryChecked] = React.useState(false);
   const [querySubTypesChecked, setQuerySubTypesChecked] = React.useState<
     OperationType[]
@@ -117,7 +119,7 @@ export const FilterView = React.memo((props: IFilterView) => {
 
   return (
     <div className={classes.filterView}>
-      {renderFilterViewHeader(classes)}
+      {renderFilterViewHeader(classes, operationsState)}
       {renderOperationTypeFilter(classes, operationTypes)}
       {renderResultsFromFiter(classes, resultsFrom)}
       {renderOperationStatusFilter(statues)}
@@ -388,14 +390,17 @@ const renderOperationTypeFilter = (
 );
 
 const renderFilterViewHeader = (
-  classes: Record<"filters" | "filterView" | "type" | "operationType", string>
+  classes: Record<"filters" | "filterView" | "type" | "operationType", string>,
+  operationsState: IOperationsReducerState
 ) => (
   <div>
     <div className={classes.filters}>
       <h3 key="operationType">{`Filters`}</h3>
-      <div style={{ textAlign: "right" }}>
-        <ColumnOptions />
-      </div>
+      {!operationsState.selectedOperation ? (
+        <div style={{ textAlign: "right" }}>
+          <ColumnOptions />
+        </div>
+      ) : null}
     </div>
   </div>
 );

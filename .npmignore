@@ -21,11 +21,17 @@ node_modules
 *.sln
 *.sw?
 .parcel-cache/
+.vscode/
 
+# tools
+.eslintrc.json
 
 # source code
 src/
 index.ts
-.vscode/
 scripts/
 tsconfig.json
+tsconfig.node.json
+docs/
+public/
+index.html
