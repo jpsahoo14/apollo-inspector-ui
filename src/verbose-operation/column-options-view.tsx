@@ -20,7 +20,7 @@ import { IColumnOptions } from "./data-grid.interface";
 import { ToolboxRegular } from "@fluentui/react-icons";
 import { compareString } from "./data-grid-view-helper";
 
-export const sampleColumnOptions : IColumnOptions[] = [
+export const sampleColumnOptions: IColumnOptions[] = [
   {
     key: "id",
     header: "ID",
@@ -32,18 +32,18 @@ export const sampleColumnOptions : IColumnOptions[] = [
     },
   },
   {
-    key: "type",
-    header: "Type",
-    value: (item) => item.operationType,
-    compare: (a, b) => compareString(b.operationType, a.operationType),
-    size: { minWidth: 120, idealWidth: 150 },
-  },
-  {
     key: "clientId",
     header: "ClientId",
     value: (item) => item.clientId,
     compare: (a, b) => compareString(b.clientId, a.clientId),
     size: { minWidth: 100, idealWidth: 100 },
+  },
+  {
+    key: "type",
+    header: "Type",
+    value: (item) => item.operationType,
+    compare: (a, b) => compareString(b.operationType, a.operationType),
+    size: { minWidth: 120, idealWidth: 150 },
   },
   {
     key: "name",
@@ -73,19 +73,6 @@ export const sampleColumnOptions : IColumnOptions[] = [
     },
   },
   {
-    key: "totalExecTime",
-    header: "Exec Time",
-    value: (item) =>
-      item.duration.totalTime > 1000
-        ? secondsToTime(item.duration.totalTime)
-        : `${item.duration.totalTime} ms`,
-    compare: (a, b) => b.duration.totalTime - a.duration.totalTime,
-    size: {
-      minWidth: 60,
-      idealWidth: 90,
-    },
-  },
-  {
     key: "queuedAt",
     header: "Queued At",
     value: (item) =>
@@ -93,6 +80,19 @@ export const sampleColumnOptions : IColumnOptions[] = [
         ? secondsToTime(item.timing.queuedAt)
         : `${item.timing.queuedAt} ms`,
     compare: (a, b) => b.timing.queuedAt - a.timing.queuedAt,
+    size: {
+      minWidth: 60,
+      idealWidth: 90,
+    },
+  },
+  {
+    key: "totalExecTime",
+    header: "Exec Time",
+    value: (item) =>
+      item.duration.totalTime > 1000
+        ? secondsToTime(item.duration.totalTime)
+        : `${item.duration.totalTime} ms`,
+    compare: (a, b) => b.duration.totalTime - a.duration.totalTime,
     size: {
       minWidth: 60,
       idealWidth: 90,
