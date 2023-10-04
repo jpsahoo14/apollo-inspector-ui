@@ -1,9 +1,18 @@
 import { ISet, IColumnOptions } from "../store.interface";
 import { createState } from "../create-state";
 
-export const getColumnOptions = (set: ISet): IColumnOptions => {  
+export const getColumnOptions = (set: ISet): IColumnOptions => {
   const [selectedColumnOptions, setSelectedColumnOptions] = createState(
-    ["id","name","type"],
+    [
+      "id",
+      "clientId",
+      "type",
+      "name",
+      "status",
+      "fetchPolicy",
+      "queuedAt",
+      "totalExecTime",
+    ],
     "selectedColumnOptions",
     set
   );

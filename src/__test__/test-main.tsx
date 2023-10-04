@@ -11,8 +11,8 @@ import { ApolloInspector } from "apollo-inspector";
 const apolloClient = createClient();
 const onRecordStart = (selectedApolloClientsIds: string[]) => {
   const inspector = new ApolloInspector([
-    { clientId: "client-1", client: apolloClient },
-    { clientId: "client-2", client: apolloClient },
+    { clientId: "mainClient", client: apolloClient },
+    { clientId: "userClient", client: apolloClient },
   ]);
   return inspector.startTrackingSubscription({
     tracking: { trackVerboseOperations: true },
@@ -28,19 +28,7 @@ const apolloUIComponent = (
     <FluentProvider theme={teamsLightTheme}>
       <EditorMainApp />
       <OperationsTrackerContainer
-        apolloClientIds={[
-          "client-1",
-          "client-2",
-          "client-3",
-          "client-4",
-          "client-5",
-          "client-6",
-          "client-7",
-          "client-8",
-          "client-9",
-          "client-10",
-          "client-11",
-        ]}
+        apolloClientIds={["mainClient", "userClient"]}
         onCopy={(...args) => {
           console.log(`jps onCopy args`, { args });
         }}

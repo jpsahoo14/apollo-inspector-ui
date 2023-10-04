@@ -37,32 +37,11 @@ export const getColumns = (
   anyOperationSelected: boolean,
   selectedColumnOptions: string[]
 ): TableColumnDefinition<Item>[] => {
-  const tableColumn: TableColumnDefinition<Item>[] = [];
-  selectedColumnOptions?.map(function (element) {
-    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
-    !tableColumn.some((obj) => obj.columnId === val.key) &&
-      tableColumn.push(
-        createTableColumn<Item>({
-          columnId: val.key,
-          renderHeaderCell: () => val.header,
-          compare: (a, b) => val.compare(a, b),
-          renderCell: (item) => {
-            return (
-              <TableCellLayout
-                truncate
-                media={
-                  val.key === "type" && getOperationIcon(item.operationType)
-                }
-              >
-                {val.value(item)}
-              </TableCellLayout>
-            );
-          },
-        })
-      );
-  });
-
-  return tableColumn;
+  if (anyOperationSelected) {
+    return getSelectedColumns(["id", "clientId", "type", "name"]);
+  } else {
+    return getSelectedColumns(selectedColumnOptions);
+  }
 };
 
 export const getFilteredItems = (
@@ -156,3 +135,31 @@ const getOperationIcon = (type: string) => {
 export const compareString = (a: string | undefined, b: string | undefined) => {
   return (a || "").localeCompare(b || "");
 };
+function getSelectedColumns(selectedColumnOptions: string[]) {
+  const tableColumn: TableColumnDefinition<Item>[] = [];
+  selectedColumnOptions?.map(function (element) {
+    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
+    !tableColumn.some((obj) => obj.columnId === val.key) &&
+      tableColumn.push(
+        createTableColumn<Item>({
+          columnId: val.key,
+          renderHeaderCell: () => val.header,
+          compare: (a, b) => val.compare(a, b),
+          renderCell: (item) => {
+            return (
+              <TableCellLayout
+                truncate
+                media={
+                  val.key === "type" && getOperationIcon(item.operationType)
+                }
+              >
+                {val.value(item)}
+              </TableCellLayout>
+            );
+          },
+        })
+      );
+  });
+
+  return tableColumn;
+}

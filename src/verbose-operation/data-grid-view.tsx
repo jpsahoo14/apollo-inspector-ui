@@ -150,7 +150,11 @@ export const DataGridView = (props: IDataGridView) => {
   return (
     <div className={classes.gridView} ref={divRef}>
       <div className={classes.filterViewWrapper}>
-        <FilterView setFilters={updateFilters} filters={filters} />
+        <FilterView
+          setFilters={updateFilters}
+          filters={filters}
+          operationsState={operationsState}
+        />
       </div>
       <div
         {...(operationsState.selectedOperation
