@@ -2335,10 +2335,10 @@ ansi-styles@^6.1.0:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
 
-apollo-inspector@1.17.1:
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/apollo-inspector/-/apollo-inspector-1.17.1.tgz#ca81fbc7027c4a2542698a1162121d8b32d658bc"
-  integrity sha512-oZMe8vZOo1Cz/ogWba4BtIkZHAbM7CxnKw5VUGY73TtQdXoVfGo+yufkOgbuVWIJ5+burCUJj+J1Pr9aoos2hg==
+apollo-inspector@1.17.3:
+  version "1.17.3"
+  resolved "https://registry.yarnpkg.com/apollo-inspector/-/apollo-inspector-1.17.3.tgz#c600ef66cd73f473099540abaeccf2e0da70304d"
+  integrity sha512-zAMoMhI98E99ob+0JAjU1zuXAN3AxDT62Vg5sLTJnqK+os+GujTftxxgVHkZs0+RGVd36eqznVojFqodS9J3Sg==
   dependencies:
     "@swc/helpers" "^0.4.14"
     "@types/node" "^18.11.17"
