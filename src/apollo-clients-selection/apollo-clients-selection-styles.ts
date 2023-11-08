@@ -14,6 +14,7 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
+    overflowY: "auto",
   },
   errorLabel: {
     color: "red",
@@ -30,5 +31,6 @@ export const useStyles = makeStyles({
     ...shorthands.borderColor("gray"),
     ...shorthands.borderStyle("groove"),
     alignItems: "center",
+    minHeight: 0,
   },
 });
