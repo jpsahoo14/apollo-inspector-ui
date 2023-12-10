@@ -4,7 +4,7 @@ import {
   Label,
   CheckboxOnChangeData,
   Button,
-  Tooltip,
+  Tooltip
 } from "@fluentui/react-components";
 import { IErrorType, useTrackerStore } from "../store";
 import { useStyles } from "./apollo-clients-selection-styles";
@@ -22,18 +22,18 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
     selectedApolloClientIds,
     setSelectedApolloClientIds,
     error,
-    recordingState,
-  } = useTrackerStore((store) => ({
+    recordingState
+  } = useTrackerStore(store => ({
     selectedApolloClientIds: store.selectedApolloClientIds,
     setSelectedApolloClientIds: store.setSelectedApolloClientIds,
     error: store.error,
-    recordingState: store.recordingState,
+    recordingState: store.recordingState
   }));
 
   const checkBoxes = React.useMemo(() => {
-    return clientIds.map((clientId) => {
+    return clientIds.map(clientId => {
       const checked = selectedApolloClientIds.find(
-        (selected) => selected === clientId
+        selected => selected === clientId
       );
       const onChange = (
         e: React.SyntheticEvent,
@@ -46,15 +46,13 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
         } else {
           const selectedClientIdsCopy = selectedApolloClientIds.concat([]);
           const updatedList = selectedClientIdsCopy.filter(
-            (selectedClientId) => selectedClientId !== clientId
+            selectedClientId => selectedClientId !== clientId
           );
           setSelectedApolloClientIds(updatedList);
         }
       };
 
-      const onCopyCache = () => {
-        onCopy(CopyType.WholeApolloCache, { clientId });
-      };
+      const onCopyCache = () => {onCopy(CopyType.WholeApolloCache, { clientId });};
       const shouldDisable = recordingState === RecordingState.RecordingStarted;
       return (
         <div className={classes.checkboxWrapper} key={clientId}>
@@ -82,7 +80,7 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
     recordingState,
     selectedApolloClientIds,
     onCopy,
-    setSelectedApolloClientIds,
+    setSelectedApolloClientIds
   ]);
 
   return (
