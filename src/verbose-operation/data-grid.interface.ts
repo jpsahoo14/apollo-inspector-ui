@@ -2,9 +2,11 @@ type ColumnWidthState = {
   minWidth: number;
   padding: number;
   idealWidth: number;
-}
+};
 
-export type CustomColumnWidthOptions = Partial<Pick<ColumnWidthState, "minWidth" | "padding" | "idealWidth">> & { defaultWidth?: number | undefined; };
+export type CustomColumnWidthOptions = Partial<
+  Pick<ColumnWidthState, "minWidth" | "padding" | "idealWidth">
+> & { defaultWidth?: number | undefined };
 
 export type IColumnOptions = {
   key: string;
