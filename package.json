@@ -19,7 +19,8 @@
     "test:build": "webpack --config src/__test__/test-app/webpack/webpack.config.js --env env=prod",
     "parcel:start": "parcel index.html",
     "parcel:test:start": "parcel src/__test__/index.html",
-    "publish": "yarn build:package && npm publish"
+    "publish": "yarn build:package && npm publish",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "license": "MIT",
   "repository": {
@@ -58,6 +59,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "graphql-tools": "^9.0.0",
     "parcel": "^2.9.3",
+    "prettier": "^3.1.1",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

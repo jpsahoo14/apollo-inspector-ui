@@ -10,9 +10,15 @@ export const getApolloInspectorStopTracking = (
     verboseOperations: null,
     allOperations: null,
     affectedQueriesOperations: null,
-  }
+  };
   const [stopApolloInspectorTracking, setStopApolloInspectorTracking] =
-    createState(() => { return temp }, "stopApolloInspectorTracking", set);
+    createState(
+      () => {
+        return temp;
+      },
+      "stopApolloInspectorTracking",
+      set
+    );
   return {
     stopApolloInspectorTracking,
     setStopApolloInspectorTracking,

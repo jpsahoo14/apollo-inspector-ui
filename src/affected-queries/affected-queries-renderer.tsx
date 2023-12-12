@@ -18,7 +18,7 @@ export interface IAffectedQueriesRendererProps {
 }
 
 export const AffectedQueriesRenderer = (
-  props: IAffectedQueriesRendererProps,
+  props: IAffectedQueriesRendererProps
 ) => {
   const { listOfItems, gridItems, selectedListItem, onTabSelect } = props;
   const classes = useStyles();

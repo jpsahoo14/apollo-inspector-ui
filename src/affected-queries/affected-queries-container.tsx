@@ -7,27 +7,27 @@ export interface IAffectedQueriesContainerProps {
   affectedQueries: IAffectedQueryMap | null;
 }
 export const AffectedQueriesContainer = (
-  props: IAffectedQueriesContainerProps,
+  props: IAffectedQueriesContainerProps
 ) => {
   const { affectedQueries } = props;
   const listOfItems = React.useMemo(
     () => getListOfItems(affectedQueries),
-    [affectedQueries],
+    [affectedQueries]
   );
   const [selectedItem, setSelectedItem] = React.useState<string>(
-    (listOfItems && listOfItems.length > 0 && listOfItems[0].name) || "",
+    (listOfItems && listOfItems.length > 0 && listOfItems[0].name) || ""
   );
 
   const gridItems = React.useMemo(
     () => getGridItems(affectedQueries, selectedItem),
-    [affectedQueries, selectedItem],
+    [affectedQueries, selectedItem]
   );
 
   const onTabSelect = React.useCallback(
     (_, { value }: SelectTabData) => {
       setSelectedItem(value as string);
     },
-    [setSelectedItem],
+    [setSelectedItem]
   );
 
   return (
@@ -42,7 +42,7 @@ export const AffectedQueriesContainer = (
 
 const getGridItems = (
   affectedQueries: IAffectedQueryMap | null,
-  selectedItem: string,
+  selectedItem: string
 ): IDueToOperation[] | undefined => {
   if (affectedQueries) {
     return affectedQueries[selectedItem]?.dueToOperations;
