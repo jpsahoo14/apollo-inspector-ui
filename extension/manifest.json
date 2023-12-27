@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Apollo Inspector",
+  "description": "Apollo Inspector",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "js": ["content-script.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_idle"
+    }
+  ],
+  "devtools_page": "devtools.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["webpage.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

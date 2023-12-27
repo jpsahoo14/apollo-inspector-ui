@@ -88,14 +88,16 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
         key="operationnViewAccordionnWrapper"
       >
         <div className={classes.accordioPreWrapper}>
+          (
           <Accordion
             className={classes.operationDetails}
             key={"operationnViewAccordionn"}
             multiple
             collapsible
           >
-            {...accordionItems}
+            {accordionItems}
           </Accordion>
+          )
         </div>
       </div>
     </div>
@@ -293,7 +295,7 @@ const getResultPanel = (
         </AccordionHeader>
       </Tooltip>
       <AccordionPanel>
-        <Accordion collapsible>{...items}</Accordion>
+        <Accordion collapsible>{items}</Accordion>
       </AccordionPanel>
     </AccordionItem>
   );
