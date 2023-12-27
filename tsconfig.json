@@ -4,7 +4,7 @@
     "strict": true,
     "skipLibCheck": true,
     "jsx": "react",
-    "module": "ESNext",
+    "module": "CommonJS",
     "declaration": true,
     "declarationDir": "types",
     "sourceMap": true,
@@ -12,12 +12,15 @@
     "moduleResolution": "node",
     "emitDeclarationOnly": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "target": "es5",
+    "types": ["react", "react-dom", "chrome"]
   },
   "exclude": [
     "dist",
     "node_modules",
     "src/**/*.test.tsx",
     "src/**/*.stories.tsx"
-  ]
+  ],
+  "include": ["./src", "./extension"]
 }

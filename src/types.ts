@@ -46,6 +46,7 @@ declare global {
     __APOLLO_GLOBAL_OPERATIONS__: ApolloGlobalOperations;
     __APOLLO_KEY_FIELDS__: ApolloKeyFields;
     __REMPL_APOLLO_DEVTOOLS_URL__?: string;
+    __APOLLO_CLIENT__: ClientObject;
   }
 }
 

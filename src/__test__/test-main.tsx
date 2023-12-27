@@ -28,7 +28,7 @@ const onRecordStart = (selectedApolloClientsIds: string[]) => {
   return inspector.startTrackingSubscription({
     tracking: { trackVerboseOperations: true },
     apolloClientIds: selectedApolloClientsIds,
-    delayOperationsEmitByInMS: 500,
+    delayOperationsEmitByInMS: 1000,
   });
 };
 

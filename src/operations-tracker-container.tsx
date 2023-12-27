@@ -39,6 +39,8 @@ export const OperationsTrackerContainer = (
     { classes }
   );
 
+  React.useEffect(() => () => console.log(`unmounted`));
+
   return (
     <ErrorBoundary>
       <div className={classes.root}>

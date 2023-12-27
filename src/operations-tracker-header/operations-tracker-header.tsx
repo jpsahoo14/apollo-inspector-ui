@@ -3,7 +3,7 @@ import { Button } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { Search } from "../search/search";
-import { debounce } from "lodash-es";
+import { cloneDeep, debounce } from "lodash-es";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { useTrackerStore, ISetState, IErrorType } from "../store";
@@ -114,6 +114,7 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     const observable = onRecordStart(selectedApolloClientIds);
     const subscription = observable.subscribe({
       next: (data: IDataView) => {
+        // const newData = cloneDeep(data);
         setApolloOperationsData(data);
         setLoader({ loading: false, message: "" });
       },
