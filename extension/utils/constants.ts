@@ -5,28 +5,22 @@ export const WEB_PAGE = "web-page";
 export const BACKGROUND = "background";
 
 export const enum DEVTOOLS_ACTIONS {
+  DEVTOOLS_SCRIPT_LOADED = "devtools-script-loaded",
   CREATE_DEVTOOLS_PANEL = "create-devtools-panel",
 }
 
-export const enum CLIENT_ACTIONS {
-  TEST_CLIENT = "test-client",
-}
-
 export const enum WEBPAGE_ACTIONS {
+  APOLLO_INSPECTOR_DATA = "apollo-inspector-data",
   GET_APOLLO_CLIENTS_IDS = "get-apollo-clients-ids",
-  DEVTOOLS_SCRIPT_LOADED = "devtools-script-loaded",
-  TAB_ID_VALUE = "tab-id-value",
-  START_RECORDING = "start-recording",
-  STOP_RECORDING = "stop-recording",
+  APOLLO_CLIENT_IDS = "apollo-client-ids",
 }
 
 export const enum CONTENT_SCRIPT_ACTIONS {
-  GET_APOLLO_CLIENTS_IDS = "get-apollo-clients-ids",
-  DEVTOOLS_SCRIPT_LOADED = "devtools-script-loaded",
   GET_TAB_ID = "get-tab-id",
+  TAB_ID_VALUE = "tab-id-value",
 }
 
 export const enum PANEL_PAGE_ACTIONS {
-  SET_APOLLO_CLIENT_IDS = "set-apollo-client-ids",
-  APOLLO_INSPECTOR_DATA = "apollo-inspector-data",
+  STOP_RECORDING = "stop-recording",
+  START_RECORDING = "start-recording",
 }

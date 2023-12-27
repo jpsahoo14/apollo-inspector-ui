@@ -1,9 +1,10 @@
 import {
-  CustomEventTarget,
   DEVTOOL,
   PANEL_PAGE,
   WEB_PAGE,
   WEBPAGE_ACTIONS,
+  DEVTOOLS_ACTIONS,
+  PANEL_PAGE_ACTIONS,
 } from "../utils";
 import {
   devtoolScriptLoadedAction,
@@ -21,10 +22,10 @@ export const setupWebPageActions = (context: IWebpageContext) => {
   const actionsToReducers = {
     [WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS]:
       getApolloClientsIdsAction(context),
-    [WEBPAGE_ACTIONS.DEVTOOLS_SCRIPT_LOADED]:
+    [DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED]:
       devtoolScriptLoadedAction(context),
-    [WEBPAGE_ACTIONS.START_RECORDING]: getStartRecordingAction(context),
-    [WEBPAGE_ACTIONS.STOP_RECORDING]: getStopRecordingReducer(context),
+    [PANEL_PAGE_ACTIONS.START_RECORDING]: getStartRecordingAction(context),
+    [PANEL_PAGE_ACTIONS.STOP_RECORDING]: getStopRecordingReducer(context),
     [DEVTOOL]: sendMessage,
     [PANEL_PAGE]: sendMessage,
     [WEB_PAGE]: getHandleWebpageAction(context),

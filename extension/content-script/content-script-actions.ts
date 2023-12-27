@@ -2,8 +2,8 @@ import {
   IMessagePayload,
   CONTENT_SCRIPT,
   WEB_PAGE,
-  WEBPAGE_ACTIONS,
   IContentScriptContext,
+  CONTENT_SCRIPT_ACTIONS,
 } from "../utils";
 
 export const getTabId = ({ contentScript, tabId }: IContentScriptContext) => {
@@ -11,7 +11,7 @@ export const getTabId = ({ contentScript, tabId }: IContentScriptContext) => {
     const message: IMessagePayload = {
       destination: {
         name: WEB_PAGE,
-        action: WEBPAGE_ACTIONS.TAB_ID_VALUE,
+        action: CONTENT_SCRIPT_ACTIONS.TAB_ID_VALUE,
         tabId,
       },
       requestInfo: {

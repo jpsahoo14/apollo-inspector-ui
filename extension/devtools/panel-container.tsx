@@ -105,7 +105,7 @@ const useOperationTrackerProps = ({
       subscription?.unsubscribe();
       return new Observable<IDataView>((observer) => {
         const unsubscribe = panelRef.current.addEventListener(
-          PANEL_PAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
+          WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
           (message: IMessagePayload) => {
             observer.next(message.data);
           }
@@ -116,7 +116,7 @@ const useOperationTrackerProps = ({
             requestId: generateRequestId(PANEL_PAGE),
           },
           destination: {
-            action: WEBPAGE_ACTIONS.START_RECORDING,
+            action: PANEL_PAGE_ACTIONS.START_RECORDING,
             name: WEB_PAGE,
             tabId: tabIdRef.current,
           },
@@ -142,7 +142,7 @@ const useOperationTrackerProps = ({
         requestId: generateRequestId(PANEL_PAGE),
       },
       destination: {
-        action: WEBPAGE_ACTIONS.STOP_RECORDING,
+        action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
         name: WEB_PAGE,
         tabId: tabIdRef.current,
       },

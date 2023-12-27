@@ -7,6 +7,8 @@ import {
   IContentScriptContext,
   CustomEventTarget,
   PANEL_PAGE,
+  DEVTOOLS_ACTIONS,
+  WEBPAGE_ACTIONS,
 } from "../utils";
 import {
   getTabId,
@@ -20,10 +22,10 @@ export const setupContentScriptsActions = (context: IContentScriptContext) => {
 
   const actionToReducers = {
     [CONTENT_SCRIPT_ACTIONS.GET_TAB_ID]: getTabId(context),
-    [CONTENT_SCRIPT_ACTIONS.DEVTOOLS_SCRIPT_LOADED]: (_: string) => {
+    [DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED]: (_: string) => {
       return _;
     },
-    [CONTENT_SCRIPT_ACTIONS.GET_APOLLO_CLIENTS_IDS]: (_: number) => {
+    [WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS]: (_: number) => {
       return _;
     },
     [DEVTOOL]: getDevtoolAction(context),

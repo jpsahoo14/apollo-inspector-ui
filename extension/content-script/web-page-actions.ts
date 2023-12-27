@@ -48,7 +48,7 @@ export const getApolloClientsIdsAction = (context: IWebpageContext) => {
     const message: IMessagePayload = {
       destination: {
         name: PANEL_PAGE,
-        action: PANEL_PAGE_ACTIONS.SET_APOLLO_CLIENT_IDS,
+        action: WEBPAGE_ACTIONS.APOLLO_CLIENT_IDS,
         tabId,
       },
       requestInfo: {
@@ -112,7 +112,7 @@ export const getTabId = (): Promise<number> => {
       const message = event.data;
       if (
         message.destination?.name === WEB_PAGE &&
-        message.destination.action === WEBPAGE_ACTIONS.TAB_ID_VALUE
+        message.destination.action === CONTENT_SCRIPT_ACTIONS.TAB_ID_VALUE
       ) {
         window.removeEventListener("message", listener);
 
