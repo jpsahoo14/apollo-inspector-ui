@@ -21,7 +21,7 @@ export enum OperationReducerActionEnum {
 
 export const reducers = (
   state: IOperationsReducerState,
-  action: IOperationsAction,
+  action: IOperationsAction
 ): IOperationsReducerState => {
   switch (action.type) {
     case OperationReducerActionEnum.UpdateSearchText: {

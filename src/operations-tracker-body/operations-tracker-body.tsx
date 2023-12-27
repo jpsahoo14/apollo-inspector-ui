@@ -216,9 +216,8 @@ const getTabHeaderName = (
 ) => {
   switch (item.key) {
     case TabHeaders.VerboseOperationView: {
-      return `${item.name} ${`(${getCount(item.key, state)} of ${
-        data.operations?.length
-      })`}`;
+      return `${item.name} ${`(${getCount(item.key, state)} of ${data.operations
+        ?.length})`}`;
     }
     default: {
       return `${item.name} `;

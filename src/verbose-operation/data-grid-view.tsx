@@ -200,10 +200,10 @@ export const DataGridView = (props: IDataGridView) => {
                 isRowSelected && isFailed
                   ? classes.selectedAndFailedRow
                   : isFailed
-                  ? classes.failedRow
-                  : isRowSelected
-                  ? classes.selectedRow
-                  : classes.gridRow;
+                    ? classes.failedRow
+                    : isRowSelected
+                      ? classes.selectedRow
+                      : classes.gridRow;
 
               return (
                 <DataGridRow<Item>

@@ -58,8 +58,8 @@ export const getFilteredItems = (
     filteredItems =
       tokens.length > 0
         ? filteredItems.filter((item) => {
-            return tokens.find((x) =>
-              item.operationName?.toLowerCase().includes(x.toLowerCase())
+            return tokens.find(
+              (x) => item.operationName?.toLowerCase().includes(x.toLowerCase())
             );
           })
         : filteredItems;
