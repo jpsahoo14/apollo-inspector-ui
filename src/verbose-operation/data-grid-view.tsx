@@ -150,7 +150,7 @@ export const DataGridView = (props: IDataGridView) => {
     [dispatchOperationsState, filteredItems]
   );
 
-  const [showFilters, setShowFilters] = React.useState(false); // State to manage visibility of filters
+  const [showFilters, setShowFilters] = React.useState(true); // State to manage visibility of filters
 
   const handleToggleFilters = () => {
     setShowFilters(!showFilters); // Toggle the visibility of filters
