@@ -28,6 +28,9 @@ import {
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
 import { useTrackerStore } from "../store";
+import { LineHorizontal3Regular } from "@fluentui/react-icons";
+import { ColumnOptions } from "./column-options-view";
+import { Button } from "@fluentui/react-components";
 
 export interface IDataGridView {
   operations: IVerboseOperation[] | null;
@@ -147,83 +150,97 @@ export const DataGridView = (props: IDataGridView) => {
     [dispatchOperationsState, filteredItems]
   );
 
-  return (
-    <div className={classes.gridView} ref={divRef}>
-      <div className={classes.filterViewWrapper}>
-        <FilterView
-          setFilters={updateFilters}
-          filters={filters}
-          operationsState={operationsState}
-        />
-      </div>
-      <div
-        {...(operationsState.selectedOperation
-          ? { className: classes.selectedOperationGridWrapper }
-          : { className: classes.gridWrapper })}
-      >
-        <DataGrid
-          items={filteredItems as any}
-          columns={columns}
-          focusMode="cell"
-          sortable
-          resizableColumns
-          selectionAppearance="brand"
-          columnSizingOptions={columnSizing}
-          selectionMode="multiselect"
-          onSelectionChange={updateVerboseOperations as any}
-        >
-          <DataGridHeader
-            style={{
-              paddingRight: scrollbarWidth,
-              backgroundColor: "#e0e0e0",
-            }}
-            className={classes.gridHeader}
-          >
-            <DataGridRow>
-              {({ renderHeaderCell }) => (
-                <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
-              )}
-            </DataGridRow>
-          </DataGridHeader>
-          <DataGridBody
-            className={classes.gridBody}
-            itemSize={40}
-            height={gridHeight}
-          >
-            {({ item, rowId }, style) => {
-              const isRowSelected =
-                operationsState.selectedOperation?.id === (item as Item).id;
-              const isFailed = (item as Item).status
-                .toLowerCase()
-                .includes("failed");
-              const rowClassName =
-                isRowSelected && isFailed
-                  ? classes.selectedAndFailedRow
-                  : isFailed
-                    ? classes.failedRow
-                    : isRowSelected
-                      ? classes.selectedRow
-                      : classes.gridRow;
+  const [showFilters, setShowFilters] = React.useState(true); // State to manage visibility of filters
 
-              return (
-                <DataGridRow<Item>
-                  key={rowId}
-                  style={style as React.CSSProperties}
-                  className={rowClassName}
-                >
-                  {({ renderCell }) => {
-                    const cb = () => onClick(item);
-                    return (
-                      <DataGridCell onClick={cb}>
-                        {renderCell(item as Item)}
-                      </DataGridCell>
-                    );
-                  }}
-                </DataGridRow>
-              );
-            }}
-          </DataGridBody>
-        </DataGrid>
+  const handleToggleFilters = () => {
+    setShowFilters(!showFilters); // Toggle the visibility of filters
+  };
+
+  return (
+    <div className={classes.wholeBody}>
+      <div className={classes.headers}>
+          <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>Filters</Button>
+          <ColumnOptions />
+      </div>
+      <div className={classes.gridView} ref={divRef}>
+        {showFilters && (
+          <div className={classes.filterViewWrapper}>
+            <FilterView
+              setFilters={updateFilters}
+              filters={filters}
+              operationsState={operationsState}
+            />
+          </div>
+        )}
+        <div
+          {...(operationsState.selectedOperation
+            ? { className: classes.selectedOperationGridWrapper }
+            : { className: classes.gridWrapper })}
+        >
+          <DataGrid
+            items={filteredItems as any}
+            columns={columns}
+            focusMode="cell"
+            sortable
+            resizableColumns
+            selectionAppearance="brand"
+            columnSizingOptions={columnSizing}
+            selectionMode="multiselect"
+            onSelectionChange={updateVerboseOperations as any}
+          >
+            <DataGridHeader
+              style={{
+                paddingRight: scrollbarWidth,
+                backgroundColor: "#e0e0e0",
+              }}
+              className={classes.gridHeader}
+            >
+              <DataGridRow>
+                {({ renderHeaderCell }) => (
+                  <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+                )}
+              </DataGridRow>
+            </DataGridHeader>
+            <DataGridBody
+              className={classes.gridBody}
+              itemSize={40}
+              height={gridHeight}
+            >
+              {({ item, rowId }, style) => {
+                const isRowSelected =
+                  operationsState.selectedOperation?.id === (item as Item).id;
+                const isFailed = (item as Item).status
+                  .toLowerCase()
+                  .includes("failed");
+                const rowClassName =
+                  isRowSelected && isFailed
+                    ? classes.selectedAndFailedRow
+                    : isFailed
+                      ? classes.failedRow
+                      : isRowSelected
+                        ? classes.selectedRow
+                        : classes.gridRow;
+
+                return (
+                  <DataGridRow<Item>
+                    key={rowId}
+                    style={style as React.CSSProperties}
+                    className={rowClassName}
+                  >
+                    {({ renderCell }) => {
+                      const cb = () => onClick(item);
+                      return (
+                        <DataGridCell onClick={cb}>
+                          {renderCell(item as Item)}
+                        </DataGridCell>
+                      );
+                    }}
+                  </DataGridRow>
+                );
+              }}
+            </DataGridBody>
+          </DataGrid>
+        </div>
       </div>
     </div>
   );

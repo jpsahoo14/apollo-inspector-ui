@@ -8,7 +8,7 @@ export const useStyles = makeStyles({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: "auto",
-    backgroundColor: "darkgrey",
+    backgroundColor: "lightgrey",
     minWidth: 0,
     color: "black",
   },
@@ -58,11 +58,6 @@ export const useStyles = makeStyles({
     height: "32.5px",
     backgroundColor: "#e0e0e0",
   },
-
-  closeButton: {
-    width: "40px",
-    marginRight: "10px",
-  },
   accordionWrapper: {
     minHeight: 0,
     overflowX: "scroll",
@@ -70,6 +65,20 @@ export const useStyles = makeStyles({
   accordioPreWrapper: {
     maxWidth: "40rem",
   },
+  operationType:{
+    color: "grey",
+    fontSize: "10px",
+  },
+  operationNameText:{
+    fontWeight: "bold",
+    paddingLeft: "10px",
+    paddingRight: "10px"
+  },
+  closeButton:{
+    width: "10px",
+    border: "1px solid white",
+    backgroundColor: "transparent"
+  }
 });
 
 export type stylesKeys =

@@ -2,7 +2,6 @@ import * as React from "react";
 import { Checkbox } from "@fluentui/react-components";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
-import { ColumnOptions } from "./column-options-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
 interface IFilterView {
@@ -119,7 +118,6 @@ export const FilterView = React.memo((props: IFilterView) => {
 
   return (
     <div className={classes.filterView}>
-      {renderFilterViewHeader(classes, operationsState)}
       {renderOperationTypeFilter(classes, operationTypes)}
       {renderResultsFromFiter(classes, resultsFrom)}
       {renderOperationStatusFilter(statues)}
@@ -385,22 +383,6 @@ const renderOperationTypeFilter = (
     </div>
     <div style={{ display: "flex", flexDirection: "column" }}>
       {operationTypes}
-    </div>
-  </div>
-);
-
-const renderFilterViewHeader = (
-  classes: Record<"filters" | "filterView" | "type" | "operationType", string>,
-  operationsState: IOperationsReducerState
-) => (
-  <div>
-    <div className={classes.filters}>
-      <h3 key="operationType">{`Filters`}</h3>
-      {!operationsState.selectedOperation ? (
-        <div style={{ textAlign: "right" }}>
-          <ColumnOptions />
-        </div>
-      ) : null}
     </div>
   </div>
 );
