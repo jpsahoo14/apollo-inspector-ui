@@ -37,10 +37,10 @@ export const useStyles = makeStyles({
   },
   selectedAndFailedRow: {
     color: "darkred",
-    backgroundColor: "darkgrey",
+    backgroundColor: "lightgrey",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "darkgrey",
+      backgroundColor: "lightgrey",
       color: "darkred",
     },
   },
@@ -52,11 +52,11 @@ export const useStyles = makeStyles({
     color: "red",
   },
   selectedRow: {
-    backgroundColor: "darkgrey",
+    backgroundColor: "lightgrey",
     color: "white",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "darkgrey",
+      backgroundColor: "lightgrey",
       color: "white",
     },
   },
@@ -76,5 +76,13 @@ export const useStyles = makeStyles({
     flexGrow: 1,
     minWidth: 0,
     maxWidth: "300px",
+  },
+  headers:{
+    display: "flex",
+    flexDirection: "row",
+  },
+  wholeBody:{
+    display: "flex",
+    flexDirection: "column",
   },
 });
