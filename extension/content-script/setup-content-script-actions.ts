@@ -48,6 +48,26 @@ export const setupContentScriptsActions = (context: IContentScriptContext) => {
   listenToPostMessage(contentScript, addToCleanUp);
 };
 
+export const setupInitialContentScriptAction = (
+  contentScript: CustomEventTarget,
+  addToCleanUp: () => void
+) => {
+  const actionToReducers = {
+    [CONTENT_SCRIPT_ACTIONS.GET_TAB_ID]: getTabId(contentScript),
+  };
+
+  for (const prop in actionToReducers) {
+    const modifiedProp = prop as CONTENT_SCRIPT_ACTIONS;
+
+    addToCleanUp(
+      contentScript.addEventListener(
+        modifiedProp,
+        actionToReducers[modifiedProp]
+      )
+    );
+  }
+};
+
 function listenToPostMessage(
   contentScript: CustomEventTarget,
   addToCleanUp: (removeListener: () => void) => void

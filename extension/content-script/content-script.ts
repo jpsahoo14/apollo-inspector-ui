@@ -1,8 +1,38 @@
 import browser from "webextension-polyfill";
 import { CustomEventTarget, IMessagePayload, CONTENT_SCRIPT } from "../utils";
 import { setupContentScriptsActions } from "./setup-content-script-actions";
+import { IContentScriptStore } from "./content-script.interface";
 
 async function init() {
+  const contentScriptStore: IContentScriptStore = {
+    tabId: undefined,
+  };
+  const cleanUps: (() => void)[] = [];
+
+  const addToCleanUp = (cleanUp: () => void) => {
+    cleanUps.push(cleanUp);
+  };
+
+  const clientEventTarget = new CustomEventTarget("content-script");
+
+  if (typeof document === "object" && document instanceof HTMLDocument) {
+    const script = document.createElement("script");
+    script.setAttribute("type", "module");
+    script.setAttribute("src", browser.runtime.getURL("webpage.js"));
+    document.addEventListener("DOMContentLoaded", () => {
+      const importMap = document.querySelector('script[type="importmap"]');
+      if (importMap != null) {
+        importMap.parentNode?.insertBefore(script, importMap.nextSibling);
+      } else {
+        const head =
+          document.head ||
+          document.getElementsByTagName("head")[0] ||
+          document.documentElement;
+        head.insertBefore(script, head.lastChild);
+      }
+    });
+  }
+
   const getTabId = async (): Promise<number> => {
     const tabId: number = await browser.runtime.sendMessage({
       type: "GET_TAB_ID",
@@ -11,12 +41,6 @@ async function init() {
   };
 
   const tabId = await getTabId();
-  const clientEventTarget = new CustomEventTarget("content-script");
-  const cleanUps: (() => void)[] = [];
-
-  const addToCleanUp = (cleanUp: () => void) => {
-    cleanUps.push(cleanUp);
-  };
 
   const connectionToBackgroundService: browser.Runtime.Port =
     browser.runtime.connect({
@@ -44,24 +68,6 @@ async function init() {
   });
 
   // addToCleanUp(setIntervalToGetApolloClients(clientEventTarget));
-
-  if (typeof document === "object" && document instanceof HTMLDocument) {
-    const script = document.createElement("script");
-    script.setAttribute("type", "module");
-    script.setAttribute("src", browser.runtime.getURL("webpage.js"));
-    setTimeout(() => {
-      const importMap = document.querySelector('script[type="importmap"]');
-      if (importMap != null) {
-        importMap.parentNode?.insertBefore(script, importMap.nextSibling);
-      } else {
-        const head =
-          document.head ||
-          document.getElementsByTagName("head")[0] ||
-          document.documentElement;
-        head.insertBefore(script, head.lastChild);
-      }
-    }, 1000);
-  }
 }
 
 function logMessage(message: string, data: any) {

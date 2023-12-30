@@ -7,6 +7,7 @@ export const BACKGROUND = "background";
 export const enum DEVTOOLS_ACTIONS {
   DEVTOOLS_SCRIPT_LOADED = "devtools-script-loaded",
   CREATE_DEVTOOLS_PANEL = "create-devtools-panel",
+  DISCONNECTED = "disconnected",
 }
 
 export const enum WEBPAGE_ACTIONS {

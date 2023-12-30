@@ -24,6 +24,7 @@ export const setupWebPageActions = (context: IWebpageContext) => {
       getApolloClientsIdsAction(context),
     [DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED]:
       devtoolScriptLoadedAction(context),
+    [DEVTOOLS_ACTIONS.DISCONNECTED]: getStopRecordingReducer(context),
     [PANEL_PAGE_ACTIONS.START_RECORDING]: getStartRecordingAction(context),
     [PANEL_PAGE_ACTIONS.STOP_RECORDING]: getStopRecordingReducer(context),
     [DEVTOOL]: sendMessage,

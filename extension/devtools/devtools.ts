@@ -5,6 +5,7 @@ import {
   DEVTOOL,
   WEBPAGE_ACTIONS,
   WEB_PAGE,
+  DEVTOOLS_ACTIONS,
 } from "../utils";
 import { setupDevtoolActions } from "./setup-devtools-actions";
 import { IDevtoolState } from "./devtools.interface";
@@ -38,7 +39,7 @@ function sendDevtoolsScripLoadedEvent() {
   const message: IMessagePayload = {
     destination: {
       name: WEB_PAGE,
-      action: WEBPAGE_ACTIONS.DEVTOOLS_SCRIPT_LOADED,
+      action: DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED,
       tabId,
     },
     requestInfo: {

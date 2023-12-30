@@ -153,7 +153,7 @@ export const getStartRecordingAction = (context: IWebpageContext) => {
         const message: IMessagePayload = {
           destination: {
             name: PANEL_PAGE,
-            action: PANEL_PAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
+            action: WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
             tabId,
           },
           requestInfo: {
