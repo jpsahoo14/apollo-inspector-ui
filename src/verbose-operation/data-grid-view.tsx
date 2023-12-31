@@ -187,17 +187,17 @@ export const DataGridView = (props: IDataGridView) => {
             columnSizingOptions={columnSizing}
             selectionMode="multiselect"
             onSelectionChange={updateVerboseOperations as any}
+            className={classes.grid}
           >
             <DataGridHeader
               style={{
                 paddingRight: scrollbarWidth,
-                backgroundColor: "#e0e0e0",
+                backgroundColor: "#d4e8fa",
               }}
-              className={classes.gridHeader}
             >
               <DataGridRow>
                 {({ renderHeaderCell }) => (
-                  <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+                  <DataGridHeaderCell  className={classes.gridHeaderCell}>{renderHeaderCell()}</DataGridHeaderCell>
                 )}
               </DataGridRow>
             </DataGridHeader>
@@ -230,7 +230,7 @@ export const DataGridView = (props: IDataGridView) => {
                     {({ renderCell }) => {
                       const cb = () => onClick(item);
                       return (
-                        <DataGridCell onClick={cb}>
+                        <DataGridCell className={classes.gridrowcell} onClick={cb}>
                           {renderCell(item as Item)}
                         </DataGridCell>
                       );

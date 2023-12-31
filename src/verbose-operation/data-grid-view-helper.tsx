@@ -38,7 +38,7 @@ export const getColumns = (
   selectedColumnOptions: string[]
 ): TableColumnDefinition<Item>[] => {
   if (anyOperationSelected) {
-    return getSelectedColumns(["id", "clientId", "type", "name"]);
+    return getSelectedColumns(["type", "name"]);
   } else {
     return getSelectedColumns(selectedColumnOptions);
   }
@@ -128,6 +128,9 @@ const getOperationIcon = (type: string) => {
     case OperationType.ClientWriteFragment: {
       return <BookLetterRegular />;
     }
+    case OperationType.ClientReadQuery: {
+      return <DatabaseRegular />;
+    }
   }
   return null;
 };
@@ -149,6 +152,7 @@ function getSelectedColumns(selectedColumnOptions: string[]) {
             return (
               <TableCellLayout
                 truncate
+                key="tableCell"
                 media={
                   val.key === "type" && getOperationIcon(item.operationType)
                 }

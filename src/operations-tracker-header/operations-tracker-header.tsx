@@ -36,6 +36,9 @@ export const OperationsTrackerHeader = React.memo(
 
     return (
       <>
+        <div className={classes.topHeader}>
+          Apollo Inspector
+        </div>
         <div className={classes.header}>
           <div className={classes.buttonContainer}>
             {renderInfoButton(

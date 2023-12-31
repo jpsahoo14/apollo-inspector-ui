@@ -5,36 +5,40 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     minHeight: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: "auto",
-    backgroundColor: "lightgrey",
+    flexGrow: 2,
+    flexShrink: 0,
+    flexBasis: "50%",
     minWidth: 0,
     color: "black",
   },
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
+    backgroundColor: "white"
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
+    backgroundColor: "white"
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
+    backgroundColor: "white"
   },
-  fetchPolicyAccPanel: { marginLeft: "1rem" },
-  errorAccPanel: { marginLeft: "1rem" },
-  warningAccPanel: { marginLeft: "1rem" },
+  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  errorAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  warningAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
   resultPanel: {
     whiteSpace: "pre-wrap",
+    backgroundColor: "white"
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
+    backgroundColor: "white"
   },
   operationDetails: {
     minHeight: 0,
@@ -56,7 +60,7 @@ export const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     height: "32.5px",
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "aliceblue",
   },
   accordionWrapper: {
     minHeight: 0,
@@ -64,9 +68,10 @@ export const useStyles = makeStyles({
   },
   accordioPreWrapper: {
     maxWidth: "40rem",
+    height: "100vh"
   },
   operationType:{
-    color: "grey",
+    color: "black",
     fontSize: "10px",
   },
   operationNameText:{
@@ -76,7 +81,6 @@ export const useStyles = makeStyles({
   },
   closeButton:{
     width: "10px",
-    border: "1px solid white",
     backgroundColor: "transparent"
   }
 });
