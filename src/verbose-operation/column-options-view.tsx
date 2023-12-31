@@ -10,7 +10,8 @@ import {
   Label,
   Checkbox,
 } from "@fluentui/react-components";
-import { ISetState, useTrackerStore } from "../store";
+import { ISetState, TrackerStoreContext } from "../store";
+import { useStore } from "zustand";
 import {
   secondsToTime,
   sizeInBytes,
@@ -112,7 +113,9 @@ export const sampleColumnOptions: IColumnOptions[] = [
 
 export const ColumnOptions = () => {
   const styles = useStyles();
-  const [selectedColumnOptions, setSelectedColumnOptions] = useTrackerStore(
+  const store = React.useContext(TrackerStoreContext);
+  const [selectedColumnOptions, setSelectedColumnOptions] = useStore(
+    store,
     (store) => [store.selectedColumnOptions, store.setSelectedColumnOptions]
   );
 

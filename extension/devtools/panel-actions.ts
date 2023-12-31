@@ -1,4 +1,4 @@
-import { IMessagePayload } from "../utils";
+import { IMessagePayload, createLogger } from "../utils";
 import { IPanelContext } from "./panel.interface";
 
 export const getSetApolloClientIds = (context: IPanelContext) => {
@@ -29,6 +29,19 @@ export const getHandlePanelPageActions = (context: IPanelContext) => {
   };
 };
 
-function logMessage(message: string, data: any) {
-  console.log(`[panel-action]AIE ${message}`, { data });
-}
+export const getHandleWebPageUnload = (context: IPanelContext) => {
+  const { resetStore } = context;
+  return (message: IMessagePayload) => {
+    logMessage(`handle webpage unload`, message);
+    resetStore();
+  };
+};
+
+export const contentScriptLoaded = (context: IPanelContext) => {
+  const { initPanel } = context;
+  return (message: IMessagePayload) => {
+    initPanel();
+  };
+};
+
+const logMessage = createLogger(`panel-action`);
