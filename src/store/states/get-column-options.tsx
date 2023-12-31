@@ -4,7 +4,7 @@ import { createState } from "../create-state";
 export const getColumnOptions = (set: ISet): IColumnOptions => {
   const [selectedColumnOptions, setSelectedColumnOptions] = createState(
     [
-      "id",
+      // "id",
       "clientId",
       "type",
       "name",

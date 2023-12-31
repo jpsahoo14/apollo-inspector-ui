@@ -54,6 +54,8 @@ export const OperationsTrackerHeader = React.memo(
                 Clear All
               </Button>
             )}
+            <Button  style={{ marginLeft: "0.5rem" }}> Reset Store </Button>
+            <Button  style={{ marginLeft: "0.5rem" }}> Clear Store </Button>
           </div>
           <div>
             <Search onSearchChange={debouncedFilter} />
