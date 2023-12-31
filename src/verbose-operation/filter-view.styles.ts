@@ -8,7 +8,7 @@ export const useStyles = makeStyles({
     paddingLeft: "10px",
     backgroundColor: "#f1f4f7",
     paddingRight: "10px",
-    height: "100%",
+    height: "70vh",
     "::-webkit-scrollbar": {
       display: "none",
     },

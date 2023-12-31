@@ -155,6 +155,24 @@ export const DataGridView = (props: IDataGridView) => {
   const handleToggleFilters = () => {
     setShowFilters(!showFilters); // Toggle the visibility of filters
   };
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+  React.useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (windowWidth < 900) {
+      setShowFilters(false);
+    }
+  }, [windowWidth]);
 
   return (
     <div className={classes.wholeBody}>

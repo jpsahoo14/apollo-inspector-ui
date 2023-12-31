@@ -43,6 +43,7 @@ export const useStyles = makeStyles({
   operationDetails: {
     minHeight: 0,
     overflowY: "auto",
+    height: "70vh",
     "::-webkit-scrollbar": {
       display: "none",
     },
