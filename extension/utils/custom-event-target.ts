@@ -6,11 +6,13 @@ export class CustomEventTarget {
   private queue: Queue<string>;
   private set: Set<string>;
   private name: string;
+  private eventNames: string[];
   constructor(name: string) {
     this.eventTarget = new EventTarget();
     this.queue = new Queue<string>();
     this.set = new Set<string>();
     this.name = name;
+    this.eventNames = [];
   }
 
   addEventListener<T>(
@@ -18,6 +20,7 @@ export class CustomEventTarget {
     callback: (message: T) => void,
     options?: boolean | AddEventListenerOptions | undefined
   ): () => void {
+    this.eventNames.push(type);
     const listener = (message: CustomEvent) => {
       callback?.(message.detail);
     };
@@ -28,6 +31,12 @@ export class CustomEventTarget {
   }
 
   dispatchEvent(event: CustomEvent<IMessagePayload>) {
+    event.detail?.requestInfo &&
+      event.detail?.destination &&
+      logMessage(
+        `dispatching event in:${this.name} type:${event.type} from:${event.detail.requestInfo.sender} to:${event.detail.destination.name} action:${event.detail.destination.action}`,
+        { message: event.detail, eventNames: this.eventNames }
+      );
     if (this.shouldHandle(event)) {
       const key = this.getSetKey(event);
       if (!this.set.has(key)) {
@@ -73,6 +82,7 @@ export class CustomEventTarget {
 export interface IMessagePayload {
   requestInfo: {
     requestId: string;
+    sender: string;
   };
   destination: {
     name: string;

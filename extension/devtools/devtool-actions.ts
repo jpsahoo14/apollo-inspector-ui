@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
-import { CustomEventTarget, IMessagePayload } from "../utils";
+import { CustomEventTarget, IMessagePayload, createLogger } from "../utils";
 import { IDevtoolContext } from "./devtools.interface";
+import { DevtoolsPanels } from "webextension-polyfill/namespaces/devtools_panels";
 
 export const sendMessageToBackgroundScript = ({
   backgroundConnection,
@@ -28,19 +29,22 @@ export const handleMessageForDevtool = ({
 export const createDevtoolsPanel = (context: IDevtoolContext) => {
   const { devtoolState } = context;
   return async (message: IMessagePayload) => {
-    const panel = await browser.devtools.panels.create(
-      "Apollo Inspector",
-      "",
-      "panel.html"
-    );
+    const panel: DevtoolsPanels.ExtensionPanel =
+      await browser.devtools.panels.create(
+        "Apollo Inspector",
+        "",
+        "panel.html"
+      );
 
     devtoolState.isPanelCreated = true;
-    panel.onShown.addListener((panelWindow: Window) => {});
+    panel.onShown.addListener((panelWindow: Window) => {
+      logMessage(`panel shown`, {});
+    });
 
-    panel.onHidden.addListener((panelWindow: Window) => {});
+    panel.onHidden.addListener((panelWindow: Window) => {
+      logMessage(`panel hidden`, {});
+    });
   };
 };
 
-function logMessage(message: string, data: any) {
-  console.log(`[devtools]AIE ${message}`, { data });
-}
+const logMessage = createLogger(`devtools`);

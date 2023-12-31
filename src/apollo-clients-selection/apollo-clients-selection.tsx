@@ -6,10 +6,11 @@ import {
   Button,
   Tooltip,
 } from "@fluentui/react-components";
-import { IErrorType, useTrackerStore } from "../store";
+import { IErrorType, TrackerStoreContext } from "../store";
 import { useStyles } from "./apollo-clients-selection-styles";
 import { DocumentCopyRegular } from "@fluentui/react-icons";
 import { CopyType, ICopyData, RecordingState } from "../types";
+import { useStore } from "zustand";
 
 export interface IApolloClientSelectionProps {
   clientIds: string[];
@@ -18,12 +19,14 @@ export interface IApolloClientSelectionProps {
 export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
   const { clientIds, onCopy } = props;
   const classes = useStyles();
+  const store = React.useContext(TrackerStoreContext);
+
   const {
     selectedApolloClientIds,
     setSelectedApolloClientIds,
     error,
     recordingState,
-  } = useTrackerStore((store) => ({
+  } = useStore(store, (store) => ({
     selectedApolloClientIds: store.selectedApolloClientIds,
     setSelectedApolloClientIds: store.setSelectedApolloClientIds,
     error: store.error,

@@ -10,7 +10,9 @@ import {
   getForwardingPort,
   PANEL_PAGE,
   DEVTOOLS_ACTIONS,
-  generateRequestId,
+  BACKGROUND_ACTIONS,
+  createLogger,
+  sendMessageViaEventTarget,
 } from "../utils";
 const backgroundToConnectionsMap: {
   [key: string]: browser.Runtime.Port | undefined;
@@ -45,22 +47,12 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
   port.onDisconnect.addListener(() => {
     logMessage(`disconnecting from background`, connection);
     if (connection.name === DEVTOOL) {
-      const message: IMessagePayload = {
-        destination: {
-          name: WEB_PAGE,
-          action: DEVTOOLS_ACTIONS.DISCONNECTED,
-          tabId: connection.tabId,
-        },
-        requestInfo: {
-          requestId: generateRequestId(BACKGROUND),
-        },
-      };
-
-      const event = new CustomEvent(message.destination.name, {
-        detail: message,
+      sendMessageViaEventTarget(backgroundEventTarget, {
+        action: DEVTOOLS_ACTIONS.DISCONNECTED,
+        callerName: BACKGROUND,
+        destinationName: WEB_PAGE,
+        tabId: connection.tabId,
       });
-
-      backgroundEventTarget.dispatchEvent(event);
     }
     delete backgroundToConnectionsMap[JSON.stringify(connection)];
   });
@@ -88,7 +80,17 @@ const sendMessageToOtherConnection = (message: IMessagePayload) => {
     backgroundToConnectionsMap,
     name: message.destination.name,
   });
-  port && port.postMessage(message);
+  if (port) {
+    port.postMessage(message);
+  } else {
+    sendMessageViaEventTarget(backgroundEventTarget, {
+      destinationName: message.requestInfo.sender,
+      action: BACKGROUND_ACTIONS.PORT_NOT_FOUND,
+      tabId: message.destination.tabId,
+      callerName: BACKGROUND,
+      data: message,
+    });
+  }
 };
 
 const dispatchEventEventWithinBackgroundService = (
@@ -102,8 +104,6 @@ const dispatchEventEventWithinBackgroundService = (
   backgroundEventTarget.dispatchEvent(event);
 };
 
-function logMessage(message: string, data: any) {
-  console.log(`[background]AIE ${message}`, { data });
-}
+const logMessage = createLogger(BACKGROUND);
 
 setupConnectionListeners();

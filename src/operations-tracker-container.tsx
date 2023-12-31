@@ -14,11 +14,28 @@ import {
   OperationReducerActionEnum,
   reducers,
 } from "./operations-tracker-container-helper";
-import { IErrorType, useTrackerStore } from "./store";
+import {
+  IErrorType,
+  TrackerStoreProvider,
+  createTrackerStore,
+  TrackerStoreContext,
+} from "./store";
+import { useStore } from "zustand";
 import { RecordingState } from "./types";
 import { ApolloClientSelection } from "./apollo-clients-selection/apollo-clients-selection";
 
 export const OperationsTrackerContainer = (
+  props: IOperationsTrackerContainer
+) => {
+  const trackerStoreRef = React.useRef(createTrackerStore());
+  return (
+    <TrackerStoreProvider value={trackerStoreRef.current}>
+      <OperationsTrackerContainerInner {...props} />
+    </TrackerStoreProvider>
+  );
+};
+
+export const OperationsTrackerContainerInner = (
   props: IOperationsTrackerContainer
 ) => {
   const classes = useStyles();
@@ -39,7 +56,12 @@ export const OperationsTrackerContainer = (
     { classes }
   );
 
-  React.useEffect(() => () => console.log(`unmounted`));
+  React.useEffect(() => {
+    console.log(`operations tracker container mounted`);
+    return () => {
+      console.log(`unmounted`);
+    };
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -65,11 +87,12 @@ export const OperationsTrackerContainer = (
 };
 
 const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
+  const store = React.useContext(TrackerStoreContext);
   const [
     setApolloClients,
     selectedApolloClientIds,
     setSelectedApolloClientIds,
-  ] = useTrackerStore((store) => [
+  ] = useStore(store, (store) => [
     store.setApolloClients,
     store.selectedApolloClientIds,
     store.setSelectedApolloClientIds,
@@ -111,14 +134,18 @@ const useMainSlot = (
   { classes }: IUseMainSlotService
 ) => {
   const { onCopy, apolloClientIds } = props;
-  const { apollOperationsData, error, loader, recordingState } =
-    useTrackerStore((store) => ({
+  const store = React.useContext(TrackerStoreContext);
+
+  const { apollOperationsData, error, loader, recordingState } = useStore(
+    store,
+    (store) => ({
       apollOperationsData: store.apolloOperationsData,
       error: store.error,
       loader: store.loader,
       recordingState: store.recordingState,
       selectedApolloClientIds: store.selectedApolloClientIds,
-    }));
+    })
+  );
 
   if (
     recordingState == RecordingState.Initial ||
@@ -154,7 +181,8 @@ const useMainSlot = (
 };
 
 const useOperationsTrackerContainer = (props: IOperationsTrackerContainer) => {
-  const { openDescription } = useTrackerStore((store) => ({
+  const store = React.useContext(TrackerStoreContext);
+  const { openDescription } = useStore(store, (store) => ({
     openDescription: store.openDescription,
   }));
 

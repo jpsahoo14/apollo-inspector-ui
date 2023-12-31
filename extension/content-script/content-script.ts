@@ -1,19 +1,29 @@
 import browser from "webextension-polyfill";
-import { CustomEventTarget, IMessagePayload, CONTENT_SCRIPT } from "../utils";
-import { setupContentScriptsActions } from "./setup-content-script-actions";
-import { IContentScriptStore } from "./content-script.interface";
+import { CustomEventTarget, createLogger } from "../utils";
+import {
+  IContentScriptInitialContext,
+  IContentScriptStore,
+} from "./content-script.interface";
+import { setupInitialContentScriptAction } from "./setup-content-script-actions";
 
 async function init() {
-  const contentScriptStore: IContentScriptStore = {
-    tabId: undefined,
-  };
   const cleanUps: (() => void)[] = [];
-
-  const addToCleanUp = (cleanUp: () => void) => {
+  const addToCleanUp: (cleanUp: () => void) => void = (cleanUp: () => void) => {
     cleanUps.push(cleanUp);
   };
+  const contentScriptStore: IContentScriptStore = {
+    tabId: undefined,
+    cleanUps,
+  };
 
-  const clientEventTarget = new CustomEventTarget("content-script");
+  const contentScriptEventTarget = new CustomEventTarget("content-script");
+
+  const context: IContentScriptInitialContext = {
+    addToCleanUp,
+    contentScript: contentScriptEventTarget,
+    store: contentScriptStore,
+  };
+  setupInitialContentScriptAction(context);
 
   if (typeof document === "object" && document instanceof HTMLDocument) {
     const script = document.createElement("script");
@@ -32,45 +42,8 @@ async function init() {
       }
     });
   }
-
-  const getTabId = async (): Promise<number> => {
-    const tabId: number = await browser.runtime.sendMessage({
-      type: "GET_TAB_ID",
-    });
-    return tabId;
-  };
-
-  const tabId = await getTabId();
-
-  const connectionToBackgroundService: browser.Runtime.Port =
-    browser.runtime.connect({
-      name: `${JSON.stringify({ name: CONTENT_SCRIPT, tabId })}`,
-    });
-
-  connectionToBackgroundService.onMessage.addListener(
-    (message: IMessagePayload) => {
-      logMessage(`message received at content-script`, message);
-      const event = new CustomEvent(message.destination.name, {
-        detail: message,
-      });
-      clientEventTarget.dispatchEvent(event);
-    }
-  );
-
-  setupContentScriptsActions({
-    contentScript: clientEventTarget,
-    backgroundService: connectionToBackgroundService,
-    addToCleanUp,
-    tabId,
-  });
-  connectionToBackgroundService.onDisconnect.addListener((port) => {
-    cleanUps.forEach((cleanUp) => cleanUp());
-  });
-
-  // addToCleanUp(setIntervalToGetApolloClients(clientEventTarget));
 }
 
-function logMessage(message: string, data: any) {
-  console.log(`[content-script]AIE ${message}`, { data });
-}
+const logMessage = createLogger(`content-script`);
+
 init();
