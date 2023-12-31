@@ -21,12 +21,12 @@ import { ToolboxRegular } from "@fluentui/react-icons";
 import { compareString } from "./data-grid-view-helper";
 
 export const sampleColumnOptions: IColumnOptions[] = [
-  // {
-  //   key: "id",
-  //   header: "ID",
-  //   value: (item) => item.id,
-  //   compare: (a, b) => b.id - a.id,
-  // },
+  {
+    key: "id",
+    header: "ID",
+    value: (item) => item.id,
+    compare: (a, b) => b.id - a.id,
+  },
   {
     key: "clientId",
     header: "ClientId",

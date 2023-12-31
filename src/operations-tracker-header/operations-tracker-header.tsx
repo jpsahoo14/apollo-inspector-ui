@@ -36,9 +36,6 @@ export const OperationsTrackerHeader = React.memo(
 
     return (
       <>
-        <div className={classes.topHeader}>
-          Apollo Inspector
-        </div>
         <div className={classes.header}>
           <div className={classes.buttonContainer}>
             {renderInfoButton(
@@ -54,8 +51,6 @@ export const OperationsTrackerHeader = React.memo(
                 Clear All
               </Button>
             )}
-            <Button  style={{ marginLeft: "0.5rem" }}> Reset Store </Button>
-            <Button  style={{ marginLeft: "0.5rem" }}> Clear Store </Button>
           </div>
           <div>
             <Search onSearchChange={debouncedFilter} />

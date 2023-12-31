@@ -1,16 +1,6 @@
 import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
-  topHeader:{
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: "#b4d7f5",
-    width: "100%",
-    height: "60px",
-    justifyContent: "center",
-    fontSize:"20px", 
-    fontFamily: "monospace",
-  },
   header: {
     display: "flex",
     alignItems: "center",
