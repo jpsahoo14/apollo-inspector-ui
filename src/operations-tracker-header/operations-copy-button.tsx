@@ -10,9 +10,10 @@ import {
 import * as React from "react";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { useStyles } from "./operations-copy-button-styles";
-import { useTrackerStore } from "../store";
+import { TrackerStoreContext } from "../store";
 import { CopyType, ICopyData, RecordingState } from "../types";
 import { cloneDeep } from "lodash-es";
+import { useStore } from "zustand";
 
 export interface ICopyButtonProps {
   operationsState: IOperationsReducerState;
@@ -22,14 +23,15 @@ export interface ICopyButtonProps {
 export const CopyButton = (props: ICopyButtonProps) => {
   const classes = useStyles();
   const { operationsState, onCopy } = props;
-  const { apolloOperationsData, recordingState } = useTrackerStore((store) => ({
+  const store = React.useContext(TrackerStoreContext);
+  const { apolloOperationsData, recordingState } = useStore(store, (store) => ({
     apolloOperationsData: store.apolloOperationsData,
     recordingState: store.recordingState,
   }));
 
   const copyAll = React.useCallback(() => {
     onCopy(CopyType.AllOperations, {
-      operations: cloneDeep(apolloOperationsData?.verboseOperations) || [],
+      operations: cloneDeep(apolloOperationsData?.operations) || [],
     });
   }, [apolloOperationsData, onCopy]);
 

@@ -1,3 +1,11 @@
-export const generateRequestId = (name: string) => {
-  return `${name}:${Date.now()}`;
+export const generateRequestInfo = (
+  name: string
+): {
+  requestId: string;
+  sender: string;
+} => {
+  return {
+    requestId: `${name}:${Date.now()}`,
+    sender: `${name}`,
+  };
 };

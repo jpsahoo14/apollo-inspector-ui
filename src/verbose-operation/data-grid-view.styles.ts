@@ -90,4 +90,12 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
+  headers:{
+    display: "flex",
+    flexDirection: "row",
+  },
+  wholeBody:{
+    display: "flex",
+    flexDirection: "column",
+  },
 });

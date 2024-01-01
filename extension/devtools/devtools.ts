@@ -3,14 +3,17 @@ import {
   CustomEventTarget,
   IMessagePayload,
   DEVTOOL,
-  WEBPAGE_ACTIONS,
   WEB_PAGE,
+  DEVTOOLS_ACTIONS,
+  createLogger,
+  sendMessageViaEventTarget,
 } from "../utils";
 import { setupDevtoolActions } from "./setup-devtools-actions";
 import { IDevtoolState } from "./devtools.interface";
 
 const devtoolState: IDevtoolState = {
   isPanelCreated: false,
+  panel: null,
 };
 const tabId = browser.devtools.inspectedWindow.tabId;
 
@@ -35,22 +38,14 @@ setupDevtoolActions({
 });
 
 function sendDevtoolsScripLoadedEvent() {
-  const message: IMessagePayload = {
-    destination: {
-      name: WEB_PAGE,
-      action: WEBPAGE_ACTIONS.DEVTOOLS_SCRIPT_LOADED,
-      tabId,
-    },
-    requestInfo: {
-      requestId: `${DEVTOOL}:${Date.now()}`,
-    },
-  };
-  const event = new CustomEvent(WEB_PAGE, { detail: message });
-  devtoolsEventTarget.dispatchEvent(event);
+  sendMessageViaEventTarget(devtoolsEventTarget, {
+    destinationName: WEB_PAGE,
+    action: DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED,
+    tabId,
+    callerName: DEVTOOL,
+  });
 }
 
 sendDevtoolsScripLoadedEvent();
 
-function logMessage(message: string, data: any) {
-  console.log(`[devtools]AIE ${message}`, { data });
-}
+const logMessage = createLogger(`devtools`);

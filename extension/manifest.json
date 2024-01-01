@@ -7,7 +7,7 @@
     {
       "js": ["content-script.js"],
       "matches": ["<all_urls>"],
-      "run_at": "document_idle"
+      "run_at": "document_start"
     }
   ],
   "devtools_page": "devtools.html",

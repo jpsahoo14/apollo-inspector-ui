@@ -28,6 +28,8 @@ import {
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
 import { useTrackerStore } from "../store";
+import { TrackerStoreContext } from "../store";
+import { useStore } from "zustand";
 import { LineHorizontal3Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
 import { Button } from "@fluentui/react-components";
@@ -49,7 +51,8 @@ export const DataGridView = (props: IDataGridView) => {
     dispatchOperationsState,
   } = props;
   const { targetDocument } = useFluent();
-  const [selectedColumnOptions] = useTrackerStore((store) => [
+  const store = React.useContext(TrackerStoreContext);
+  const [selectedColumnOptions] = useStore(store, (store) => [
     store.selectedColumnOptions,
   ]);
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
@@ -177,8 +180,10 @@ export const DataGridView = (props: IDataGridView) => {
   return (
     <div className={classes.wholeBody}>
       <div className={classes.headers}>
-          <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>Filters</Button>
-          <ColumnOptions />
+        <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
+          Filters
+        </Button>
+        <ColumnOptions />
       </div>
       <div className={classes.gridView} ref={divRef}>
         {showFilters && (
