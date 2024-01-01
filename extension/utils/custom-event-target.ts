@@ -1,4 +1,5 @@
 import { Queue } from "@datastructures-js/queue";
+import { createLogger } from "./logger";
 
 export class CustomEventTarget {
   private eventTarget: EventTarget;
@@ -92,6 +93,4 @@ export interface IMessagePayload {
   data?: any;
 }
 
-const logMessage = (message: string, data: any) => {
-  console.log(`[listeners]AIE ${message}`, data);
-};
+const logMessage = createLogger(`listeners`);

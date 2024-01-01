@@ -5,19 +5,26 @@ import {
   CheckboxOnChangeData,
   Button,
   Tooltip,
+  Text,
 } from "@fluentui/react-components";
-import { IErrorType, TrackerStoreContext } from "../store";
+import { IErrorType, ISetState, TrackerStoreContext } from "../store";
 import { useStyles } from "./apollo-clients-selection-styles";
-import { DocumentCopyRegular } from "@fluentui/react-icons";
+import {
+  DocumentCopyRegular,
+  ArrowResetRegular,
+  BroomRegular,
+} from "@fluentui/react-icons";
 import { CopyType, ICopyData, RecordingState } from "../types";
 import { useStore } from "zustand";
 
 export interface IApolloClientSelectionProps {
   clientIds: string[];
   onCopy: (copyType: CopyType, data: ICopyData) => void;
+  resetStore?: (clientId: string) => void;
+  clearStore?: (clientId: string) => void;
 }
 export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
-  const { clientIds, onCopy } = props;
+  const { clientIds, onCopy, clearStore, resetStore } = props;
   const classes = useStyles();
   const store = React.useContext(TrackerStoreContext);
 
@@ -33,7 +40,61 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
     recordingState: store.recordingState,
   }));
 
-  const checkBoxes = React.useMemo(() => {
+  const checkBoxes = useApolloClientCheckboxes({
+    clientIds,
+    selectedApolloClientIds,
+    setSelectedApolloClientIds,
+    onCopy,
+    recordingState,
+    classes,
+    clearStore,
+    resetStore,
+  });
+
+  return (
+    <div className={classes.root}>
+      <Label size="large" weight="semibold" className={classes.label}>
+        Select the Apollo Clients to track operations
+      </Label>
+      {error.error && error.type === IErrorType.Normal ? (
+        <Label size="large" weight="semibold" className={classes.errorLabel}>
+          {error.message}
+        </Label>
+      ) : null}
+      <div className={classes.checkBoxes}>{checkBoxes}</div>
+    </div>
+  );
+};
+
+interface IUseApolloClientCheckboxes {
+  clientIds: string[];
+  resetStore?: (clientId: string) => void;
+  clearStore?: (clientId: string) => void;
+  selectedApolloClientIds: string[];
+  setSelectedApolloClientIds: ISetState<string[]>;
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
+  recordingState: RecordingState;
+  classes: Record<
+    | "root"
+    | "label"
+    | "checkBoxes"
+    | "errorLabel"
+    | "copyButton"
+    | "checkboxWrapper",
+    string
+  >;
+}
+const useApolloClientCheckboxes = ({
+  classes,
+  clientIds,
+  onCopy,
+  recordingState,
+  selectedApolloClientIds,
+  setSelectedApolloClientIds,
+  clearStore,
+  resetStore,
+}: IUseApolloClientCheckboxes) =>
+  React.useMemo(() => {
     return clientIds.map((clientId) => {
       const checked = selectedApolloClientIds.find(
         (selected) => selected === clientId
@@ -58,6 +119,13 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
       const onCopyCache = () => {
         onCopy(CopyType.WholeApolloCache, { clientId });
       };
+      const onClearStore = () => {
+        clearStore?.(clientId);
+      };
+
+      const onResetStore = () => {
+        resetStore?.(clientId);
+      };
       const shouldDisable = recordingState === RecordingState.RecordingStarted;
       return (
         <div className={classes.checkboxWrapper} key={clientId}>
@@ -68,7 +136,10 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
             key={clientId}
             disabled={!!shouldDisable}
           />
-          <Tooltip content="Copy whole apollo cache" relationship="label">
+          <Tooltip
+            content={<Text>Copy whole apollo cache</Text>}
+            relationship="label"
+          >
             <Button
               className={classes.copyButton}
               size="small"
@@ -76,6 +147,32 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
               onClick={onCopyCache}
             />
           </Tooltip>
+          {clearStore && (
+            <Tooltip
+              content={<Text>Clear apollo client store.</Text>}
+              relationship="label"
+            >
+              <Button
+                className={classes.copyButton}
+                size="small"
+                icon={<BroomRegular />}
+                onClick={onClearStore}
+              />
+            </Tooltip>
+          )}
+          {resetStore && (
+            <Tooltip
+              content={<Text>Reset apollo client store</Text>}
+              relationship="label"
+            >
+              <Button
+                className={classes.copyButton}
+                size="small"
+                icon={<ArrowResetRegular />}
+                onClick={onResetStore}
+              />
+            </Tooltip>
+          )}
         </div>
       );
     });
@@ -86,19 +183,6 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
     selectedApolloClientIds,
     onCopy,
     setSelectedApolloClientIds,
+    clearStore,
+    resetStore,
   ]);
-
-  return (
-    <div className={classes.root}>
-      <Label size="large" weight="semibold" className={classes.label}>
-        Select the Apollo Clients to track operations
-      </Label>
-      {error.error && error.type === IErrorType.Normal ? (
-        <Label size="large" weight="semibold" className={classes.errorLabel}>
-          {error.message}
-        </Label>
-      ) : null}
-      <div className={classes.checkBoxes}>{checkBoxes}</div>
-    </div>
-  );
-};

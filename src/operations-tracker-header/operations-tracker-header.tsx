@@ -210,7 +210,7 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
     setRecordingState,
   ]);
 
-  const showClear = !!apollOperationsData?.verboseOperations;
+  const showClear = !!apollOperationsData?.operations;
 
   const debouncedFilter = React.useCallback(
     debounce((e: React.SyntheticEvent) => {

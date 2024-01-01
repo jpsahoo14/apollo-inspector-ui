@@ -1,7 +1,7 @@
 // This is temporary
-const enableLogger = true;
+const enableLogger = false;
 export const createLogger = (name: string) => {
   return (message: string, data: any) => {
-    enableLogger && console.log(`[${name}AIE] ${message}`, data);
+    enableLogger && console.log(`[${name}]AIE ${message}`, data);
   };
 };

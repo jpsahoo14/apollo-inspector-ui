@@ -14,6 +14,8 @@ import {
 import { setupPanelActions } from "./setup-panel-actions";
 import { Observable } from "rxjs";
 import { IDataView } from "apollo-inspector";
+import { CopyType, ICopyData } from "../../src/types";
+import copy from "copy-to-clipboard";
 
 const OperationsTrackerContainer = lazy(() => import("../../index"));
 
@@ -43,22 +45,34 @@ export const PanelContainer = () => {
     backgroundConnection,
     tabIdRef,
     panelRef,
-    initPanelComplete
+    initPanelComplete,
+    setClientIds
   );
 
-  const { onRecordStart, onRecordStop, onCopy } = useOperationTrackerProps({
-    subscription,
-    panelRef,
-    setSubscription,
-    tabIdRef,
-  });
+  const { onRecordStart, onRecordStop, onCopy, onClearStore, onResetStore } =
+    useOperationTrackerProps({
+      subscription,
+      panelRef,
+      setSubscription,
+      tabIdRef,
+    });
 
   if (!initPanelComplete) {
-    return <Spinner />;
+    return (
+      <>
+        {"Panel still loading"}
+        <Spinner />
+      </>
+    );
   }
 
   if (!clientIds) {
-    return <Spinner />;
+    return (
+      <>
+        {"No clients"}
+        <Spinner />
+      </>
+    );
   }
 
   if (!clientIds.length) {
@@ -66,12 +80,21 @@ export const PanelContainer = () => {
   }
 
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense
+      fallback={
+        <>
+          {"Loading OperationsTrackerContainer"}
+          <Spinner />
+        </>
+      }
+    >
       <OperationsTrackerContainer
         apolloClientIds={clientIds}
         onRecordStart={onRecordStart}
         onRecordStop={onRecordStop}
         onCopy={onCopy}
+        clearStore={onClearStore}
+        resetStore={onResetStore}
       />
     </Suspense>
   );
@@ -91,64 +114,114 @@ const useOperationTrackerProps = ({
   subscription,
   tabIdRef,
 }: IUeOperationTrackerProps) => {
-  const onRecordStart = React.useCallback(
-    (clientIds: string[]) => {
-      subscription?.unsubscribe();
-      return new Observable<IDataView>((observer) => {
-        const unsubscribe = panelRef.current.addEventListener(
-          WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
-          (message: IMessagePayload) => {
-            observer.next(message.data);
-          }
-        );
-        setSubscription({ unsubscribe });
-        sendMessageViaEventTarget(panelRef.current, {
-          action: PANEL_PAGE_ACTIONS.START_RECORDING,
-          destinationName: WEB_PAGE,
-          tabId: tabIdRef.current,
-          callerName: PANEL_PAGE,
-          data: {
-            apolloClientIds: clientIds,
-          },
-        });
-      });
-    },
-    [setSubscription, subscription, tabIdRef, panelRef]
+  const { onClearStore, onResetStore } = useApolloClientStoreCB(
+    panelRef,
+    tabIdRef
+  );
+  const { onRecordStart, onRecordStop } = useOnRecordStartAndOnRecordStop(
+    subscription,
+    panelRef,
+    setSubscription,
+    tabIdRef
   );
 
-  const onRecordStop = React.useCallback(() => {
-    subscription?.unsubscribe();
-    setSubscription(null);
-    sendMessageViaEventTarget(panelRef.current, {
-      action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
-      destinationName: WEB_PAGE,
-      tabId: tabIdRef.current,
-      callerName: PANEL_PAGE,
-    });
-  }, [subscription, panelRef, setSubscription, tabIdRef]);
+  const onCopy = React.useCallback((copyType: CopyType, data: ICopyData) => {
+    if (copyType === CopyType.WholeApolloCache) {
+      sendMessageViaEventTarget(panelRef.current, {
+        action: PANEL_PAGE_ACTIONS.COPY_WHOLE_CACHE,
+        callerName: PANEL_PAGE,
+        destinationName: WEB_PAGE,
+        tabId: tabIdRef.current,
+        data,
+      });
+      return;
+    }
+    const { operations } = data;
+    const copiedData = JSON.stringify(operations);
+    copy(copiedData);
+    return;
+  }, []);
 
-  const onCopy = React.useCallback(() => {}, []);
-
-  return { onRecordStart, onRecordStop, onCopy };
+  return { onRecordStart, onRecordStop, onCopy, onClearStore, onResetStore };
 };
 
-function useGetApolloClientIds(
+const useApolloClientStoreCB = (
+  panelRef: React.MutableRefObject<CustomEventTarget>,
+  tabIdRef: React.MutableRefObject<number>
+) => {
+  const onClearStore = React.useCallback((clientId: string) => {
+    sendMessageViaEventTarget(panelRef.current, {
+      action: PANEL_PAGE_ACTIONS.CLEAR_STORE,
+      callerName: PANEL_PAGE,
+      destinationName: WEB_PAGE,
+      tabId: tabIdRef.current,
+      data: {
+        clientId,
+      },
+    });
+  }, []);
+  const onResetStore = React.useCallback((clientId: string) => {
+    sendMessageViaEventTarget(panelRef.current, {
+      action: PANEL_PAGE_ACTIONS.RESET_STORE,
+      callerName: PANEL_PAGE,
+      destinationName: WEB_PAGE,
+      tabId: tabIdRef.current,
+      data: {
+        clientId,
+      },
+    });
+  }, []);
+  return { onClearStore, onResetStore };
+};
+
+const useGetApolloClientIds = (
   backgroundConnection: browser.Runtime.Port | null,
   tabIdRef: React.MutableRefObject<number>,
   panelRef: React.MutableRefObject<CustomEventTarget>,
-  initPanelComplete: boolean
-) {
+  initPanelComplete: boolean,
+  setClientIds: React.Dispatch<React.SetStateAction<string[] | null>>
+) => {
   React.useEffect(() => {
     if (backgroundConnection && initPanelComplete) {
-      sendMessageViaEventTarget(panelRef.current, {
-        destinationName: WEB_PAGE,
-        action: WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS,
-        tabId: tabIdRef.current,
-        callerName: PANEL_PAGE,
-      });
+      const startTime = Date.now();
+      const fetchUntil = 10000;
+      const intervalNumber = setInterval(() => {
+        sendMessageViaEventTarget(panelRef.current, {
+          destinationName: WEB_PAGE,
+          action: WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS,
+          tabId: tabIdRef.current,
+          callerName: PANEL_PAGE,
+        });
+      }, 100);
+
+      const removeListener = panelRef.current.addEventListener(
+        WEBPAGE_ACTIONS.APOLLO_CLIENT_IDS,
+        (message: IMessagePayload) => {
+          const apolloClientsIds = message.data.apolloClientsIds;
+
+          if (Date.now() - startTime > fetchUntil) {
+            clearInterval(intervalNumber);
+            removeListener();
+
+            return;
+          }
+          setClientIds(apolloClientsIds);
+        }
+      );
+
+      return () => {
+        removeListener();
+        clearInterval(intervalNumber);
+      };
     }
-  }, [backgroundConnection, panelRef, tabIdRef, initPanelComplete]);
-}
+  }, [
+    backgroundConnection,
+    panelRef,
+    tabIdRef,
+    initPanelComplete,
+    setClientIds,
+  ]);
+};
 
 interface IUseSetBackgroundConnection {
   setBackgroundConnection: React.Dispatch<
@@ -164,7 +237,7 @@ interface IUseSetBackgroundConnection {
   >;
 }
 
-function usePanelInitialization({
+const usePanelInitialization = ({
   panelRef,
   setBackgroundConnection,
   setClientIds,
@@ -172,7 +245,7 @@ function usePanelInitialization({
   tabIdRef,
   setSubscription,
   subscription,
-}: IUseSetBackgroundConnection) {
+}: IUseSetBackgroundConnection) => {
   const resetStore = React.useCallback(() => {
     setInitPanelComplete(false);
     setClientIds(null);
@@ -214,6 +287,51 @@ function usePanelInitialization({
       backgroundConnection?.disconnect();
     };
   }, []);
-}
+};
 
 const logMessage = createLogger(`panel-container`);
+const useOnRecordStartAndOnRecordStop = (
+  subscription: { unsubscribe: () => void } | null,
+  panelRef: React.MutableRefObject<CustomEventTarget>,
+  setSubscription: React.Dispatch<
+    React.SetStateAction<{ unsubscribe: () => void } | null>
+  >,
+  tabIdRef: React.MutableRefObject<number>
+) => {
+  const onRecordStart = React.useCallback(
+    (clientIds: string[]) => {
+      subscription?.unsubscribe();
+      return new Observable<IDataView>((observer) => {
+        const unsubscribe = panelRef.current.addEventListener(
+          WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
+          (message: IMessagePayload) => {
+            observer.next(message.data);
+          }
+        );
+        setSubscription({ unsubscribe });
+        sendMessageViaEventTarget(panelRef.current, {
+          action: PANEL_PAGE_ACTIONS.START_RECORDING,
+          destinationName: WEB_PAGE,
+          tabId: tabIdRef.current,
+          callerName: PANEL_PAGE,
+          data: {
+            apolloClientIds: clientIds,
+          },
+        });
+      });
+    },
+    [setSubscription, subscription, tabIdRef, panelRef]
+  );
+
+  const onRecordStop = React.useCallback(() => {
+    subscription?.unsubscribe();
+    setSubscription(null);
+    sendMessageViaEventTarget(panelRef.current, {
+      action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
+      destinationName: WEB_PAGE,
+      tabId: tabIdRef.current,
+      callerName: PANEL_PAGE,
+    });
+  }, [subscription, panelRef, setSubscription, tabIdRef]);
+  return { onRecordStart, onRecordStop };
+};

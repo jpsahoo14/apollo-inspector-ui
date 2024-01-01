@@ -133,7 +133,7 @@ const useMainSlot = (
   { dispatchOperationsState, operationsState, props }: IUseMainSlotParams,
   { classes }: IUseMainSlotService
 ) => {
-  const { onCopy, apolloClientIds } = props;
+  const { onCopy, apolloClientIds, clearStore, resetStore } = props;
   const store = React.useContext(TrackerStoreContext);
 
   const { apollOperationsData, error, loader, recordingState } = useStore(
@@ -152,7 +152,12 @@ const useMainSlot = (
     (!apollOperationsData && recordingState === RecordingState.RecordingStopped)
   ) {
     return (
-      <ApolloClientSelection clientIds={apolloClientIds} onCopy={onCopy} />
+      <ApolloClientSelection
+        clientIds={apolloClientIds}
+        onCopy={onCopy}
+        clearStore={clearStore}
+        resetStore={resetStore}
+      />
     );
   }
   if (error.error && error.type === IErrorType.FullPage) {
@@ -176,6 +181,8 @@ const useMainSlot = (
       operationsState={operationsState}
       apolloClientIds={apolloClientIds}
       onCopy={onCopy}
+      clearStore={clearStore}
+      resetStore={resetStore}
     />
   );
 };

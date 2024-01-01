@@ -17,6 +17,7 @@ export const enum WEBPAGE_ACTIONS {
   WEB_PAGE_INIT_COMPLETE = "web-page-init-complete",
   WEB_PAGE_UNLOAD = "web-page-unload",
   WEB_PAGE_RELOADED = "web-page-reloaded",
+  WHOLE_APOLLO_CACHE_DATA = "whole-apollo-cache-data",
 }
 
 export const enum CONTENT_SCRIPT_ACTIONS {
@@ -28,6 +29,10 @@ export const enum CONTENT_SCRIPT_ACTIONS {
 export const enum PANEL_PAGE_ACTIONS {
   STOP_RECORDING = "stop-recording",
   START_RECORDING = "start-recording",
+  CLEAR_STORE = "clear-store",
+  RESET_STORE = "reset-store",
+  COPY_DATA = "copy-data",
+  COPY_WHOLE_CACHE = "copy-whole-cache",
 }
 
 export const enum BACKGROUND_ACTIONS {
