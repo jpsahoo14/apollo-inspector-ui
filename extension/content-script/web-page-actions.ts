@@ -15,6 +15,7 @@ import {
 import { IWebpageContext } from "./web-page.interface";
 import { ApolloInspector, IDataView } from "apollo-inspector";
 import { getApolloClientsObj } from "./web-page-utils";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 export const devtoolScriptLoadedAction = (context: IWebpageContext) => {
   const { webpage, tabId } = context;
@@ -50,6 +51,22 @@ export const getApolloClientsIdsAction = (context: IWebpageContext) => {
   };
 };
 
+export const getCopyWholeCacheCB = (context: IWebpageContext) => {
+  const { webpage, tabId } = context;
+  return (message: IMessagePayload) => {
+    const { clientId } = message.data;
+    const ac = getApolloClientByClientId(clientId);
+    const data = ac?.cache.data.data;
+    sendMessageViaEventTarget(webpage, {
+      action: WEBPAGE_ACTIONS.WHOLE_APOLLO_CACHE_DATA,
+      callerName: WEB_PAGE,
+      destinationName: PANEL_PAGE,
+      tabId,
+      data,
+    });
+  };
+};
+
 const getApolloClients = (): string[] | null => {
   if (window.__APOLLO_CLIENTS__ && window.__APOLLO_CLIENTS__.length) {
     const values = window.__APOLLO_CLIENTS__.map((ac) => {
@@ -67,6 +84,33 @@ const getApolloClients = (): string[] | null => {
     if (isTestEnabled) {
       return generateRandomClients(values);
     }
+    return values;
+  }
+
+  return [];
+};
+
+const getApolloClientByClientId = (
+  clientId: string
+): ApolloClient<InMemoryCache> | undefined => {
+  const values = getApolloClientObjects();
+
+  const ac = values.find((value) => value.clientId === clientId);
+
+  return ac?.client;
+};
+
+const getApolloClientObjects = (): {
+  clientId: string;
+  client: any;
+}[] => {
+  if (window.__APOLLO_CLIENTS__ && window.__APOLLO_CLIENTS__.length) {
+    return window.__APOLLO_CLIENTS__;
+  }
+
+  if (window.__APOLLO_CLIENT__) {
+    const values = [{ clientId: "default", client: window.__APOLLO_CLIENT__ }];
+
     return values;
   }
 
@@ -124,6 +168,22 @@ export const getHandleWebpageAction = (context: IWebpageContext) => {
       detail: message,
     });
     webpage.dispatchEvent(event);
+  };
+};
+
+export const getClearStoreCB = (context: IWebpageContext) => {
+  return (message: IMessagePayload) => {
+    const { clientId } = message.data;
+    const apolloClient = getApolloClientByClientId(clientId);
+    apolloClient?.clearStore();
+  };
+};
+
+export const getResetStoreCB = (context: IWebpageContext) => {
+  return (message: IMessagePayload) => {
+    const { clientId } = message.data;
+    const apolloClient = getApolloClientByClientId(clientId);
+    apolloClient?.resetStore();
   };
 };
 

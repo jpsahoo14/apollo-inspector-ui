@@ -31,7 +31,7 @@ export const CopyButton = (props: ICopyButtonProps) => {
 
   const copyAll = React.useCallback(() => {
     onCopy(CopyType.AllOperations, {
-      operations: cloneDeep(apolloOperationsData?.verboseOperations) || [],
+      operations: cloneDeep(apolloOperationsData?.operations) || [],
     });
   }, [apolloOperationsData, onCopy]);
 

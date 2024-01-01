@@ -1,3 +1,4 @@
+import React from "react";
 import { Observable } from "rxjs";
 import {
   IOperationsAction,
@@ -29,6 +30,8 @@ export interface IOperationsTrackerContainer {
   onCopy: (copyType: CopyType, data: ICopyData) => void;
   onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
   onRecordStop: () => void;
+  resetStore?: (clientId: string) => void;
+  clearStore?: (clientId: string) => void;
 }
 
 export interface IUseMainSlotParams {

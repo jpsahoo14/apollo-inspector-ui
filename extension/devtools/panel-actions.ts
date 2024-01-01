@@ -1,20 +1,20 @@
+import copy from "copy-to-clipboard";
 import { IMessagePayload, createLogger } from "../utils";
 import { IPanelContext } from "./panel.interface";
-
-export const getSetApolloClientIds = (context: IPanelContext) => {
-  const { setClientIds } = context;
-  return (message: IMessagePayload) => {
-    const apolloClientsIds = message.data.apolloClientsIds;
-
-    setClientIds(apolloClientsIds);
-  };
-};
 
 export const sendMessageFromPanelPage = (context: IPanelContext) => {
   const { backgroundConnection } = context;
   return (message: IMessagePayload) => {
     logMessage(`sending message from panel-action`, message);
     backgroundConnection.postMessage(message);
+  };
+};
+
+export const getCopyData = (context: IPanelContext) => {
+  return (message: IMessagePayload) => {
+    const data = message.data;
+    const stringifiedData = JSON.stringify(data);
+    copy(stringifiedData);
   };
 };
 

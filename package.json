@@ -33,6 +33,7 @@
   "dependencies": {
     "@datastructures-js/queue": "^4.2.3",
     "apollo-inspector": "1.17.6",
+    "copy-to-clipboard": "^3.3.3",
     "graphql": "16.8.1",
     "immer": "^10.0.1",
     "lodash-es": "^4.17.21",
