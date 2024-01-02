@@ -11,11 +11,13 @@ import {
 import { setupDevtoolActions } from "./setup-devtools-actions";
 import { IDevtoolState } from "./devtools.interface";
 
+const tabId = browser.devtools.inspectedWindow.tabId;
 const devtoolState: IDevtoolState = {
   isPanelCreated: false,
   panel: null,
+  tabId,
+  cleanUps: [],
 };
-const tabId = browser.devtools.inspectedWindow.tabId;
 
 const devtoolsEventTarget = new CustomEventTarget("devtools");
 
@@ -24,7 +26,7 @@ const backgroundConnection: browser.Runtime.Port = browser.runtime.connect({
 });
 
 backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-  logMessage(`received message in devtools onMessage`, message);
+  logMessage(`imp! received message in devtools onMessage`, message);
   const event = new CustomEvent(message.destination.name, {
     detail: message,
   });

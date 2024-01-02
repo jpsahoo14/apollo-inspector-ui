@@ -8,7 +8,6 @@ import {
   IContentScriptContext,
   CustomEventTarget,
   PANEL_PAGE,
-  DEVTOOLS_ACTIONS,
   WEBPAGE_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
@@ -80,7 +79,7 @@ const runContentScriptInitialization = (
 
     connectionToBackgroundService.onMessage.addListener(
       (message: IMessagePayload) => {
-        logMessage(`message received at content-script`, message);
+        logMessage(`imp! message received at content-script`, message);
         const event = new CustomEvent(message.destination.name, {
           detail: message,
         });
@@ -108,9 +107,16 @@ const runContentScriptInitialization = (
 
     sendMessageViaEventTarget(contentScript, {
       action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE,
+      callerName: CONTENT_SCRIPT,
       destinationName: PANEL_PAGE,
       tabId: tabId as number,
+    });
+
+    sendMessageViaEventTarget(contentScript, {
+      action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE,
       callerName: CONTENT_SCRIPT,
+      destinationName: DEVTOOL,
+      tabId: tabId as number,
     });
   };
 };

@@ -9,4 +9,5 @@ export interface IPanelContext {
   setInitPanelComplete: React.Dispatch<React.SetStateAction<boolean>>;
   resetStore: () => void;
   initPanel: () => void;
+  cleanUpsRef: React.MutableRefObject<(() => void)[]>;
 }
