@@ -13,7 +13,7 @@ export type IColumnOptions = {
   header: string;
   value: (item: Item) => number | string | React.ReactNode | null;
   compare: (a: any, b: any) => number;
-  size: CustomColumnWidthOptions;
+  size?: CustomColumnWidthOptions;
 };
 
 export type Item = {

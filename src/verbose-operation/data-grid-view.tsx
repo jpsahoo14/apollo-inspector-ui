@@ -27,6 +27,7 @@ import {
   IOperationsReducerState,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
+import { useTrackerStore } from "../store";
 import { TrackerStoreContext } from "../store";
 import { useStore } from "zustand";
 import { LineHorizontal3Regular } from "@fluentui/react-icons";
@@ -157,6 +158,24 @@ export const DataGridView = (props: IDataGridView) => {
   const handleToggleFilters = () => {
     setShowFilters(!showFilters); // Toggle the visibility of filters
   };
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+  React.useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (windowWidth < 900) {
+      setShowFilters(false);
+    }
+  }, [windowWidth]);
 
   return (
     <div className={classes.wholeBody}>
@@ -191,17 +210,17 @@ export const DataGridView = (props: IDataGridView) => {
             columnSizingOptions={columnSizing}
             selectionMode="multiselect"
             onSelectionChange={updateVerboseOperations as any}
+            className={classes.grid}
           >
             <DataGridHeader
               style={{
                 paddingRight: scrollbarWidth,
-                backgroundColor: "#e0e0e0",
+                backgroundColor: "#d4e8fa",
               }}
-              className={classes.gridHeader}
             >
               <DataGridRow>
                 {({ renderHeaderCell }) => (
-                  <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+                  <DataGridHeaderCell  className={classes.gridHeaderCell}>{renderHeaderCell()}</DataGridHeaderCell>
                 )}
               </DataGridRow>
             </DataGridHeader>
@@ -234,7 +253,7 @@ export const DataGridView = (props: IDataGridView) => {
                     {({ renderCell }) => {
                       const cb = () => onClick(item);
                       return (
-                        <DataGridCell onClick={cb}>
+                        <DataGridCell className={classes.gridrowcell} onClick={cb}>
                           {renderCell(item as Item)}
                         </DataGridCell>
                       );

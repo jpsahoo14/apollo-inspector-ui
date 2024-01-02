@@ -11,6 +11,7 @@ export const useStyles = makeStyles({
     minWidth: "auto",
     marginRight: "5px",
     ...shorthands.padding(0, "5px"),
+    ...shorthands.border("none"),
     "&:hover": {
       color: "#97CBFF",
     },

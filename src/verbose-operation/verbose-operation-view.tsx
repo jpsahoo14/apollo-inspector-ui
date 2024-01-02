@@ -7,7 +7,6 @@ import {
   Tooltip,
   Text,
   Button,
-  Body1Strong,
 } from "@fluentui/react-components";
 import {
   IVerboseOperation,
@@ -152,7 +151,7 @@ const getOperationNamePanel = (
   return (
     <AccordionItem value="operationName" key="operationName">
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{operationName}</Text>
+        <Text style={{ fontFamily: "monospace" }}>{operationName}</Text>
       </AccordionHeader>
       <AccordionPanel>
         <div className={classes.operationNameAccPanel}>{operationString}</div>
@@ -168,7 +167,7 @@ const getVariablesPanel = (
   <AccordionItem value="variables" key="variables">
     <Tooltip content={"Variables for the operation"} relationship="label">
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{"Variables"}</Text>
+        <Text style={{ fontFamily: "monospace" }}>{"Variables"}</Text>
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
@@ -186,7 +185,7 @@ const getClientIdPanel = (
   <AccordionItem value="clientId" key="clientId">
     <Tooltip content={"Apollo Client Id"} relationship="label">
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{`ClientId`}</Text>
+        <Text style={{ fontFamily: "monospace" }}>{`ClientId`}</Text>
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
@@ -202,7 +201,7 @@ const getFetchPolicyPanel = (
   <AccordionItem value="fetchPolicy" key="fetchPolicy">
     <Tooltip content={"Fetch policy of the operation"} relationship="label">
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{`Fetch Policy ${
+        <Text style={{ fontFamily: "monospace" }}>{`Fetch Policy ${
           fetchPolicy ? `(${fetchPolicy})` : ``
         }`}</Text>
       </AccordionHeader>
@@ -230,7 +229,7 @@ const getAffectedQueriesPanel = (
       <Tooltip content={tooltipContent} relationship="label">
         <AccordionHeader>
           <Text
-            style={{ fontWeight: "bold" }}
+            style={{ fontFamily: "monospace" }}
           >{`${accordionHeaderString} (${affectedQueriesItems.length})`}</Text>
         </AccordionHeader>
       </Tooltip>
@@ -256,7 +255,7 @@ const getResultPanel = (
     return (
       <AccordionItem value={resultFrom} key={resultFrom}>
         <AccordionHeader>
-          <Text style={{ fontWeight: "bold" }}>{`${resultFrom} ${
+          <Text style={{ fontFamily: "monospace" }}>{`${resultFrom} ${
             res.size ? `(${sizeInBytes(res.size)})` : ``
           }`}</Text>
         </AccordionHeader>
@@ -278,7 +277,7 @@ const getResultPanel = (
         relationship="label"
       >
         <AccordionHeader>
-          <Text style={{ fontWeight: "bold" }}>{`Result ${
+          <Text style={{ fontFamily: "monospace" }}>{`Result ${
             isOptimistic ? "(Optimistic result)" : ""
           }`}</Text>
         </AccordionHeader>
@@ -312,7 +311,7 @@ const getErrorPanel = (error: unknown, classes: Record<stylesKeys, string>) => (
       relationship="label"
     >
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{`Error ${
+        <Text style={{ fontFamily: "monospace" }}>{`Error ${
           error ? "(failed)" : ""
         }`}</Text>
       </AccordionHeader>
@@ -335,7 +334,7 @@ const getWarningPanel = (
       relationship="label"
     >
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{`Warning`}</Text>
+        <Text style={{ fontFamily: "monospace" }}>{`Warning`}</Text>
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
@@ -354,7 +353,7 @@ const getDurationPanel = (
       relationship="label"
     >
       <AccordionHeader>
-        <Text style={{ fontWeight: "bold" }}>{`Duration ${
+        <Text style={{ fontFamily: "monospace" }}>{`Duration ${
           duration?.totalTime ? `(${duration.totalTime} ms)` : `(ms)`
         }`}</Text>
       </AccordionHeader>

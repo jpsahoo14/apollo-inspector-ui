@@ -9,21 +9,20 @@ export const useStyles = makeStyles({
     width: "100%",
     height: "100%",
     overflowY: "scroll",
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
+    // "::-webkit-scrollbar": {
+    //   display: "none",
+    // },
   },
   gridRow: {
     ":hover": {
-      backgroundColor: "unset",
-      color: "unset",
+      backgroundColor: "aliceblue",
     },
   },
-  gridHeader: {
-    ":hover": {
-      backgroundColor: "unset !important",
-      color: "unset !important",
-    },
+  gridHeaderCell: {
+    backgroundColor: "#d4e8fa",
+  },
+  gridrowcell:{
+    minWidth: "fit-content"
   },
   gridView: {
     minWidth: 0,
@@ -37,10 +36,10 @@ export const useStyles = makeStyles({
   },
   selectedAndFailedRow: {
     color: "darkred",
-    backgroundColor: "lightgrey",
+    backgroundColor: "aliceblue",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "lightgrey",
+      backgroundColor: "aliceblue",
       color: "darkred",
     },
   },
@@ -52,12 +51,10 @@ export const useStyles = makeStyles({
     color: "red",
   },
   selectedRow: {
-    backgroundColor: "lightgrey",
-    color: "white",
+    backgroundColor: "aliceblue",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "lightgrey",
-      color: "white",
+      backgroundColor: "aliceblue",
     },
   },
   operationText: {
@@ -66,16 +63,32 @@ export const useStyles = makeStyles({
   },
   selectedOperationGridWrapper: {
     minWidth: 0,
-    flexGrow: 2,
+    overflowX: "auto",
+    flexShrink: 1,
+    // flexGrow: 2,
   },
   gridWrapper: {
     flexGrow: 1,
     minWidth: 0,
+    overflowX: "auto",
+    width: "100vw",
+  },
+  grid:{
+    minWidth: "fit-content"
   },
   filterViewWrapper: {
     flexGrow: 1,
     minWidth: 0,
     maxWidth: "300px",
+    height: "100vh"
+  },
+  headers:{
+    display: "flex",
+    flexDirection: "row",
+  },
+  wholeBody:{
+    display: "flex",
+    flexDirection: "column",
   },
   headers:{
     display: "flex",
