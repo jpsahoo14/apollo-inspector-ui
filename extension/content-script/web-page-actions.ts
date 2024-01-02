@@ -48,6 +48,13 @@ export const getApolloClientsIdsAction = (context: IWebpageContext) => {
       callerName: WEB_PAGE,
       data: { apolloClientsIds: apolloClientIds },
     });
+    sendMessageViaEventTarget(webpage, {
+      destinationName: DEVTOOL,
+      action: WEBPAGE_ACTIONS.APOLLO_CLIENT_IDS,
+      tabId,
+      callerName: WEB_PAGE,
+      data: { apolloClientsIds: apolloClientIds },
+    });
   };
 };
 

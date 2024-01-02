@@ -30,16 +30,20 @@ export const getHandlePanelPageActions = (context: IPanelContext) => {
 };
 
 export const getHandleWebPageUnload = (context: IPanelContext) => {
-  const { resetStore } = context;
+  const { resetStore, cleanUpsRef } = context;
   return (message: IMessagePayload) => {
     logMessage(`handle webpage unload`, message);
     resetStore();
+    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
+    cleanUpsRef.current = [];
   };
 };
 
 export const contentScriptLoaded = (context: IPanelContext) => {
-  const { initPanel } = context;
+  const { initPanel, cleanUpsRef } = context;
   return (message: IMessagePayload) => {
+    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
+    cleanUpsRef.current = [];
     initPanel();
   };
 };

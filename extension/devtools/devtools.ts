@@ -11,11 +11,13 @@ import {
 import { setupDevtoolActions } from "./setup-devtools-actions";
 import { IDevtoolState } from "./devtools.interface";
 
+const tabId = browser.devtools.inspectedWindow.tabId;
 const devtoolState: IDevtoolState = {
   isPanelCreated: false,
   panel: null,
+  tabId,
+  cleanUps: [],
 };
-const tabId = browser.devtools.inspectedWindow.tabId;
 
 const devtoolsEventTarget = new CustomEventTarget("devtools");
 
