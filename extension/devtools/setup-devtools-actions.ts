@@ -22,7 +22,6 @@ export const setupDevtoolActions = (context: IDevtoolContext) => {
     [DEVTOOLS_ACTIONS.CREATE_DEVTOOLS_PANEL]: createDevtoolsPanel(context),
     [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE]:
       getContentScriptLoadedMethod(context),
-    [WEBPAGE_ACTIONS.APOLLO_CLIENT_IDS]: () => {},
     [CONTENT_SCRIPT]: sendMessageToBackgroundScript({
       backgroundConnection,
     }),

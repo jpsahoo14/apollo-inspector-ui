@@ -11,4 +11,5 @@ const apolloUIComponent = (
 
 const mountElement = document.getElementById("panel");
 const root = mountElement && ReactDOM.createRoot(mountElement);
-root && root.render(<React.StrictMode>{apolloUIComponent}</React.StrictMode>);
+//root && root.render(<React.StrictMode>{apolloUIComponent}</React.StrictMode>);
+root && root.render(apolloUIComponent);

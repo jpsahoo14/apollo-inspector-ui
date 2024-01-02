@@ -1,9 +1,10 @@
 import { Queue } from "@datastructures-js/queue";
 import { createLogger } from "./logger";
+import { WEBPAGE_ACTIONS } from "./constants";
 
 export class CustomEventTarget {
   private eventTarget: EventTarget;
-  private maxSize = 10;
+  private maxSize = 500;
   private queue: Queue<string>;
   private set: Set<string>;
   private name: string;
@@ -23,7 +24,11 @@ export class CustomEventTarget {
   ): () => void {
     this.eventNames.push(type);
     const listener = (message: CustomEvent) => {
-      callback?.(message.detail);
+      try {
+        callback?.(message.detail);
+      } catch (e) {
+        console.log(`caught exception in callback listener`);
+      }
     };
 
     this.eventTarget.addEventListener(type, listener, options);

@@ -42,8 +42,6 @@ export const getHandleWebPageUnload = (context: IPanelContext) => {
 export const contentScriptLoaded = (context: IPanelContext) => {
   const { initPanel, cleanUpsRef } = context;
   return (message: IMessagePayload) => {
-    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
-    cleanUpsRef.current = [];
     initPanel();
   };
 };
