@@ -10,9 +10,9 @@ export const useStyles = makeStyles({
     display: "flex",
     minHeight: 0,
   },
-
   operationsList: {
     overflowY: "auto",
+    overflowX: "auto",
     marginRight: "1rem",
     minHeight: 0,
     height: "100%",
@@ -42,6 +42,17 @@ export const useStyles = makeStyles({
     whiteSpace: "nowrap",
   },
   filterLabelMsg: {
-    color: "#5b5fc7",
+    color: "red",
   },
+  allOperationsView: {
+    flexGrow: 0,
+    flexShrink: 1,
+  },
+  selectedOperationView: {
+    flexGrow: 1,
+    flexShrink: 0,
+    marginTop: "32px",
+    backgroundColor: "aliceblue",
+    height: "100%"
+  }
 });

@@ -6,9 +6,9 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     overflowY: "scroll",
     paddingLeft: "10px",
-    backgroundColor: "#d6d6d6",
+    backgroundColor: "#f1f4f7",
     paddingRight: "10px",
-    height: "100%",
+    height: "70vh",
     "::-webkit-scrollbar": {
       display: "none",
     },
@@ -25,6 +25,11 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     ...shorthands.borderBottom("0.5px", "solid", "gray"),
     paddingBottom: "10px",
+  },
+  typeText:{
+    fontWeight: "bold",
+    ...shorthands.padding('10px'),
+    fontSize: "12px"
   },
   operationType: {
     display: "flex",

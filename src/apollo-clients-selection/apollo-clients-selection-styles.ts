@@ -7,7 +7,6 @@ export const useStyles = makeStyles({
     flexDirection: "column",
   },
   label: {
-    ...shorthands.margin("1rem"),
   },
   checkBoxes: {
     ...shorthands.margin("1rem"),

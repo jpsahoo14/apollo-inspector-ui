@@ -374,13 +374,11 @@ const renderOperationStatusFilter = (statues: React.JSX.Element[]) => (
 );
 
 const renderOperationTypeFilter = (
-  classes: Record<"operationType" | "type" | "filters" | "filterView", string>,
+  classes: Record<"operationType" | "type" | 'typeText' | "filters" | "filterView", string>,
   operationTypes: React.JSX.Element[]
 ) => (
   <div className={classes.type}>
-    <div>
-      <h5 key="operationType">{`Type`}&nbsp;</h5>
-    </div>
+      <div className={classes.typeText}> Type </div>
     <div style={{ display: "flex", flexDirection: "column" }}>
       {operationTypes}
     </div>
