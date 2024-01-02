@@ -38,7 +38,7 @@ export const getDevtoolAction = ({
   backgroundService,
 }: IContentScriptContext) => {
   return (message: IMessagePayload) => {
-    logMessage(`sending event to devtool `, message);
+    logMessage(`imp! sending event to devtool `, message);
 
     backgroundService.postMessage(message);
   };
@@ -58,7 +58,7 @@ export const getContentScriptAction = (
 
 export const getWebpageAction = (context: IContentScriptInitialContext) => {
   return (message: IMessagePayload) => {
-    logMessage(` sending message to webpage`, message);
+    logMessage(`imp! sending message to webpage`, message);
     window.postMessage(message, "*");
   };
 };

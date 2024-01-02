@@ -24,7 +24,7 @@ const backgroundConnection: browser.Runtime.Port = browser.runtime.connect({
 });
 
 backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-  logMessage(`received message in devtools onMessage`, message);
+  logMessage(`imp! received message in devtools onMessage`, message);
   const event = new CustomEvent(message.destination.name, {
     detail: message,
   });

@@ -262,7 +262,7 @@ const usePanelInitialization = ({
       name: JSON.stringify({ name: PANEL_PAGE, tabId: tabIdRef.current }),
     });
     backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-      logMessage(`message received at panel-container`, message);
+      logMessage(`imp! message received at panel-container`, message);
       const event = new CustomEvent(message.destination.name, {
         detail: message,
       });

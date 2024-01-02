@@ -9,7 +9,7 @@ export const sendMessageToBackgroundScript = ({
   backgroundConnection: browser.Runtime.Port;
 }) => {
   return (message: IMessagePayload) => {
-    logMessage(`sending message to background`, message);
+    logMessage(`imp! sending message to background`, message);
     backgroundConnection.postMessage(message);
   };
 };
@@ -29,6 +29,9 @@ export const handleMessageForDevtool = ({
 export const createDevtoolsPanel = (context: IDevtoolContext) => {
   const { devtoolState } = context;
   return async (message: IMessagePayload) => {
+    if (devtoolState.isPanelCreated) {
+      return;
+    }
     const panel: DevtoolsPanels.ExtensionPanel =
       await browser.devtools.panels.create(
         "Apollo Inspector",

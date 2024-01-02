@@ -22,7 +22,7 @@ export const devtoolScriptLoadedAction = (context: IWebpageContext) => {
 
   return () => {
     const apolloClientIds = getApolloClients();
-    if (apolloClientIds) {
+    if (apolloClientIds.length > 0) {
       sendMessageViaEventTarget(webpage, {
         destinationName: DEVTOOL,
         action: DEVTOOLS_ACTIONS.CREATE_DEVTOOLS_PANEL,
@@ -67,7 +67,7 @@ export const getCopyWholeCacheCB = (context: IWebpageContext) => {
   };
 };
 
-const getApolloClients = (): string[] | null => {
+const getApolloClients = (): string[] => {
   if (window.__APOLLO_CLIENTS__ && window.__APOLLO_CLIENTS__.length) {
     const values = window.__APOLLO_CLIENTS__.map((ac) => {
       return ac.clientId;
@@ -131,12 +131,12 @@ const sendMessageToContentScript = (
       ...generateRequestInfo(WEB_PAGE),
     },
   };
-  logMessage(`sending message from webpage`, message);
+  logMessage(`imp! sending message from webpage`, message);
   window.postMessage(message, "*");
 };
 
 export const sendMessage = (message: IMessagePayload) => {
-  logMessage(`message being sent from webpage`, message);
+  logMessage(`imp! message being sent from webpage`, message);
   window.postMessage(message, "*");
 };
 

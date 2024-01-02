@@ -5,7 +5,7 @@ import { IPanelContext } from "./panel.interface";
 export const sendMessageFromPanelPage = (context: IPanelContext) => {
   const { backgroundConnection } = context;
   return (message: IMessagePayload) => {
-    logMessage(`sending message from panel-action`, message);
+    logMessage(`imp! sending message from panel-action`, message);
     backgroundConnection.postMessage(message);
   };
 };
