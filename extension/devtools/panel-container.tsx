@@ -261,9 +261,13 @@ const usePanelInitialization = ({
     setClientIds(null);
     subscription?.unsubscribe();
     setSubscription(null);
+    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
+    cleanUpsRef.current = [];
   }, [setInitPanelComplete, setClientIds]);
 
   const initPanel = React.useCallback(() => {
+    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
+    cleanUpsRef.current = [];
     setInitPanelComplete(true);
   }, [setInitPanelComplete]);
 
