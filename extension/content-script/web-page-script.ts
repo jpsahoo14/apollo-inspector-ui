@@ -1,5 +1,12 @@
-// import { ApolloInspector } from "apollo-inspector";
-import { CustomEventTarget, IMessagePayload } from "../utils";
+import {
+  CONTENT_SCRIPT,
+  CustomEventTarget,
+  IMessagePayload,
+  WEBPAGE_ACTIONS,
+  WEB_PAGE,
+  createLogger,
+  sendMessageViaEventTarget,
+} from "../utils";
 import { setupWebPageActions } from "./setup-web-page-actions";
 import { getTabId } from "./web-page-actions";
 import { IWebpageStore } from "./web-page.interface";
@@ -9,9 +16,16 @@ import { IWebpageStore } from "./web-page.interface";
   const webpageStore: IWebpageStore = {
     apolloInspectorSubscription: null,
   };
+
   const tabId: number = await getTabId();
   setupWebPageActions({ webpage, tabId, webpageStore });
   listenToPostMessage(webpage);
+  sendMessageViaEventTarget(webpage, {
+    destinationName: CONTENT_SCRIPT,
+    action: WEBPAGE_ACTIONS.WEB_PAGE_INIT_COMPLETE,
+    tabId,
+    callerName: WEB_PAGE,
+  });
 
   function listenToPostMessage(webpage: CustomEventTarget) {
     window.addEventListener("message", (event: { data: IMessagePayload }) => {
@@ -28,8 +42,6 @@ import { IWebpageStore } from "./web-page.interface";
   }
 })();
 
-logMessage(`apollo inspector script started`, {});
+const logMessage = createLogger(`mainThread`);
 
-function logMessage(message: string, data: any) {
-  console.log(`[mainThread]AIE ${message}`, data);
-}
+logMessage(`apollo inspector script started`, {});

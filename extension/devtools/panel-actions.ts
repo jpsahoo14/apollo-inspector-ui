@@ -1,20 +1,20 @@
-import { IMessagePayload } from "../utils";
+import copy from "copy-to-clipboard";
+import { IMessagePayload, createLogger } from "../utils";
 import { IPanelContext } from "./panel.interface";
-
-export const getSetApolloClientIds = (context: IPanelContext) => {
-  const { setClientIds } = context;
-  return (message: IMessagePayload) => {
-    const apolloClientsIds = message.data.apolloClientsIds;
-
-    setClientIds(apolloClientsIds);
-  };
-};
 
 export const sendMessageFromPanelPage = (context: IPanelContext) => {
   const { backgroundConnection } = context;
   return (message: IMessagePayload) => {
     logMessage(`sending message from panel-action`, message);
     backgroundConnection.postMessage(message);
+  };
+};
+
+export const getCopyData = (context: IPanelContext) => {
+  return (message: IMessagePayload) => {
+    const data = message.data;
+    const stringifiedData = JSON.stringify(data);
+    copy(stringifiedData);
   };
 };
 
@@ -29,6 +29,19 @@ export const getHandlePanelPageActions = (context: IPanelContext) => {
   };
 };
 
-function logMessage(message: string, data: any) {
-  console.log(`[panel-action]AIE ${message}`, { data });
-}
+export const getHandleWebPageUnload = (context: IPanelContext) => {
+  const { resetStore } = context;
+  return (message: IMessagePayload) => {
+    logMessage(`handle webpage unload`, message);
+    resetStore();
+  };
+};
+
+export const contentScriptLoaded = (context: IPanelContext) => {
+  const { initPanel } = context;
+  return (message: IMessagePayload) => {
+    initPanel();
+  };
+};
+
+const logMessage = createLogger(`panel-action`);

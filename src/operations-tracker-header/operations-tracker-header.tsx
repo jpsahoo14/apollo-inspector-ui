@@ -3,13 +3,14 @@ import { Button } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { Search } from "../search/search";
-import { cloneDeep, debounce } from "lodash-es";
+import { debounce } from "lodash-es";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
-import { useTrackerStore, ISetState, IErrorType } from "../store";
+import { TrackerStoreContext, ISetState, IErrorType } from "../store";
 import { Observable } from "rxjs";
 import { IDataView } from "apollo-inspector";
 import { CopyType, ICopyData, RecordingState } from "../types";
+import { useStore } from "zustand";
 
 export interface IOperationsTrackerHeaderProps {
   setSearchText: (text: string) => void;
@@ -69,6 +70,7 @@ export const OperationsTrackerHeader = React.memo(
 
 const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
   const { onRecordStart, onRecordStop } = props;
+  const trackerStore = React.useContext(TrackerStoreContext);
   const {
     setApolloOperationsData,
     setError,
@@ -76,7 +78,7 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     setLoader,
     store,
     apolloOperationsData,
-  } = useTrackerStore((store) => ({
+  } = useStore(trackerStore, (store) => ({
     setRecordingState: store.setRecordingState,
     setApolloOperationsData: store.setApolloOperationsData,
     setLoader: store.setLoader,
@@ -85,11 +87,11 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     apolloOperationsData: store.apolloOperationsData,
   }));
   ({ store });
-  const { selectedApolloClientIds } = useTrackerStore((store) => ({
+  const { selectedApolloClientIds } = useStore(trackerStore, (store) => ({
     selectedApolloClientIds: store.selectedApolloClientIds,
     apolloClients: store.apolloClients,
   }));
-  const [stopTracking, setStopTracking] = useTrackerStore((store) => [
+  const [stopTracking, setStopTracking] = useStore(trackerStore, (store) => [
     store.stopApolloInspectorTracking,
     store.setStopApolloInspectorTracking,
   ]);
@@ -173,8 +175,8 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
 
 const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
   const { setSearchText, operationsState, onCopy } = props;
-
-  const [openDescription, setOpenDescription] = useTrackerStore((store) => [
+  const store = React.useContext(TrackerStoreContext);
+  const [openDescription, setOpenDescription] = useStore(store, (store) => [
     store.openDescription,
     store.setOpenDescription,
   ]);
@@ -183,7 +185,7 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
     apollOperationsData,
     setApolloOperationsData,
     setRecordingState,
-  } = useTrackerStore((store) => ({
+  } = useStore(store, (store) => ({
     recordingState: store.recordingState,
     apollOperationsData: store.apolloOperationsData,
     setApolloOperationsData: store.setApolloOperationsData,
@@ -208,7 +210,7 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
     setRecordingState,
   ]);
 
-  const showClear = !!apollOperationsData?.verboseOperations;
+  const showClear = !!apollOperationsData?.operations;
 
   const debouncedFilter = React.useCallback(
     debounce((e: React.SyntheticEvent) => {
@@ -294,3 +296,5 @@ const getRecordingString = (recordingState: RecordingState) => {
     return "Stop Recording";
   }
 };
+
+OperationsTrackerHeader.displayName = "OperationsTrackerHeader";

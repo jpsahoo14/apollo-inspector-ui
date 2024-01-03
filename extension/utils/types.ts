@@ -1,6 +1,10 @@
 import browser from "webextension-polyfill";
-import { CustomEventTarget, IMessagePayload } from "./custom-event-target";
-import { CONTENT_SCRIPT_ACTIONS } from "./constants";
+import { CustomEventTarget } from "./custom-event-target";
+import {
+  CONTENT_SCRIPT_ACTIONS,
+  WEBPAGE_ACTIONS,
+  DEVTOOLS_ACTIONS,
+} from "./constants";
 
 export interface IConnection {
   name: string;
@@ -16,6 +20,6 @@ export interface IContentScriptContext {
 
 export type IPayloadFromActions = {
   [CONTENT_SCRIPT_ACTIONS.GET_TAB_ID]: undefined;
-  [CONTENT_SCRIPT_ACTIONS.DEVTOOLS_SCRIPT_LOADED]: string;
-  [CONTENT_SCRIPT_ACTIONS.GET_APOLLO_CLIENTS_IDS]: number;
+  [DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED]: string;
+  [WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS]: number;
 };

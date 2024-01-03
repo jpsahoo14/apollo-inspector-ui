@@ -24,6 +24,8 @@ export interface IOperationViewRendererProps {
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
   apolloClientIds: string[];
   onCopy: (copyType: CopyType, data: ICopyData) => void;
+  resetStore?: (clientId: string) => void;
+  clearStore?: (clientId: string) => void;
 }
 
 export interface IOperationViewContainer {
@@ -32,6 +34,8 @@ export interface IOperationViewContainer {
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
   apolloClientIds: string[];
   onCopy: (copyType: CopyType, data: ICopyData) => void;
+  resetStore?: (clientId: string) => void;
+  clearStore?: (clientId: string) => void;
 }
 
 interface ITabHeader {
@@ -53,6 +57,8 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
     dispatchOperationsState,
     apolloClientIds,
     onCopy,
+    clearStore,
+    resetStore,
   } = props;
   const [selectedTab, setSelectedTab] = React.useState(
     TabHeaders.VerboseOperationView
@@ -112,6 +118,8 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
         dispatchOperationsState={dispatchOperationsState}
         apolloClientIds={apolloClientIds}
         onCopy={onCopy}
+        clearStore={clearStore}
+        resetStore={resetStore}
       />
     </div>
   );
@@ -126,6 +134,8 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
     dispatchOperationsState,
     apolloClientIds,
     onCopy,
+    clearStore,
+    resetStore,
   } = props;
 
   switch (selectedTab) {
@@ -150,7 +160,12 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
 
     case TabHeaders.ConfigPage: {
       return (
-        <ApolloClientSelection clientIds={apolloClientIds} onCopy={onCopy} />
+        <ApolloClientSelection
+          clientIds={apolloClientIds}
+          onCopy={onCopy}
+          clearStore={clearStore}
+          resetStore={resetStore}
+        />
       );
     }
 

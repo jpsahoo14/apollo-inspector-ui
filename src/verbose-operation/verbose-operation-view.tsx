@@ -28,6 +28,7 @@ import {
   IOperationsAction as IOperationsReducerActions,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
+import { DeleteRegular } from "@fluentui/react-icons";
 
 const spaceForStringify = 2;
 
@@ -68,27 +69,16 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           style={{ display: "flex", alignItems: "center" }}
           key="operationType1"
         >
-          <h3 key="operationType">{`${operationType} : `}&nbsp;</h3>
-          <Body1Strong underline key="operationName1ç">
-            {operationName}
-          </Body1Strong>
+          <div className={classes.operationNameText} > {operationName} </div>
+          <div className={classes.operationType} > {operationType} </div>
         </div>
-        <Button
-          size="small"
-          className={classes.closeButton}
-          onClick={closePreview}
-          appearance="primary"
-          key="closeButton"
-        >
-          Close
-        </Button>
+        <Button onClick={closePreview} className={classes.closeButton}> <DeleteRegular/> </Button>
       </div>
       <div
         className={classes.accordionWrapper}
         key="operationnViewAccordionnWrapper"
       >
         <div className={classes.accordioPreWrapper}>
-          (
           <Accordion
             className={classes.operationDetails}
             key={"operationnViewAccordionn"}
@@ -97,7 +87,6 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           >
             {accordionItems}
           </Accordion>
-          )
         </div>
       </div>
     </div>
