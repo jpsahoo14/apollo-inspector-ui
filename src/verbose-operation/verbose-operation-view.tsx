@@ -129,6 +129,7 @@ const getAccordionItems = (
     )
   );
   affectedQueriesDueToOptimisticResponse &&
+    affectedQueriesDueToOptimisticResponse.length > 0 &&
     items.push(
       getAffectedQueriesPanel(
         affectedQueriesDueToOptimisticResponse as DocumentNode[],

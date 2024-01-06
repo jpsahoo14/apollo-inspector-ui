@@ -59,7 +59,7 @@ export const FilterView = React.memo((props: IFilterView) => {
   >([]);
   const [resultFromFilter, setResultFromFilter] = React.useState<string[]>([]);
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const { setFilters, filters, operationsState } = props;
+  const { setFilters, filters } = props;
   const [queryChecked, setQueryChecked] = React.useState(false);
   const [querySubTypesChecked, setQuerySubTypesChecked] = React.useState<
     OperationType[]
@@ -354,22 +354,30 @@ const renderResultsFromFiter = (
   classes: Record<"filters" | "filterView" | "type" | "operationType", string>,
   resultsFrom: React.JSX.Element[]
 ) => (
-  <div className={classes.operationType}>
-    <div>
+  <div key="results-from-filter" className={classes.operationType}>
+    <div key="results-from-header">
       <h5 key="operationType">{`Result from`}&nbsp;</h5>
     </div>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div
+      key="results-from-values"
+      style={{ display: "flex", flexDirection: "column" }}
+    >
       {resultsFrom}
     </div>
   </div>
 );
 
 const renderOperationStatusFilter = (statues: React.JSX.Element[]) => (
-  <div style={{ display: "flex", flexDirection: "column" }}>
-    <div>
+  <div key="status-filter" style={{ display: "flex", flexDirection: "column" }}>
+    <div key="status-header">
       <h5 key="status">{`Status`}&nbsp;</h5>
     </div>
-    <div style={{ display: "flex", flexDirection: "column" }}>{statues}</div>
+    <div
+      key="status-values"
+      style={{ display: "flex", flexDirection: "column" }}
+    >
+      {statues}
+    </div>
   </div>
 );
 
@@ -380,9 +388,11 @@ const renderOperationTypeFilter = (
   >,
   operationTypes: React.JSX.Element[]
 ) => (
-  <div className={classes.type}>
-    <div className={classes.typeText}> Type </div>
-    <div style={{ display: "flex", flexDirection: "column" }}>
+  <div key="operation-type-filter" className={classes.type}>
+    <div key="type-header" className={classes.typeText}>
+      Type
+    </div>
+    <div key="type-values" style={{ display: "flex", flexDirection: "column" }}>
       {operationTypes}
     </div>
   </div>
