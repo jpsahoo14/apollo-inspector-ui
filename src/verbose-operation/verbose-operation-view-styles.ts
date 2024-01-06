@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   operationView: {
@@ -51,10 +51,6 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
-  copyBtn: {
-    minHeight: "32px",
-    marginLeft: "1rem",
-  },
   subHeading: {
     display: "flex",
     alignItems: "center",
@@ -100,12 +96,13 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
   },
-  closeButton: {
-    width: "10px",
+  button: {
+    minWidth: "20px",
     backgroundColor: "transparent",
     height: "100%",
+    color: "black",
     minHeight: 0,
-    minWidth: 0,
+    ...shorthands.border("0px", "solid", "transparent"),
   },
 });
 
