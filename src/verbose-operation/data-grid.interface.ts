@@ -17,12 +17,24 @@ export type CustomColumnWidthOptions = Partial<
 > & { defaultWidth?: number | undefined };
 
 export type IColumnOptions = {
-  key: string;
+  key: ColumnName;
   header: string;
   value: (item: Item) => number | string | React.ReactNode | null;
   compare: (a: any, b: any) => number;
   size?: CustomColumnWidthOptions;
 };
+
+export const enum ColumnName {
+  ID = "id",
+  CliendId = "clientId",
+  Type = "type",
+  Name = "name",
+  FetchPolicy = "fetchPolicy",
+  Status = "status",
+  StartAt = "startAt",
+  TotalExecutionTime = "totalExecTime",
+  Size = "size",
+}
 
 export interface IDataGridView {
   operations: IVerboseOperation[] | null;

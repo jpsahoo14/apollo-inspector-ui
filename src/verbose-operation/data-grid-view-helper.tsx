@@ -22,10 +22,14 @@ import {
   BookLetterRegular,
 } from "@fluentui/react-icons";
 import { sampleColumnOptions } from "./column-options-view";
-import { CustomColumnWidthOptions, Item } from "./data-grid.interface";
+import {
+  ColumnName,
+  CustomColumnWidthOptions,
+  Item,
+} from "./data-grid.interface";
 
 export const columnSizingOptions = (selectedColumnOptions: string[]) => {
-  const columnSizing: { [key: any]: CustomColumnWidthOptions } = {};
+  const columnSizing: { [key: ColumnName]: CustomColumnWidthOptions } = {};
   selectedColumnOptions?.map(function (element) {
     const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
     columnSizing[val.key] = val.size;
@@ -38,7 +42,11 @@ export const getColumns = (
   selectedColumnOptions: string[]
 ): TableColumnDefinition<Item>[] => {
   if (anyOperationSelected) {
-    return getSelectedColumns(["type", "name"]);
+    return getSelectedColumns([
+      ColumnName.ID,
+      ColumnName.Type,
+      ColumnName.Name,
+    ]);
   } else {
     return getSelectedColumns(selectedColumnOptions);
   }
@@ -138,7 +146,7 @@ const getOperationIcon = (type: string) => {
 export const compareString = (a: string | undefined, b: string | undefined) => {
   return (a || "").localeCompare(b || "");
 };
-function getSelectedColumns(selectedColumnOptions: string[]) {
+const getSelectedColumns = (selectedColumnOptions: string[]) => {
   const tableColumn: TableColumnDefinition<Item>[] = [];
   selectedColumnOptions?.map(function (element) {
     const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
@@ -154,7 +162,8 @@ function getSelectedColumns(selectedColumnOptions: string[]) {
                 truncate
                 key="tableCell"
                 media={
-                  val.key === "type" && getOperationIcon(item.operationType)
+                  val.key === ColumnName.Type &&
+                  getOperationIcon(item.operationType)
                 }
               >
                 {val.value(item)}
@@ -166,4 +175,4 @@ function getSelectedColumns(selectedColumnOptions: string[]) {
   });
 
   return tableColumn;
-}
+};

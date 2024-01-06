@@ -78,6 +78,7 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    flexGrow: 1,
   },
   gridWrapper: {
     flexGrow: 1,

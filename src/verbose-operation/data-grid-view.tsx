@@ -47,6 +47,7 @@ export const DataGridView = (props: IDataGridView) => {
           operationsState
         )}
         <div
+          key="grid-view"
           {...(operationsState.selectedOperation
             ? { className: classes.selectedOperationGridWrapper }
             : { className: classes.gridWrapper })}
@@ -145,7 +146,7 @@ const renderFilterView = (
   operationsState: IOperationsReducerState
 ) =>
   showFilters && (
-    <div className={classes.filterViewWrapper}>
+    <div key="filter-view" className={classes.filterViewWrapper}>
       <FilterView
         setFilters={updateFilters}
         filters={filters}
