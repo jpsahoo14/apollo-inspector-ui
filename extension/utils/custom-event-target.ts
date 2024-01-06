@@ -27,7 +27,7 @@ export class CustomEventTarget {
       try {
         callback?.(message.detail);
       } catch (e) {
-        console.log(`caught exception in callback listener`);
+        console.log(`caught exception in callback listener`, e);
       }
     };
 

@@ -2,21 +2,20 @@ import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   root: {
-    flexShrink: 1,
-    flexGrow: 1,
     flexBasic: 0,
     display: "flex",
     minWidth: 0,
     minHeight: 0,
+    height: "100%",
+    width: "100%",
   },
   innerContainer: {
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#fff",
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: "auto",
+    height: "100%",
     ...shorthands.overflow("hidden"),
+    flexGrow: 1,
   },
   innerContainerDescription: {},
   name: {
@@ -34,8 +33,5 @@ export const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: "auto",
   },
 });

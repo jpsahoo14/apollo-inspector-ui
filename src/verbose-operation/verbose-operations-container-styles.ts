@@ -3,8 +3,25 @@ import { makeStyles } from "@fluentui/react-components";
 export const useStyles = makeStyles({
   root: {
     display: "flex",
+    flexDirection: "row",
+    height: "100%",
     minHeight: 0,
-    flexDirection: "column",
+    minWidth: 0,
+  },
+  allOperationsView: {
+    display: "flex",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+    flexGrow: 1,
+  },
+  selectedOperationView: {
+    display: "flex",
+    marginTop: "32px",
+    backgroundColor: "aliceblue",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   operations: {
     display: "flex",
@@ -44,15 +61,4 @@ export const useStyles = makeStyles({
   filterLabelMsg: {
     color: "red",
   },
-  allOperationsView: {
-    flexGrow: 0,
-    flexShrink: 1,
-  },
-  selectedOperationView: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginTop: "32px",
-    backgroundColor: "aliceblue",
-    height: "100%"
-  }
 });

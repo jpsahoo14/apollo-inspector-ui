@@ -64,20 +64,19 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
   return (
     <div className={classes.operationView} key="verboseOperationView">
       <div className={classes.subHeading} key="verboseHeader">
-        <div
-          style={{ display: "flex", alignItems: "center" }}
-          key="operationType1"
-        >
-          <div className={classes.operationNameText} > {operationName} </div>
-          <div className={classes.operationType} > {operationType} </div>
+        <div className={classes.heading} key="operationType1">
+          <div className={classes.operationNameText}> {operationName} </div>
+          <div className={classes.operationType}> {operationType} </div>
         </div>
-        <Button onClick={closePreview} className={classes.closeButton}> <DeleteRegular/> </Button>
+        <Button onClick={closePreview} className={classes.closeButton}>
+          <DeleteRegular />
+        </Button>
       </div>
       <div
         className={classes.accordionWrapper}
         key="operationnViewAccordionnWrapper"
       >
-        <div className={classes.accordioPreWrapper}>
+        <div className={classes.accordionPreWrapper}>
           <Accordion
             className={classes.operationDetails}
             key={"operationnViewAccordionn"}

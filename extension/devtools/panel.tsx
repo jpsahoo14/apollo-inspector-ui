@@ -4,7 +4,7 @@ import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 import { PanelContainer } from "./panel-container";
 
 const apolloUIComponent = (
-  <FluentProvider theme={teamsLightTheme}>
+  <FluentProvider theme={teamsLightTheme} style={{ width: "100%" }}>
     <PanelContainer />
   </FluentProvider>
 );

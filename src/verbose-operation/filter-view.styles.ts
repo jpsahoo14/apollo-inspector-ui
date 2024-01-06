@@ -8,10 +8,12 @@ export const useStyles = makeStyles({
     paddingLeft: "10px",
     backgroundColor: "#f1f4f7",
     paddingRight: "10px",
-    height: "70vh",
+    height: "100%",
     "::-webkit-scrollbar": {
       display: "none",
     },
+    minHeight: 0,
+    minWidth: 0,
   },
   filters: {
     display: "flex",
@@ -26,10 +28,10 @@ export const useStyles = makeStyles({
     ...shorthands.borderBottom("0.5px", "solid", "gray"),
     paddingBottom: "10px",
   },
-  typeText:{
+  typeText: {
     fontWeight: "bold",
-    ...shorthands.padding('10px'),
-    fontSize: "12px"
+    ...shorthands.padding("10px"),
+    fontSize: "12px",
   },
   operationType: {
     display: "flex",
