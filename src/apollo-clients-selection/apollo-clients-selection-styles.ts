@@ -5,16 +5,19 @@ export const useStyles = makeStyles({
     ...shorthands.margin("2rem"),
     display: "flex",
     flexDirection: "column",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  label: {
-  },
+  label: {},
   checkBoxes: {
     ...shorthands.margin("1rem"),
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    minHeight: 0,
     overflowY: "auto",
+    minHeight: 0,
+    minWidth: 0,
   },
   errorLabel: {
     color: "red",

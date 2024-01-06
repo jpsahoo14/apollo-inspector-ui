@@ -30,23 +30,21 @@ export const VerboseOperationsContainer = (
 
   return (
     <div className={classes.root}>
-      <div className={classes.operations}>
-        <div className={classes.allOperationsView}>
-          <DataGridView
-            key={"OperationsDataGridView"}
-            operations={operations}
-            operationsState={operationsState}
-            dispatchOperationsCount={dispatchOperationsCount}
-            dispatchOperationsState={dispatchOperationsState}
-          />
-        </div>
-        <div className={classes.selectedOperationView}>
-          <VerboseOperationView
-            key={"VerboseOperationView"}
-            operation={operationsState.selectedOperation}
-            dispatchOperationsState={dispatchOperationsState}
-          />
-        </div>
+      <div className={classes.allOperationsView}>
+        <DataGridView
+          key={"OperationsDataGridView"}
+          operations={operations}
+          operationsState={operationsState}
+          dispatchOperationsCount={dispatchOperationsCount}
+          dispatchOperationsState={dispatchOperationsState}
+        />
+      </div>
+      <div className={classes.selectedOperationView}>
+        <VerboseOperationView
+          key={"VerboseOperationView"}
+          operation={operationsState.selectedOperation}
+          dispatchOperationsState={dispatchOperationsState}
+        />
       </div>
     </div>
   );

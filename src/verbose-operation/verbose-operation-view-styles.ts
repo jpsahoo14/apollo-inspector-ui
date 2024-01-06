@@ -4,41 +4,40 @@ export const useStyles = makeStyles({
   operationView: {
     display: "flex",
     flexDirection: "column",
-    minHeight: 0,
     flexGrow: 2,
-    flexShrink: 0,
-    flexBasis: "50%",
-    minWidth: 0,
     color: "black",
+    minWidth: "15rem",
+    height: "100%",
+    minHeight: 0,
   },
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
   errorAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
   warningAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
   resultPanel: {
     whiteSpace: "pre-wrap",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   operationDetails: {
     minHeight: 0,
@@ -62,28 +61,52 @@ export const useStyles = makeStyles({
     justifyContent: "space-between",
     height: "32.5px",
     backgroundColor: "aliceblue",
+    minHeight: 0,
+    minWidth: 0,
+  },
+  heading: {
+    display: "flex",
+    alignItems: "center",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   accordionWrapper: {
-    minHeight: 0,
+    display: "flex",
     overflowX: "scroll",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  accordioPreWrapper: {
+  accordionPreWrapper: {
+    display: "flex",
     maxWidth: "40rem",
-    height: "100vh"
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  operationType:{
+  operationType: {
     color: "black",
     fontSize: "10px",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  operationNameText:{
+  operationNameText: {
     fontWeight: "bold",
     paddingLeft: "10px",
-    paddingRight: "10px"
+    paddingRight: "10px",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  closeButton:{
+  closeButton: {
     width: "10px",
-    backgroundColor: "transparent"
-  }
+    backgroundColor: "transparent",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+  },
 });
 
 export type stylesKeys =

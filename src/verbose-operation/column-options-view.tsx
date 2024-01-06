@@ -27,36 +27,51 @@ export const sampleColumnOptions: IColumnOptions[] = [
     header: "ID",
     value: (item) => item.id,
     compare: (a, b) => b.id - a.id,
+    size: {
+      minWidth: 10,
+      idealWidth: 50,
+    },
   },
   {
     key: "clientId",
     header: "ClientId",
     value: (item) => item.clientId,
     compare: (a, b) => compareString(b.clientId, a.clientId),
+    size: { minWidth: 10, idealWidth: 100 },
   },
   {
     key: "type",
     header: "Type",
     value: (item) => item.operationType,
     compare: (a, b) => compareString(b.operationType, a.operationType),
+    size: { minWidth: 10, idealWidth: 150 },
   },
   {
     key: "name",
     header: "Name",
     value: (item) => item.operationName,
     compare: (a, b) => compareString(b.operationName, a.operationName),
+    size: { minWidth: 10, idealWidth: 150 },
   },
   {
     key: "status",
     header: "Status",
     value: (item) => item.status,
     compare: (a, b) => compareString(b.status, a.status),
+    size: {
+      minWidth: 10,
+      idealWidth: 90,
+    },
   },
   {
     key: "fetchPolicy",
     header: "Fetch Policy",
     value: (item) => item.fetchPolicy,
     compare: (a, b) => compareString(b.fetchPolicy, a.fetchPolicy),
+    size: {
+      minWidth: 10,
+      idealWidth: 100,
+    },
   },
   {
     key: "queuedAt",
@@ -66,6 +81,10 @@ export const sampleColumnOptions: IColumnOptions[] = [
         ? secondsToTime(item.timing.queuedAt)
         : `${item.timing.queuedAt} ms`,
     compare: (a, b) => b.timing.queuedAt - a.timing.queuedAt,
+    size: {
+      minWidth: 10,
+      idealWidth: 90,
+    },
   },
   {
     key: "totalExecTime",
@@ -75,12 +94,20 @@ export const sampleColumnOptions: IColumnOptions[] = [
         ? secondsToTime(item.duration.totalTime)
         : `${item.duration.totalTime} ms`,
     compare: (a, b) => b.duration.totalTime - a.duration.totalTime,
+    size: {
+      minWidth: 10,
+      idealWidth: 90,
+    },
   },
   {
     key: "size",
     header: "Size",
     value: (item) => sizeInBytes(item.result[0]?.size),
     compare: (a, b) => (b.result[0]?.size || 0) - (a.result[0]?.size || 0),
+    size: {
+      minWidth: 10,
+      idealWidth: 90,
+    },
   },
 ];
 

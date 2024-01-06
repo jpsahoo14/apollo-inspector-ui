@@ -1,6 +1,20 @@
 import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
+  wholeBody: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+    flexGrow: 1,
+  },
+  headers: {
+    display: "flex",
+    flexDirection: "row",
+    minHeight: 0,
+    minWidth: 0,
+  },
   gridBody: {
     position: "relative",
     willChange: "transform",
@@ -8,7 +22,6 @@ export const useStyles = makeStyles({
     cursor: "pointer",
     width: "100%",
     height: "100%",
-    overflowY: "scroll",
     // "::-webkit-scrollbar": {
     //   display: "none",
     // },
@@ -21,18 +34,17 @@ export const useStyles = makeStyles({
   gridHeaderCell: {
     backgroundColor: "#d4e8fa",
   },
-  gridrowcell:{
-    minWidth: "fit-content"
-  },
+  gridrowcell: {},
   gridView: {
-    minWidth: 0,
-    height: "100%",
     flexGrow: 2,
     display: "flex",
     "&:hover": {
       backgroundColor: "unset !important",
       color: "unset !important",
     },
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   selectedAndFailedRow: {
     color: "darkred",
@@ -62,40 +74,48 @@ export const useStyles = makeStyles({
     display: "block",
   },
   selectedOperationGridWrapper: {
+    display: "flex",
+    height: "100%",
+    minHeight: 0,
     minWidth: 0,
-    overflowX: "auto",
-    flexShrink: 1,
-    // flexGrow: 2,
   },
   gridWrapper: {
     flexGrow: 1,
+    display: "flex",
+    height: "100%",
+    minHeight: 0,
     minWidth: 0,
-    overflowX: "auto",
-    width: "100vw",
   },
-  grid:{
-    minWidth: "fit-content"
+  grid: {
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   filterViewWrapper: {
     flexGrow: 1,
-    minWidth: 0,
+    display: "flex",
     maxWidth: "300px",
-    height: "100vh"
-  },
-  headers:{
-    display: "flex",
-    flexDirection: "row",
-  },
-  wholeBody:{
-    display: "flex",
-    flexDirection: "column",
-  },
-  headers:{
-    display: "flex",
-    flexDirection: "row",
-  },
-  wholeBody:{
-    display: "flex",
-    flexDirection: "column",
+    height: "100%",
+    minHeight: 0,
+    minWidth: "fit-content",
   },
 });
+
+export type IClasses = Record<
+  | "grid"
+  | "gridRow"
+  | "wholeBody"
+  | "headers"
+  | "gridBody"
+  | "gridHeaderCell"
+  | "gridrowcell"
+  | "gridView"
+  | "selectedAndFailedRow"
+  | "failedRow"
+  | "selectedRow"
+  | "operationText"
+  | "selectedOperationGridWrapper"
+  | "gridWrapper"
+  | "filterViewWrapper",
+  string
+>;
