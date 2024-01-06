@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useScrollbarWidth, useFluent } from "@fluentui/react-components";
 import {
   DataGridBody,
   DataGrid,
@@ -7,176 +6,48 @@ import {
   DataGridHeader,
   DataGridCell,
   DataGridHeaderCell,
-} from "@fluentui/react-data-grid-react-window";
+} from "@fluentui-contrib/react-data-grid-react-window";
 import { IVerboseOperation } from "apollo-inspector";
-import { useStyles } from "./data-grid-view.styles";
-import {
-  ICountReducerAction,
-  CountReducerActionEnum,
-} from "../operations-tracker-body";
+import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
-import { debounce } from "lodash-es";
-import {
-  columnSizingOptions,
-  getColumns,
-  getFilteredItems,
-  Item,
-} from "./data-grid-view-helper";
-import {
-  IOperationsAction,
-  IOperationsReducerState,
-  OperationReducerActionEnum,
-} from "../operations-tracker-container-helper";
-import { TrackerStoreContext } from "../store";
-import { useStore } from "zustand";
+import { Item, IDataGridView } from "./data-grid.interface";
 import { LineHorizontal3Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
 import { Button } from "@fluentui/react-components";
-
-export interface IDataGridView {
-  operations: IVerboseOperation[] | null;
-  operationsState: IOperationsReducerState;
-  dispatchOperationsCount: React.Dispatch<ICountReducerAction>;
-  dispatchOperationsState: React.Dispatch<IOperationsAction>;
-}
-
-const ItemSize = 40;
+import { useDataGridView } from "./use-data-grid-view";
+import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
 export const DataGridView = (props: IDataGridView) => {
-  const {
-    operations,
-    operationsState,
-    dispatchOperationsCount,
-    dispatchOperationsState,
-  } = props;
-  const { targetDocument } = useFluent();
-  const store = React.useContext(TrackerStoreContext);
-  const [selectedColumnOptions] = useStore(store, (store) => [
-    store.selectedColumnOptions,
-  ]);
-  const scrollbarWidth = useScrollbarWidth({ targetDocument });
-  const [gridHeight, setGridHeight] = React.useState(400);
-  const divRef = React.useRef<HTMLDivElement | null>(null);
-
-  useObserveGridHeight(divRef, setGridHeight);
-
   const classes = useStyles();
-
-  const filteredOperations: IVerboseOperation[] = React.useMemo(() => {
-    return props.operations?.concat([]) ?? [];
-  }, [props.operations]);
-
-  const [filters, setFilters] = React.useState<IFilterSet | null>(null);
-  const [filteredItems, setFilteredItems] = React.useState(operations || []);
-
-  React.useEffect(() => {
-    const items = getFilteredItems(
-      operations,
-      operationsState.searchText,
-      filters
-    );
-    setFilteredItems(items);
-    dispatchOperationsCount({
-      type: CountReducerActionEnum.UpdateVerboseOperationsCount,
-      value: items?.length,
-    });
-    dispatchOperationsState({
-      type: OperationReducerActionEnum.UpdateFilteredOperations,
-      value: items,
-    });
-  }, [
+  const {
+    gridHeight,
+    handleToggleFilters,
+    divRef,
+    showFilters,
+    updateFilters,
     filters,
-    operationsState.searchText,
-    operations,
-    dispatchOperationsCount,
-    setFilteredItems,
-    dispatchOperationsState,
-  ]);
-
-  const columns = React.useMemo(
-    () =>
-      getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
-    [operationsState.selectedOperation, selectedColumnOptions]
-  );
-
-  const columnSizing = React.useMemo(
-    () => columnSizingOptions(selectedColumnOptions),
-    [selectedColumnOptions]
-  );
-
-  const operationsMap = React.useMemo(() => {
-    const map = new Map<number, IVerboseOperation>();
-    filteredOperations?.forEach((op) => {
-      map.set(op.id, op);
-    });
-    return map;
-  }, [filteredOperations]);
-
-  const onClick = React.useCallback(
-    (item: IVerboseOperation) => {
-      const operation = operationsMap.get(item.id);
-      dispatchOperationsState({
-        type: OperationReducerActionEnum.UpdateSelectedOperation,
-        value: operation,
-      });
-    },
-    [dispatchOperationsState, operationsMap]
-  );
-
-  const updateFilters = React.useCallback(
-    (input: React.SetStateAction<IFilterSet | null>) => {
-      setTimeout(() => {
-        setFilters(input);
-      }, 0);
-    },
-    [setFilters]
-  );
-
-  const updateVerboseOperations = React.useCallback(
-    (
-      e: React.MouseEvent | React.KeyboardEvent,
-      { selectedItems }: { selectedItems: number[] }
-    ) => {
-      setTimeout(() => {
-        const operations: IVerboseOperation[] = [];
-        [...selectedItems].forEach((index) =>
-          operations.push(filteredItems[index])
-        );
-
-        dispatchOperationsState({
-          type: OperationReducerActionEnum.UpdateCheckedOperations,
-          value: operations,
-        });
-      }, 0);
-    },
-    [dispatchOperationsState, filteredItems]
-  );
-
-  const [showFilters, setShowFilters] = React.useState(true); // State to manage visibility of filters
-
-  const handleToggleFilters = () => {
-    setShowFilters(!showFilters); // Toggle the visibility of filters
-  };
+    operationsState,
+    filteredItems,
+    columns,
+    columnSizing,
+    updateVerboseOperations,
+    scrollbarWidth,
+    onClick,
+  } = useDataGridView(props);
 
   return (
     <div className={classes.wholeBody}>
-      <div className={classes.headers}>
-        <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
-          Filters
-        </Button>
-        <ColumnOptions />
-      </div>
+      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters)}
       <div className={classes.gridView} ref={divRef}>
-        {showFilters && (
-          <div className={classes.filterViewWrapper}>
-            <FilterView
-              setFilters={updateFilters}
-              filters={filters}
-              operationsState={operationsState}
-            />
-          </div>
+        {renderFilterView(
+          showFilters,
+          classes,
+          updateFilters,
+          filters,
+          operationsState
         )}
         <div
+          key="grid-view"
           {...(operationsState.selectedOperation
             ? { className: classes.selectedOperationGridWrapper }
             : { className: classes.gridWrapper })}
@@ -191,21 +62,23 @@ export const DataGridView = (props: IDataGridView) => {
             columnSizingOptions={columnSizing}
             selectionMode="multiselect"
             onSelectionChange={updateVerboseOperations as any}
+            className={classes.grid}
           >
             <DataGridHeader
               style={{
                 paddingRight: scrollbarWidth,
-                backgroundColor: "#e0e0e0",
+                backgroundColor: "#d4e8fa",
               }}
-              className={classes.gridHeader}
             >
               <DataGridRow>
                 {({ renderHeaderCell }) => (
-                  <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+                  <DataGridHeaderCell className={classes.gridHeaderCell}>
+                    {renderHeaderCell()}
+                  </DataGridHeaderCell>
                 )}
               </DataGridRow>
             </DataGridHeader>
-            <DataGridBody
+            <DataGridBody<IVerboseOperation>
               className={classes.gridBody}
               itemSize={40}
               height={gridHeight}
@@ -234,7 +107,10 @@ export const DataGridView = (props: IDataGridView) => {
                     {({ renderCell }) => {
                       const cb = () => onClick(item);
                       return (
-                        <DataGridCell onClick={cb}>
+                        <DataGridCell
+                          // className={classes.gridrowcell}
+                          onClick={cb}
+                        >
                           {renderCell(item as Item)}
                         </DataGridCell>
                       );
@@ -250,23 +126,31 @@ export const DataGridView = (props: IDataGridView) => {
   );
 };
 
-const useObserveGridHeight = (
-  divRef: React.MutableRefObject<HTMLDivElement | null>,
-  setGridHeight: React.Dispatch<React.SetStateAction<number>>
-) => {
-  React.useEffect(() => {
-    const height = divRef.current?.getBoundingClientRect().height;
-    setGridHeight(height ? height - ItemSize : 400);
-    const resizeObserver = new ResizeObserver(
-      debounce(() => {
-        const height = divRef.current?.getBoundingClientRect().height;
-        const calcualtedHeight = height ? height - ItemSize : 400;
-        setGridHeight(calcualtedHeight);
-      }, 300)
-    );
-    resizeObserver.observe(document.body);
-    return () => {
-      resizeObserver.unobserve(document.body);
-    };
-  }, [setGridHeight, divRef]);
-};
+const renderFilterAndColumnOptionsButton = (
+  classes: IClasses,
+  handleToggleFilters: () => void
+) => (
+  <div className={classes.headers}>
+    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
+      Filters
+    </Button>
+    <ColumnOptions />
+  </div>
+);
+
+const renderFilterView = (
+  showFilters: boolean,
+  classes: IClasses,
+  updateFilters: (input: React.SetStateAction<IFilterSet | null>) => void,
+  filters: IFilterSet | null,
+  operationsState: IOperationsReducerState
+) =>
+  showFilters && (
+    <div key="filter-view" className={classes.filterViewWrapper}>
+      <FilterView
+        setFilters={updateFilters}
+        filters={filters}
+        operationsState={operationsState}
+      />
+    </div>
+  );

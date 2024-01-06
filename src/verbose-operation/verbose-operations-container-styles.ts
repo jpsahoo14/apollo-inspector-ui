@@ -3,16 +3,33 @@ import { makeStyles } from "@fluentui/react-components";
 export const useStyles = makeStyles({
   root: {
     display: "flex",
+    flexDirection: "row",
+    height: "100%",
     minHeight: 0,
-    flexDirection: "column",
+    minWidth: 0,
+  },
+  allOperationsView: {
+    display: "flex",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+    flexGrow: 1,
+  },
+  selectedOperationView: {
+    display: "flex",
+    marginTop: "32px",
+    backgroundColor: "aliceblue",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   operations: {
     display: "flex",
     minHeight: 0,
   },
-
   operationsList: {
     overflowY: "auto",
+    overflowX: "auto",
     marginRight: "1rem",
     minHeight: 0,
     height: "100%",
@@ -42,6 +59,6 @@ export const useStyles = makeStyles({
     whiteSpace: "nowrap",
   },
   filterLabelMsg: {
-    color: "#5b5fc7",
+    color: "red",
   },
 });
