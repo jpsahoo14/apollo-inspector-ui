@@ -64,7 +64,10 @@ export const CopyButton = (props: ICopyButtonProps) => {
       <Menu positioning="below-end">
         <MenuTrigger disableButtonEnhancement>
           {(triggerProps: MenuButtonProps) => (
-            <SplitButton onClick={copyAll} menuButton={triggerProps}>
+            <SplitButton
+              primaryActionButton={{ onClick: copyAll }}
+              menuButton={triggerProps}
+            >
               Copy All
             </SplitButton>
           )}

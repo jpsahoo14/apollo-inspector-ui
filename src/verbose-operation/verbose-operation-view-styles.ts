@@ -4,41 +4,45 @@ export const useStyles = makeStyles({
   operationView: {
     display: "flex",
     flexDirection: "column",
-    minHeight: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: "auto",
-    backgroundColor: "lightgrey",
-    minWidth: 0,
+    flexGrow: 2,
     color: "black",
+    minWidth: "15rem",
+    height: "100%",
+    minHeight: 0,
   },
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
+    backgroundColor: "white",
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
+    backgroundColor: "white",
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
+    backgroundColor: "white",
   },
-  fetchPolicyAccPanel: { marginLeft: "1rem" },
-  errorAccPanel: { marginLeft: "1rem" },
-  warningAccPanel: { marginLeft: "1rem" },
+  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  errorAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  warningAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
   resultPanel: {
     whiteSpace: "pre-wrap",
+    backgroundColor: "white",
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
+    backgroundColor: "white",
   },
   operationDetails: {
     minHeight: 0,
     overflowY: "auto",
+    height: "70vh",
     "::-webkit-scrollbar": {
       display: "none",
     },
@@ -56,29 +60,53 @@ export const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     height: "32.5px",
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "aliceblue",
+    minHeight: 0,
+    minWidth: 0,
+  },
+  heading: {
+    display: "flex",
+    alignItems: "center",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   accordionWrapper: {
-    minHeight: 0,
+    display: "flex",
     overflowX: "scroll",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  accordioPreWrapper: {
+  accordionPreWrapper: {
+    display: "flex",
     maxWidth: "40rem",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  operationType:{
-    color: "grey",
+  operationType: {
+    color: "black",
     fontSize: "10px",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  operationNameText:{
+  operationNameText: {
     fontWeight: "bold",
     paddingLeft: "10px",
-    paddingRight: "10px"
+    paddingRight: "10px",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
-  closeButton:{
+  closeButton: {
     width: "10px",
-    border: "1px solid white",
-    backgroundColor: "transparent"
-  }
+    backgroundColor: "transparent",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+  },
 });
 
 export type stylesKeys =

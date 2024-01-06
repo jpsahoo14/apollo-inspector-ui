@@ -15,7 +15,7 @@ export const Search = React.memo(({ onSearchChange }: SearchProps) => {
       <input
         className={classes.input}
         type="text"
-        placeholder="Search..."
+        placeholder="OpName1, OpName2"
         aria-roledescription="Search"
         onChange={(e: React.SyntheticEvent) => onSearchChange(e)}
       />

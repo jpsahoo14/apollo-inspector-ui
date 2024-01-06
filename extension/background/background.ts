@@ -35,7 +35,7 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
   const connection = getConnectionObject(port);
 
   port.onMessage.addListener((message: IMessagePayload) => {
-    logMessage(`message received at background`, message);
+    logMessage(`imp! message received at background`, message);
     const event = new CustomEvent(message.destination.name, {
       detail: message,
     });
@@ -74,7 +74,7 @@ function setupConnectionListeners() {
 
 const sendMessageToOtherConnection = (message: IMessagePayload) => {
   const port = getForwardingPort(message, backgroundToConnectionsMap);
-  logMessage(`sending message to ${message.destination.name}`, {
+  logMessage(`imp! sending message to ${message.destination.name}`, {
     message,
     port,
     backgroundToConnectionsMap,

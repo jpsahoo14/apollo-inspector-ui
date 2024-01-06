@@ -1,17 +1,18 @@
 import { ISet, IColumnOptions } from "../store.interface";
 import { createState } from "../create-state";
+import { ColumnName } from "../../verbose-operation/data-grid.interface";
 
 export const getColumnOptions = (set: ISet): IColumnOptions => {
   const [selectedColumnOptions, setSelectedColumnOptions] = createState(
     [
-      "id",
-      "clientId",
-      "type",
-      "name",
-      "status",
-      "fetchPolicy",
-      "queuedAt",
-      "totalExecTime",
+      ColumnName.ID,
+      ColumnName.CliendId,
+      ColumnName.Type,
+      ColumnName.Name,
+      ColumnName.Status,
+      ColumnName.FetchPolicy,
+      ColumnName.StartAt,
+      ColumnName.TotalExecutionTime,
     ],
     "selectedColumnOptions",
     set

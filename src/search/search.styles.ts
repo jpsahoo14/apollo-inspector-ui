@@ -3,7 +3,6 @@ import { makeStyles, shorthands } from "@fluentui/react-components";
 export const searchStyles = makeStyles({
   root: {
     position: "relative",
-    width: "90%",
     maxWidth: "300px",
   },
   input: {

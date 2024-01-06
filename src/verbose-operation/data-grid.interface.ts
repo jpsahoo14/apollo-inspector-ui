@@ -1,3 +1,11 @@
+import * as React from "react";
+import { IVerboseOperation } from "apollo-inspector";
+import { ICountReducerAction } from "../operations-tracker-body";
+import {
+  IOperationsAction,
+  IOperationsReducerState,
+} from "../operations-tracker-container-helper";
+
 type ColumnWidthState = {
   minWidth: number;
   padding: number;
@@ -9,12 +17,31 @@ export type CustomColumnWidthOptions = Partial<
 > & { defaultWidth?: number | undefined };
 
 export type IColumnOptions = {
-  key: string;
+  key: ColumnName;
   header: string;
   value: (item: Item) => number | string | React.ReactNode | null;
   compare: (a: any, b: any) => number;
-  size: CustomColumnWidthOptions;
+  size?: CustomColumnWidthOptions;
 };
+
+export const enum ColumnName {
+  ID = "id",
+  CliendId = "clientId",
+  Type = "type",
+  Name = "name",
+  FetchPolicy = "fetchPolicy",
+  Status = "status",
+  StartAt = "startAt",
+  TotalExecutionTime = "totalExecTime",
+  Size = "size",
+}
+
+export interface IDataGridView {
+  operations: IVerboseOperation[] | null;
+  operationsState: IOperationsReducerState;
+  dispatchOperationsCount: React.Dispatch<ICountReducerAction>;
+  dispatchOperationsState: React.Dispatch<IOperationsAction>;
+}
 
 export type Item = {
   operationType: string;

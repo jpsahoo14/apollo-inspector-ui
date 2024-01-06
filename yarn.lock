@@ -1259,6 +1259,14 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.1.6.tgz#22958c042e10b67463997bd6ea7115fe28cbcaf9"
   integrity sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==
 
+"@fluentui-contrib/react-data-grid-react-window@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@fluentui-contrib/react-data-grid-react-window/-/react-data-grid-react-window-1.1.2.tgz#11257f58facd418eb440274b515c4806ae31f305"
+  integrity sha512-2Sy/PNZ/+DfJDo70qSeE6fbBF5IW+OzDgfykwmBGuPPC3TCKVyGgJxCWikQlzUgU0dG/ypcAcQTnRZpvxlwKCA==
+  dependencies:
+    "@swc/helpers" "~0.5.1"
+    react-window "^1.8.5"
+
 "@fluentui/keyboard-keys@^9.0.7":
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/@fluentui/keyboard-keys/-/keyboard-keys-9.0.7.tgz#a603ea0827ccd48ab606fd48ff259b8a914d23d4"
@@ -3350,7 +3358,7 @@
     legacy-swc-helpers "npm:@swc/helpers@=0.4.14"
     tslib "^2.4.0"
 
-"@swc/helpers@^0.5.0", "@swc/helpers@^0.5.1":
+"@swc/helpers@^0.5.0", "@swc/helpers@^0.5.1", "@swc/helpers@~0.5.1":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.5.3.tgz#98c6da1e196f5f08f977658b80d6bd941b5f294f"
   integrity sha512-FaruWX6KdudYloq1AHD/4nU+UsMTdNE8CKyrseXWEcgjDAbvkwJg2QGPAnfIJLIWsjZOSPLOAykK6fuYp4vp4A==
@@ -3599,11 +3607,6 @@
   dependencies:
     "@typescript-eslint/types" "6.16.0"
     eslint-visitor-keys "^3.4.1"
-
-"@uiw/copy-to-clipboard@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@uiw/copy-to-clipboard/-/copy-to-clipboard-1.0.16.tgz#38f7689be319b1f35dbf24254ec8eaec7158dcff"
-  integrity sha512-IXR+N363nLTR3ilklmM+B0nk774jVE/muOrBYt4Rdww/Pf3uP9XHyv2x6YZrbDh29F7w9BkzQyB8QF6WDShmJA==
 
 "@ungap/structured-clone@^1.2.0":
   version "1.2.0"
@@ -6305,7 +6308,7 @@ react-transition-group@^4.4.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-window@^1.8.6:
+react-window@^1.8.5, react-window@^1.8.6:
   version "1.8.10"
   resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.10.tgz#9e6b08548316814b443f7002b1cf8fd3a1bdde03"
   integrity sha512-Y0Cx+dnU6NLa5/EvoHukUD0BklJ8qITCtVEPY1C/nL8wwoZ0b5aEw8Ff1dOVHw7fCzMt55XfJDd8S8W8LCaUCg==

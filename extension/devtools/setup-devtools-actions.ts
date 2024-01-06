@@ -1,14 +1,18 @@
 import {
+  CONTENT_SCRIPT_ACTIONS,
+  CONTENT_SCRIPT,
   DEVTOOL,
   DEVTOOLS_ACTIONS,
-  WEB_PAGE,
   PANEL_PAGE,
-  CONTENT_SCRIPT,
+  WEB_PAGE,
+  WEBPAGE_ACTIONS,
 } from "../utils";
 import {
-  sendMessageToBackgroundScript,
-  handleMessageForDevtool,
   createDevtoolsPanel,
+  handleMessageForDevtool,
+  sendMessageToBackgroundScript,
+  getContentScriptLoadedMethod,
+  getHandleWebpageUnload,
 } from "./devtool-actions";
 import { IDevtoolContext } from "./devtools.interface";
 
@@ -16,9 +20,12 @@ export const setupDevtoolActions = (context: IDevtoolContext) => {
   const { backgroundConnection, devtools } = context;
   const actionsToReducers = {
     [DEVTOOLS_ACTIONS.CREATE_DEVTOOLS_PANEL]: createDevtoolsPanel(context),
+    [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE]:
+      getContentScriptLoadedMethod(context),
     [CONTENT_SCRIPT]: sendMessageToBackgroundScript({
       backgroundConnection,
     }),
+    [WEBPAGE_ACTIONS.WEB_PAGE_UNLOAD]: getHandleWebpageUnload(context),
     [WEB_PAGE]: sendMessageToBackgroundScript({ backgroundConnection }),
     [PANEL_PAGE]: sendMessageToBackgroundScript({ backgroundConnection }),
     [DEVTOOL]: handleMessageForDevtool({ devtools }),

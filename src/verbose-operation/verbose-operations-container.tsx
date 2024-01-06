@@ -30,7 +30,7 @@ export const VerboseOperationsContainer = (
 
   return (
     <div className={classes.root}>
-      <div className={classes.operations}>
+      <div className={classes.allOperationsView}>
         <DataGridView
           key={"OperationsDataGridView"}
           operations={operations}
@@ -38,7 +38,8 @@ export const VerboseOperationsContainer = (
           dispatchOperationsCount={dispatchOperationsCount}
           dispatchOperationsState={dispatchOperationsState}
         />
-
+      </div>
+      <div className={classes.selectedOperationView}>
         <VerboseOperationView
           key={"VerboseOperationView"}
           operation={operationsState.selectedOperation}

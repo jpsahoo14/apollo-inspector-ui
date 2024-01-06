@@ -27,6 +27,7 @@ export const PanelContainer = () => {
   } | null>(null);
   const [initPanelComplete, setInitPanelComplete] = React.useState(false);
   const tabIdRef = React.useRef(browser.devtools.inspectedWindow.tabId);
+  const cleanUpsRef = React.useRef<(() => void)[]>([]);
   const [backgroundConnection, setBackgroundConnection] =
     React.useState<browser.Runtime.Port | null>(null);
   const panelRef = React.useRef(new CustomEventTarget(PANEL_PAGE));
@@ -39,6 +40,7 @@ export const PanelContainer = () => {
     setClientIds,
     subscription,
     setSubscription,
+    cleanUpsRef,
   });
 
   useGetApolloClientIds(
@@ -46,7 +48,8 @@ export const PanelContainer = () => {
     tabIdRef,
     panelRef,
     initPanelComplete,
-    setClientIds
+    setClientIds,
+    cleanUpsRef
   );
 
   const { onRecordStart, onRecordStop, onCopy, onClearStore, onResetStore } =
@@ -179,7 +182,8 @@ const useGetApolloClientIds = (
   tabIdRef: React.MutableRefObject<number>,
   panelRef: React.MutableRefObject<CustomEventTarget>,
   initPanelComplete: boolean,
-  setClientIds: React.Dispatch<React.SetStateAction<string[] | null>>
+  setClientIds: React.Dispatch<React.SetStateAction<string[] | null>>,
+  cleanUpsRef: React.MutableRefObject<(() => void)[]>
 ) => {
   React.useEffect(() => {
     if (backgroundConnection && initPanelComplete) {
@@ -209,9 +213,13 @@ const useGetApolloClientIds = (
         }
       );
 
-      return () => {
+      const cleanUp = () => {
         removeListener();
         clearInterval(intervalNumber);
+      };
+      cleanUpsRef.current.push(cleanUp);
+      return () => {
+        cleanUp();
       };
     }
   }, [
@@ -235,6 +243,7 @@ interface IUseSetBackgroundConnection {
   setSubscription: React.Dispatch<
     React.SetStateAction<{ unsubscribe: () => void } | null>
   >;
+  cleanUpsRef: React.MutableRefObject<(() => void)[]>;
 }
 
 const usePanelInitialization = ({
@@ -245,15 +254,20 @@ const usePanelInitialization = ({
   tabIdRef,
   setSubscription,
   subscription,
+  cleanUpsRef,
 }: IUseSetBackgroundConnection) => {
   const resetStore = React.useCallback(() => {
     setInitPanelComplete(false);
     setClientIds(null);
     subscription?.unsubscribe();
     setSubscription(null);
+    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
+    cleanUpsRef.current = [];
   }, [setInitPanelComplete, setClientIds]);
 
   const initPanel = React.useCallback(() => {
+    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
+    cleanUpsRef.current = [];
     setInitPanelComplete(true);
   }, [setInitPanelComplete]);
 
@@ -262,7 +276,7 @@ const usePanelInitialization = ({
       name: JSON.stringify({ name: PANEL_PAGE, tabId: tabIdRef.current }),
     });
     backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-      logMessage(`message received at panel-container`, message);
+      logMessage(`imp! message received at panel-container`, message);
       const event = new CustomEvent(message.destination.name, {
         detail: message,
       });
@@ -278,6 +292,7 @@ const usePanelInitialization = ({
       setInitPanelComplete,
       initPanel,
       resetStore,
+      cleanUpsRef,
     });
     initPanel();
     return () => {

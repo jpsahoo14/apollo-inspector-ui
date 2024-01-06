@@ -1,6 +1,20 @@
 import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
+  wholeBody: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+    flexGrow: 1,
+  },
+  headers: {
+    display: "flex",
+    flexDirection: "row",
+    minHeight: 0,
+    minWidth: 0,
+  },
   gridBody: {
     position: "relative",
     willChange: "transform",
@@ -8,39 +22,36 @@ export const useStyles = makeStyles({
     cursor: "pointer",
     width: "100%",
     height: "100%",
-    overflowY: "scroll",
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
+    // "::-webkit-scrollbar": {
+    //   display: "none",
+    // },
   },
   gridRow: {
     ":hover": {
-      backgroundColor: "unset",
-      color: "unset",
+      backgroundColor: "aliceblue",
     },
   },
-  gridHeader: {
-    ":hover": {
-      backgroundColor: "unset !important",
-      color: "unset !important",
-    },
+  gridHeaderCell: {
+    backgroundColor: "#d4e8fa",
   },
+  gridrowcell: {},
   gridView: {
-    minWidth: 0,
-    height: "100%",
     flexGrow: 2,
     display: "flex",
     "&:hover": {
       backgroundColor: "unset !important",
       color: "unset !important",
     },
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
   },
   selectedAndFailedRow: {
     color: "darkred",
-    backgroundColor: "lightgrey",
+    backgroundColor: "aliceblue",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "lightgrey",
+      backgroundColor: "aliceblue",
       color: "darkred",
     },
   },
@@ -52,12 +63,10 @@ export const useStyles = makeStyles({
     color: "red",
   },
   selectedRow: {
-    backgroundColor: "lightgrey",
-    color: "white",
+    backgroundColor: "aliceblue",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "lightgrey",
-      color: "white",
+      backgroundColor: "aliceblue",
     },
   },
   operationText: {
@@ -65,24 +74,49 @@ export const useStyles = makeStyles({
     display: "block",
   },
   selectedOperationGridWrapper: {
+    display: "flex",
+    height: "100%",
+    minHeight: 0,
     minWidth: 0,
-    flexGrow: 2,
+    flexGrow: 1,
   },
   gridWrapper: {
     flexGrow: 1,
+    display: "flex",
+    height: "100%",
+    minHeight: 0,
+    minWidth: 0,
+  },
+  grid: {
+    height: "100%",
+    minHeight: 0,
     minWidth: 0,
   },
   filterViewWrapper: {
     flexGrow: 1,
-    minWidth: 0,
+    display: "flex",
     maxWidth: "300px",
-  },
-  headers:{
-    display: "flex",
-    flexDirection: "row",
-  },
-  wholeBody:{
-    display: "flex",
-    flexDirection: "column",
+    height: "100%",
+    minHeight: 0,
+    minWidth: "fit-content",
   },
 });
+
+export type IClasses = Record<
+  | "grid"
+  | "gridRow"
+  | "wholeBody"
+  | "headers"
+  | "gridBody"
+  | "gridHeaderCell"
+  | "gridrowcell"
+  | "gridView"
+  | "selectedAndFailedRow"
+  | "failedRow"
+  | "selectedRow"
+  | "operationText"
+  | "selectedOperationGridWrapper"
+  | "gridWrapper"
+  | "filterViewWrapper",
+  string
+>;
