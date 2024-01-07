@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Apollo Inspector",
-  "description": "Apollo Inspector",
-  "version": "1.0",
+  "description": "Tracks operations being done by Apollo Client",
+  "version": "0.0.1",
   "content_scripts": [
     {
       "js": ["content-script.js"],

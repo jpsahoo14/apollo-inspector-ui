@@ -141,8 +141,8 @@ const renderFilterAndColumnOptionsButton = (
 const renderFilterView = (
   showFilters: boolean,
   classes: IClasses,
-  updateFilters: (input: React.SetStateAction<IFilterSet | null>) => void,
-  filters: IFilterSet | null,
+  updateFilters: (input: React.SetStateAction<IFilterSet>) => void,
+  filters: IFilterSet,
   operationsState: IOperationsReducerState
 ) =>
   showFilters && (

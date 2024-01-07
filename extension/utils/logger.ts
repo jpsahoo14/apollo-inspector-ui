@@ -1,5 +1,5 @@
 // This is temporary
-const enableLogger = false;
+const enableLogger = true;
 const enableLoggingData = false;
 
 export const createLogger = (name: string) => {

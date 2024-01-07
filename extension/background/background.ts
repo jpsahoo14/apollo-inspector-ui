@@ -14,6 +14,7 @@ import {
   createLogger,
   sendMessageViaEventTarget,
 } from "../utils";
+
 const backgroundToConnectionsMap: {
   [key: string]: browser.Runtime.Port | undefined;
 } = {};
