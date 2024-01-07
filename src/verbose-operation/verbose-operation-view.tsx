@@ -26,7 +26,7 @@ import {
   IOperationsAction as IOperationsReducerActions,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
-import { Dismiss16Filled, Copy16Regular, ArrowRight20Regular,ChevronRight20Regular } from "@fluentui/react-icons";
+import { Dismiss16Filled, Copy16Regular } from "@fluentui/react-icons";
 import copy from "copy-to-clipboard";
 
 const spaceForStringify = 2;
@@ -74,12 +74,18 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           <div className={classes.operationType}> {operationType} </div>
         </div>
         <div className={classes.buttons}>
-          <Button onClick={copyOperation} className={classes.button}> 
-            <Copy16Regular/> 
-          </Button>
-          <Button onClick={closePreview} className={classes.button}>
-            <Dismiss16Filled />
-          </Button>
+          <Button
+            key={`copy-btn`}
+            onClick={copyOperation}
+            className={classes.button}
+            icon={<Copy16Regular />}
+          ></Button>
+          <Button
+            key={`dismiss-btn`}
+            onClick={closePreview}
+            className={classes.button}
+            icon={<Dismiss16Filled />}
+          ></Button>
         </div>
       </div>
       <div
@@ -237,17 +243,16 @@ const getAffectedQueriesPanel = (
   return (
     <AccordionItem value={value} key={value}>
       <Tooltip content={tooltipContent} relationship="label">
-        <AccordionHeader expandIcon={affectedQueriesItems.length >0 ? <ChevronRight20Regular /> : <ArrowRight20Regular/> } >
+        <AccordionHeader>
           <Text
             style={{ fontFamily: "monospace" }}
           >{`${accordionHeaderString} (${affectedQueriesItems.length})`}</Text>
         </AccordionHeader>
       </Tooltip>
-    
       <AccordionPanel>
         <div className={classes.affectedQueriesAccPanel}>
-          {affectedQueriesItems.map((query) => (
-            <div key="affectedQueriesList">{query.header}</div>
+          {affectedQueriesItems.map((query, key) => (
+            <div key={`affected-queries-${key}`}>{query.header}</div>
           ))}
         </div>
       </AccordionPanel>

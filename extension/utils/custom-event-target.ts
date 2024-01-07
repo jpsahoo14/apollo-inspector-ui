@@ -1,6 +1,5 @@
 import { Queue } from "@datastructures-js/queue";
 import { createLogger } from "./logger";
-import { WEBPAGE_ACTIONS } from "./constants";
 
 export class CustomEventTarget {
   private eventTarget: EventTarget;
@@ -23,7 +22,9 @@ export class CustomEventTarget {
     options?: boolean | AddEventListenerOptions | undefined
   ): () => void {
     this.eventNames.push(type);
-    const listener = (message: CustomEvent) => {
+    const listener: EventListenerOrEventListenerObject = (
+      message: CustomEvent<T>
+    ) => {
       try {
         callback?.(message.detail);
       } catch (e) {
