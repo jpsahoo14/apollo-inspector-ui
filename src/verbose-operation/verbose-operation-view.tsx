@@ -242,25 +242,16 @@ const getAffectedQueriesPanel = (
   return (
     <AccordionItem value={value} key={value}>
       <Tooltip content={tooltipContent} relationship="label">
-        <AccordionHeader
-          expandIcon={
-            affectedQueriesItems.length > 0 ? (
-              <ChevronRight20Regular />
-            ) : (
-              <ArrowRight20Regular />
-            )
-          }
-        >
+        <AccordionHeader>
           <Text
             style={{ fontFamily: "monospace" }}
           >{`${accordionHeaderString} (${affectedQueriesItems.length})`}</Text>
         </AccordionHeader>
       </Tooltip>
-
       <AccordionPanel>
         <div className={classes.affectedQueriesAccPanel}>
-          {affectedQueriesItems.map((query) => (
-            <div key="affectedQueriesList">{query.header}</div>
+          {affectedQueriesItems.map((query, key) => (
+            <div key={`affected-queries-${key}`}>{query.header}</div>
           ))}
         </div>
       </AccordionPanel>
