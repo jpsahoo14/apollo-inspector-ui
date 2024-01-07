@@ -22,12 +22,12 @@ import {
   sizeInBytes,
 } from "../utils/apollo-operations-tracker-utils";
 import { DocumentNode } from "graphql";
-// import { ResultsFrom } from "../types";
 import {
   IOperationsAction as IOperationsReducerActions,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
-import { DeleteRegular } from "@fluentui/react-icons";
+import { Dismiss16Filled, Copy16Regular, ArrowRight20Regular,ChevronRight20Regular } from "@fluentui/react-icons";
+import copy from "copy-to-clipboard";
 
 const spaceForStringify = 2;
 
@@ -56,6 +56,11 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
     });
   }, [dispatchOperationsState]);
 
+  const copyOperation = React.useCallback(() => {
+    const copyOperationData = JSON.stringify(operation);
+    copy(copyOperationData);
+  }, [operation]);
+
   if (!operation) {
     return null;
   }
@@ -68,9 +73,14 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           <div className={classes.operationNameText}> {operationName} </div>
           <div className={classes.operationType}> {operationType} </div>
         </div>
-        <Button onClick={closePreview} className={classes.closeButton}>
-          <DeleteRegular />
-        </Button>
+        <div className={classes.buttons}>
+          <Button onClick={copyOperation} className={classes.button}> 
+            <Copy16Regular/> 
+          </Button>
+          <Button onClick={closePreview} className={classes.button}>
+            <Dismiss16Filled />
+          </Button>
+        </div>
       </div>
       <div
         className={classes.accordionWrapper}
@@ -227,16 +237,17 @@ const getAffectedQueriesPanel = (
   return (
     <AccordionItem value={value} key={value}>
       <Tooltip content={tooltipContent} relationship="label">
-        <AccordionHeader>
+        <AccordionHeader expandIcon={affectedQueriesItems.length >0 ? <ChevronRight20Regular /> : <ArrowRight20Regular/> } >
           <Text
             style={{ fontFamily: "monospace" }}
           >{`${accordionHeaderString} (${affectedQueriesItems.length})`}</Text>
         </AccordionHeader>
       </Tooltip>
+    
       <AccordionPanel>
         <div className={classes.affectedQueriesAccPanel}>
           {affectedQueriesItems.map((query) => (
-            <div>{query.header}</div>
+            <div key="affectedQueriesList">{query.header}</div>
           ))}
         </div>
       </AccordionPanel>
