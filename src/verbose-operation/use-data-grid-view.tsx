@@ -175,7 +175,11 @@ const useFilterLogic = (props: IDataGridView) => {
     dispatchOperationsState,
   } = props;
 
-  const [filters, setFilters] = React.useState<IFilterSet | null>(null);
+  const [filters, setFilters] = React.useState<IFilterSet>({
+    results: [],
+    types: [],
+    statuses: [],
+  });
   const [filteredItems, setFilteredItems] = React.useState(operations || []);
 
   React.useEffect(() => {
@@ -203,7 +207,7 @@ const useFilterLogic = (props: IDataGridView) => {
   ]);
 
   const updateFilters = React.useCallback(
-    (input: React.SetStateAction<IFilterSet | null>) => {
+    (input: React.SetStateAction<IFilterSet>) => {
       setTimeout(() => {
         setFilters(input);
       }, 0);

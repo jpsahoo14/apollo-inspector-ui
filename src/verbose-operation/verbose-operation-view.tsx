@@ -235,8 +235,8 @@ const getAffectedQueriesPanel = (
       </Tooltip>
       <AccordionPanel>
         <div className={classes.affectedQueriesAccPanel}>
-          {affectedQueriesItems.map((query) => (
-            <div>{query.header}</div>
+          {affectedQueriesItems.map((query, index) => (
+            <div key={`affectedQueries-${index}`}>{query.header}</div>
           ))}
         </div>
       </AccordionPanel>
