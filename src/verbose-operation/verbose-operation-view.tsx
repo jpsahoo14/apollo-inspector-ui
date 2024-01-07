@@ -73,7 +73,7 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           <div className={classes.operationNameText}> {operationName} </div>
           <div className={classes.operationType}> {operationType} </div>
         </div>
-        <div style = {{alignItems: "left"}} >
+        <div className={classes.buttons}>
           <Button onClick={copyOperation} className={classes.button}> 
             <Copy16Regular/> 
           </Button>

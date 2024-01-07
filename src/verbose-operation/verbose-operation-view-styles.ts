@@ -104,6 +104,9 @@ export const useStyles = makeStyles({
     minHeight: 0,
     ...shorthands.border("0px", "solid", "transparent"),
   },
+  buttons: {
+   alignItems: "left"
+  }
 });
 
 export type stylesKeys =
