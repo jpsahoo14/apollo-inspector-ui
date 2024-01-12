@@ -86,7 +86,7 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     store,
     apolloOperationsData: store.apolloOperationsData,
   }));
-  ({ store });
+
   const { selectedApolloClientIds } = useStore(trackerStore, (store) => ({
     selectedApolloClientIds: store.selectedApolloClientIds,
     apolloClients: store.apolloClients,

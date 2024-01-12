@@ -18,7 +18,7 @@ export const sendMessageToBackgroundScript = ({
   backgroundConnection: browser.Runtime.Port;
 }) => {
   return (message: IMessagePayload) => {
-    logMessage(`imp! sending message to background`, message);
+    logMessage(`sending message to background`, { message });
     backgroundConnection.postMessage(message);
   };
 };

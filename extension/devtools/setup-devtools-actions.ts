@@ -25,7 +25,8 @@ export const setupDevtoolActions = (context: IDevtoolContext) => {
     [CONTENT_SCRIPT]: sendMessageToBackgroundScript({
       backgroundConnection,
     }),
-    [WEBPAGE_ACTIONS.WEB_PAGE_UNLOAD]: getHandleWebpageUnload(context),
+    [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD]:
+      getHandleWebpageUnload(context),
     [WEB_PAGE]: sendMessageToBackgroundScript({ backgroundConnection }),
     [PANEL_PAGE]: sendMessageToBackgroundScript({ backgroundConnection }),
     [DEVTOOL]: handleMessageForDevtool({ devtools }),

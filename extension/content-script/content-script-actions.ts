@@ -7,6 +7,8 @@ import {
   CONTENT_SCRIPT_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
+  PANEL_PAGE,
+  DEVTOOL,
 } from "../utils";
 import { IContentScriptInitialContext } from "./content-script.interface";
 
@@ -38,7 +40,7 @@ export const getDevtoolAction = ({
   backgroundService,
 }: IContentScriptContext) => {
   return (message: IMessagePayload) => {
-    logMessage(`imp! sending event to devtool `, message);
+    logMessage(` sending event to devtool `, { message });
 
     backgroundService.postMessage(message);
   };
@@ -58,7 +60,28 @@ export const getContentScriptAction = (
 
 export const getWebpageAction = (context: IContentScriptInitialContext) => {
   return (message: IMessagePayload) => {
-    logMessage(`imp! sending message to webpage`, message);
+    logMessage(`sending message to webpage`, { message });
     window.postMessage(message, "*");
+  };
+};
+
+export const getContentScriptUnloadReducer = (
+  context: IContentScriptInitialContext
+) => {
+  const { contentScript, store } = context;
+  const { tabId } = store;
+  return () => {
+    sendMessageViaEventTarget(contentScript, {
+      action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD,
+      callerName: CONTENT_SCRIPT,
+      destinationName: PANEL_PAGE,
+      tabId: tabId || 1,
+    });
+    sendMessageViaEventTarget(contentScript, {
+      action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD,
+      callerName: CONTENT_SCRIPT,
+      destinationName: DEVTOOL,
+      tabId: tabId || 1,
+    });
   };
 };

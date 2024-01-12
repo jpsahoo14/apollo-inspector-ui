@@ -5,7 +5,7 @@ import { IPanelContext } from "./panel.interface";
 export const sendMessageFromPanelPage = (context: IPanelContext) => {
   const { backgroundConnection } = context;
   return (message: IMessagePayload) => {
-    logMessage(`imp! sending message from panel-action`, message);
+    logMessage(`sending message from panel-action`, { message });
     backgroundConnection.postMessage(message);
   };
 };
@@ -32,7 +32,7 @@ export const getHandlePanelPageActions = (context: IPanelContext) => {
 export const getHandleWebPageUnload = (context: IPanelContext) => {
   const { resetStore, cleanUpsRef } = context;
   return (message: IMessagePayload) => {
-    logMessage(`handle webpage unload`, message);
+    logMessage(`handle webpage unload`, { message });
     resetStore();
     cleanUpsRef.current.forEach((cleanUp) => cleanUp());
     cleanUpsRef.current = [];

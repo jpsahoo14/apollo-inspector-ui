@@ -6,6 +6,9 @@ import {
   DEVTOOLS_ACTIONS,
   PANEL_PAGE_ACTIONS,
   CONTENT_SCRIPT,
+  createLogger,
+  CustomEventTarget,
+  IMessagePayload,
 } from "../utils";
 import {
   devtoolScriptLoadedAction,
@@ -44,14 +47,38 @@ export const setupWebPageActions = (context: IWebpageContext) => {
   for (const prop in actionsToReducers) {
     webpage.addEventListener(prop, actionsToReducers[prop]);
   }
-
-  setupWindowEventListeners(context);
+  const cleanUp = listenToPostMessage(webpage);
+  setupWindowEventListeners(context, cleanUp);
 };
 
-const setupWindowEventListeners = (context: IWebpageContext) => {
-  const { tabId, webpage } = context;
+const listenToPostMessage = (webpage: CustomEventTarget) => {
+  const listener = (event: { data: IMessagePayload }) => {
+    if (!event.data?.destination) {
+      return;
+    }
+
+    logMessage(`message recieved at web-page`, { message: event.data });
+    const customEvent = new CustomEvent(event.data.destination.name, {
+      detail: event.data,
+    });
+    webpage.dispatchEvent(customEvent);
+  };
+  window.addEventListener("message", listener);
+
+  return () => {
+    window.removeEventListener("message", listener);
+  };
+};
+
+const setupWindowEventListeners = (
+  context: IWebpageContext,
+  cleanUp: () => void
+) => {
   const beforeUnloadListener = getWebpageUnloadReducer(context);
   window.onbeforeunload = () => {
     beforeUnloadListener();
+    cleanUp();
   };
 };
+
+const logMessage = createLogger(`mainThread-[setupWebAction]`);

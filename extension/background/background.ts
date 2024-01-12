@@ -32,11 +32,13 @@ const addToCleanup = (cleanUp: () => void) => {
 };
 
 browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
-  logMessage(`new connection `, { name: port.name });
   const connection = getConnectionObject(port);
+  logMessage(`new connection ${connection.name}-${connection.tabId}`, {
+    data: { name: port.name },
+  });
 
   port.onMessage.addListener((message: IMessagePayload) => {
-    logMessage(`imp! message received at background`, message);
+    logMessage(`message received at background `, { message });
     const event = new CustomEvent(message.destination.name, {
       detail: message,
     });
@@ -46,7 +48,10 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
   backgroundToConnectionsMap[JSON.stringify(connection)] = port;
 
   port.onDisconnect.addListener(() => {
-    logMessage(`disconnecting from background`, connection);
+    logMessage(
+      `disconnecting from background ${connection.name}-${connection.tabId}`,
+      { data: { connection } }
+    );
     if (connection.name === DEVTOOL) {
       sendMessageViaEventTarget(backgroundEventTarget, {
         action: DEVTOOLS_ACTIONS.DISCONNECTED,
@@ -75,11 +80,16 @@ function setupConnectionListeners() {
 
 const sendMessageToOtherConnection = (message: IMessagePayload) => {
   const port = getForwardingPort(message, backgroundToConnectionsMap);
-  logMessage(`imp! sending message to ${message.destination.name}`, {
+  logMessage(`sending message `, {
     message,
-    port,
-    backgroundToConnectionsMap,
-    name: message.destination.name,
+    data: {
+      port,
+      backgroundToConnectionsMap,
+      name: message.destination.name,
+    },
+    log: {
+      backgroundToConnections: Object.keys(backgroundToConnectionsMap),
+    },
   });
   if (port) {
     port.postMessage(message);
@@ -97,7 +107,7 @@ const sendMessageToOtherConnection = (message: IMessagePayload) => {
 const dispatchEventEventWithinBackgroundService = (
   message: IMessagePayload
 ) => {
-  logMessage(`sending message to TO_BACKGROUND`, message);
+  logMessage(`sending message to TO_BACKGROUND`, { message });
 
   const event = new CustomEvent(message.destination.action, {
     detail: message,
