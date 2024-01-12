@@ -1,7 +1,7 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Apollo Inspector",
-  "description": "Adds apollo inspector devtools to Google Chrome",
+  "description": "Adds apollo inspector devtools to Firefox",
   "version": "0.0.1",
   "content_scripts": [
     {
@@ -11,13 +11,8 @@
     }
   ],
   "devtools_page": "devtools.html",
-  "web_accessible_resources": [
-    {
-      "resources": ["webpage.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
+  "web_accessible_resources": ["webpage.js"],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   }
 }

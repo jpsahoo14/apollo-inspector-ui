@@ -20,7 +20,6 @@ import copy from "copy-to-clipboard";
 const OperationsTrackerContainer = lazy(() => import("../../index"));
 
 export const PanelContainer = () => {
-  const [isRecording, setIsRecording] = React.useState<boolean>(false);
   const [clientIds, setClientIds] = React.useState<string[] | null>(null);
   const [subscription, setSubscription] = React.useState<{
     unsubscribe: () => void;
@@ -32,6 +31,16 @@ export const PanelContainer = () => {
     React.useState<browser.Runtime.Port | null>(null);
   const panelRef = React.useRef(new CustomEventTarget(PANEL_PAGE));
 
+  logMessage(`rendering Panel container`, {
+    log: {
+      clientIds,
+      subscription: !!subscription,
+      initPanelComplete,
+      tabId: tabIdRef.current,
+      cleanUps: cleanUpsRef.current.length,
+      backgroundConnection: !!backgroundConnection,
+    },
+  });
   usePanelInitialization({
     tabIdRef,
     panelRef,
@@ -213,9 +222,14 @@ const useGetApolloClientIds = (
         }
       );
 
+      const timeoutNum = setTimeout(() => {
+        clearInterval(intervalNumber);
+      }, fetchUntil);
+
       const cleanUp = () => {
         removeListener();
         clearInterval(intervalNumber);
+        clearTimeout(timeoutNum);
       };
       cleanUpsRef.current.push(cleanUp);
       return () => {
@@ -253,19 +267,22 @@ const usePanelInitialization = ({
   setInitPanelComplete,
   tabIdRef,
   setSubscription,
-  subscription,
   cleanUpsRef,
 }: IUseSetBackgroundConnection) => {
   const resetStore = React.useCallback(() => {
+    logMessage(`resetStore called`, { log: undefined });
     setInitPanelComplete(false);
     setClientIds(null);
-    subscription?.unsubscribe();
-    setSubscription(null);
+    setSubscription((sub) => {
+      sub?.unsubscribe();
+      return null;
+    });
     cleanUpsRef.current.forEach((cleanUp) => cleanUp());
     cleanUpsRef.current = [];
-  }, [setInitPanelComplete, setClientIds]);
+  }, [setInitPanelComplete, setClientIds, setSubscription]);
 
   const initPanel = React.useCallback(() => {
+    logMessage(`initPanel called`, { log: undefined });
     cleanUpsRef.current.forEach((cleanUp) => cleanUp());
     cleanUpsRef.current = [];
     setInitPanelComplete(true);
@@ -276,7 +293,7 @@ const usePanelInitialization = ({
       name: JSON.stringify({ name: PANEL_PAGE, tabId: tabIdRef.current }),
     });
     backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-      logMessage(`imp! message received at panel-container`, message);
+      logMessage(`message received at panel-container`, { message });
       const event = new CustomEvent(message.destination.name, {
         detail: message,
       });
@@ -295,9 +312,10 @@ const usePanelInitialization = ({
       cleanUpsRef,
     });
     initPanel();
+
     return () => {
       logMessage(`disconnecting`, {
-        backgroundConnection: !!backgroundConnection,
+        data: { backgroundConnection: !!backgroundConnection },
       });
       backgroundConnection?.disconnect();
     };
@@ -315,7 +333,10 @@ const useOnRecordStartAndOnRecordStop = (
 ) => {
   const onRecordStart = React.useCallback(
     (clientIds: string[]) => {
-      subscription?.unsubscribe();
+      setSubscription((sub) => {
+        sub?.unsubscribe();
+        return sub;
+      });
       return new Observable<IDataView>((observer) => {
         const unsubscribe = panelRef.current.addEventListener(
           WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
@@ -335,18 +356,20 @@ const useOnRecordStartAndOnRecordStop = (
         });
       });
     },
-    [setSubscription, subscription, tabIdRef, panelRef]
+    [setSubscription, tabIdRef, panelRef]
   );
 
   const onRecordStop = React.useCallback(() => {
-    subscription?.unsubscribe();
-    setSubscription(null);
+    setSubscription((sub) => {
+      sub?.unsubscribe();
+      return null;
+    });
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
       destinationName: WEB_PAGE,
       tabId: tabIdRef.current,
       callerName: PANEL_PAGE,
     });
-  }, [subscription, panelRef, setSubscription, tabIdRef]);
+  }, [panelRef, setSubscription, tabIdRef]);
   return { onRecordStart, onRecordStop };
 };
