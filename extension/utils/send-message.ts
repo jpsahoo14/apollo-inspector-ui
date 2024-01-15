@@ -37,7 +37,7 @@ export const sendMessageViaEventTarget = (
       tabId,
     },
     requestInfo: {
-      ...generateRequestInfo(callerName),
+      ...generateRequestInfo(callerName, action),
     },
     data,
   };
