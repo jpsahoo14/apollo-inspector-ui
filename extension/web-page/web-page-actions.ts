@@ -135,7 +135,7 @@ const sendMessageToContentScript = (
       tabId: 0,
     },
     requestInfo: {
-      ...generateRequestInfo(WEB_PAGE),
+      ...generateRequestInfo(WEB_PAGE, action),
     },
   };
   logMessage(`sending message from webpage`, { message });

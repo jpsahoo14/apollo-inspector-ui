@@ -1,11 +1,12 @@
 export const generateRequestInfo = (
-  name: string
+  name: string,
+  action: string
 ): {
   requestId: string;
   sender: string;
 } => {
   return {
-    requestId: `${name}:${Date.now()}`,
+    requestId: `${name}:${action}:${Date.now()}`,
     sender: `${name}`,
   };
 };
