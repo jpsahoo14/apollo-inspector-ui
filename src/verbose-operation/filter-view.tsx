@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Checkbox } from "@fluentui/react-components";
+import { Checkbox, CheckboxOnChangeData } from "@fluentui/react-components";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
 interface IFilterView {
-  setFilters: (input: React.SetStateAction<IFilterSet | null>) => void;
-  filters: IFilterSet | null;
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void;
+  filters: IFilterSet;
   operationsState: IOperationsReducerState;
 }
 
@@ -42,7 +42,7 @@ interface IUseOperationTypesCheckBoxParams {
   operationTypesFilter: string[];
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>;
   filters: IFilterSet | null;
-  setFilters: (input: React.SetStateAction<IFilterSet | null>) => void;
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void;
   resultFromFilter: string[];
   statusFilter: string[];
   queryChecked: boolean;
@@ -92,26 +92,26 @@ export const FilterView = React.memo((props: IFilterView) => {
 
   const statues = Object.entries(OperationStatus)
     .filter((status) => status[0] !== OperationStatus.InFlight)
-    .map((value, key) => {
+    .map((value) => {
       const checkboxValue = (value as unknown as Array<string>)[0];
       return (
         <Checkbox
           onChange={onStatusChange}
           value={checkboxValue}
           label={checkboxValue}
-          key={key}
+          key={`status-${checkboxValue}`}
         />
       );
     });
 
-  const resultsFrom = Object.entries(ResultsFrom).map((value, key) => {
+  const resultsFrom = Object.entries(ResultsFrom).map((value) => {
     const checkboxValue = (value as unknown as Array<string>)[0];
     return (
       <Checkbox
         onChange={onResultChange}
         value={checkboxValue}
         label={checkboxValue}
-        key={key}
+        key={`result-${checkboxValue}`}
       />
     );
   });
@@ -156,7 +156,7 @@ const useOperationTypesCheckBox = ({
             (value as unknown as Array<string>)[0] as OperationType
           )
       )
-      .map((value, key) => {
+      .map((value) => {
         const checkboxValue = (value as unknown as Array<string>)[0];
         return (
           <>
@@ -165,10 +165,11 @@ const useOperationTypesCheckBox = ({
               value={checkboxValue}
               label={checkboxValue}
               checked={!!operationTypesFilter?.includes(checkboxValue)}
-              key={key}
+              key={`type-${checkboxValue}`}
             />
             {checkboxValue.includes("Query") && (
               <div
+                key="query-subvalues"
                 style={{
                   marginLeft: "2rem",
                   display: "Flex",
@@ -188,6 +189,8 @@ const useOperationTypesCheckBox = ({
                     );
                   })
                   .map(([key, value]) => {
+                    console.log({ value, key, Query: "query" });
+
                     return (
                       <Checkbox
                         key={key}
@@ -210,7 +213,7 @@ const useOperationTypesCheckBox = ({
 
 interface IUseOnSubTypeChange {
   operationTypesFilter: string[];
-  setFilters: (input: React.SetStateAction<IFilterSet | null>) => void;
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void;
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
@@ -221,8 +224,8 @@ const useOnSubTypeChange = ({
 }: IUseOnSubTypeChange) =>
   React.useCallback(
     (
-      { target: { value } }: { target: { value: any } },
-      { checked }: { checked: boolean }
+      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
+      { checked }: CheckboxOnChangeData
     ) => {
       let arr = operationTypesFilter.concat([]);
 
@@ -249,10 +252,13 @@ const useOnSubTypeChange = ({
 const useOnStatusChange = (
   statusFilter: string[],
   setStatusFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (filterSet: IFilterSet | null) => void
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
-    ({ target: { value } }, { checked }) => {
+    (
+      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
+      { checked }: CheckboxOnChangeData
+    ) => {
       let arr = statusFilter.concat([]);
       if (checked) {
         arr.push(value);
@@ -274,10 +280,13 @@ const useOnStatusChange = (
 const useOnResultChange = (
   resultFromFilter: string[],
   setResultFromFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (filterSet: IFilterSet | null) => void
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
-    ({ target: { value } }, { checked }) => {
+    (
+      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
+      { checked }: CheckboxOnChangeData
+    ) => {
       let arr = resultFromFilter.concat([]);
       if (checked) {
         arr.push(value);
@@ -298,12 +307,12 @@ const useOnResultChange = (
 const useOnOperationTypeFilterChange = (
   operationTypesFilter: string[],
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (input: React.SetStateAction<IFilterSet | null>) => void
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
     (
-      { target: { value } }: { target: { value: any } },
-      { checked }: { checked: boolean }
+      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
+      { checked }: CheckboxOnChangeData
     ) => {
       let typesFilter = operationTypesFilter.concat([]);
       if (checked) {
@@ -340,7 +349,7 @@ const useOnOperationTypeFilterChange = (
       }
       setOperationTypesFilter(typesFilter);
 
-      setFilters((prevState: IFilterSet | null) => {
+      setFilters((prevState: IFilterSet) => {
         return {
           ...prevState,
           types: typesFilter,

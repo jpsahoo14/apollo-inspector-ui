@@ -135,15 +135,15 @@ const sendMessageToContentScript = (
       tabId: 0,
     },
     requestInfo: {
-      ...generateRequestInfo(WEB_PAGE),
+      ...generateRequestInfo(WEB_PAGE, action),
     },
   };
-  logMessage(`imp! sending message from webpage`, message);
+  logMessage(`sending message from webpage`, { message });
   window.postMessage(message, "*");
 };
 
 export const sendMessage = (message: IMessagePayload) => {
-  logMessage(`imp! message being sent from webpage`, message);
+  logMessage(`message being sent from webpage`, { message });
   window.postMessage(message, "*");
 };
 
@@ -156,7 +156,7 @@ export const getTabId = (): Promise<number> => {
         message.destination?.name === WEB_PAGE &&
         message.destination.action === CONTENT_SCRIPT_ACTIONS.TAB_ID_VALUE
       ) {
-        logMessage(`message received at web-page `, message);
+        logMessage(`message received at web-page `, { message });
         window.removeEventListener("message", listener);
 
         resolve(message.destination?.tabId);
@@ -245,9 +245,9 @@ export const getWebpageUnloadReducer = (context: IWebpageContext) => {
     });
     sendMessageViaEventTarget(webpage, {
       action: WEBPAGE_ACTIONS.WEB_PAGE_UNLOAD,
-      destinationName: WEB_PAGE,
-      tabId,
       callerName: WEB_PAGE,
+      destinationName: DEVTOOL,
+      tabId,
     });
   };
 };

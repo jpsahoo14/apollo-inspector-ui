@@ -1,6 +1,5 @@
 import { Queue } from "@datastructures-js/queue";
 import { createLogger } from "./logger";
-import { WEBPAGE_ACTIONS } from "./constants";
 
 export class CustomEventTarget {
   private eventTarget: EventTarget;
@@ -23,7 +22,9 @@ export class CustomEventTarget {
     options?: boolean | AddEventListenerOptions | undefined
   ): () => void {
     this.eventNames.push(type);
-    const listener = (message: CustomEvent) => {
+    const listener: EventListenerOrEventListenerObject = (
+      message: CustomEvent<T>
+    ) => {
       try {
         callback?.(message.detail);
       } catch (e) {
@@ -39,10 +40,12 @@ export class CustomEventTarget {
   dispatchEvent(event: CustomEvent<IMessagePayload>) {
     event.detail?.requestInfo &&
       event.detail?.destination &&
-      logMessage(
-        `dispatching event in:${this.name} type:${event.type} from:${event.detail.requestInfo.sender} to:${event.detail.destination.name} action:${event.detail.destination.action}`,
-        { message: event.detail, eventNames: this.eventNames }
-      );
+      logMessage(`dispatching event type:${event.type}`, {
+        message: event.detail,
+        data: {
+          eventNames: this.eventNames,
+        },
+      });
     if (this.shouldHandle(event)) {
       const key = this.getSetKey(event);
       if (!this.set.has(key)) {
@@ -51,10 +54,12 @@ export class CustomEventTarget {
       } else {
         logMessage(`key already present`, {
           message: event.detail,
-          queue: this.queue.toArray(),
-          set: this.set.keys(),
-          name: this.name,
-          key,
+          data: {
+            queue: this.queue.toArray(),
+            set: this.set.keys(),
+            name: this.name,
+            key,
+          },
         });
       }
     }

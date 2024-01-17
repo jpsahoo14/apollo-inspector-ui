@@ -24,6 +24,7 @@ export const enum CONTENT_SCRIPT_ACTIONS {
   GET_TAB_ID = "get-tab-id",
   TAB_ID_VALUE = "tab-id-value",
   CONTENT_SCRIPT_INIT_COMPLETE = "content-script-init-complete",
+  CONTENT_SCRIPT_UNLOAD = "content-script-unload",
 }
 
 export const enum PANEL_PAGE_ACTIONS {

@@ -25,7 +25,8 @@ export const setupPanelActions = (context: IPanelContext) => {
     [CONTENT_SCRIPT]: sendMessageFromPanelPage(context),
     [PANEL_PAGE]: getHandlePanelPageActions(context),
     [WEBPAGE_ACTIONS.WHOLE_APOLLO_CACHE_DATA]: getCopyData(context),
-    [WEBPAGE_ACTIONS.WEB_PAGE_UNLOAD]: getHandleWebPageUnload(context),
+    [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD]:
+      getHandleWebPageUnload(context),
     [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE]:
       contentScriptLoaded(context),
   };

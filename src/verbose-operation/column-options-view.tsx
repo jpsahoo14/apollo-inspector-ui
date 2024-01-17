@@ -9,6 +9,7 @@ import {
   Button,
   Label,
   Checkbox,
+  CheckboxOnChangeData,
 } from "@fluentui/react-components";
 import { ISetState, TrackerStoreContext } from "../store";
 import { useStore } from "zustand";
@@ -166,8 +167,8 @@ const useOnColumnOptionsChange = (
 ) =>
   React.useCallback(
     (
-      { target: { value } }: { target: { value: string } },
-      { checked }: { checked: boolean }
+      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
+      { checked }: CheckboxOnChangeData
     ) => {
       let arr = [...selectedColumnOptions];
       if (checked) {

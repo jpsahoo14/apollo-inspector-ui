@@ -19,27 +19,13 @@ import { IWebpageStore } from "./web-page.interface";
 
   const tabId: number = await getTabId();
   setupWebPageActions({ webpage, tabId, webpageStore });
-  listenToPostMessage(webpage);
+
   sendMessageViaEventTarget(webpage, {
     destinationName: CONTENT_SCRIPT,
     action: WEBPAGE_ACTIONS.WEB_PAGE_INIT_COMPLETE,
     tabId,
     callerName: WEB_PAGE,
   });
-
-  function listenToPostMessage(webpage: CustomEventTarget) {
-    window.addEventListener("message", (event: { data: IMessagePayload }) => {
-      if (!event.data?.destination) {
-        return;
-      }
-
-      logMessage(`message recieved at web-page`, { data: event.data });
-      const customEvent = new CustomEvent(event.data.destination.name, {
-        detail: event.data,
-      });
-      webpage.dispatchEvent(customEvent);
-    });
-  }
 })();
 
 const logMessage = createLogger(`mainThread`);

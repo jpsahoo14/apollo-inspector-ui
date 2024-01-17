@@ -17,6 +17,7 @@ import {
   getDevtoolAction,
   getContentScriptAction,
   getWebpageAction,
+  getContentScriptUnloadReducer,
 } from "./content-script-actions";
 import { IContentScriptInitialContext } from "./content-script.interface";
 
@@ -79,13 +80,15 @@ const runContentScriptInitialization = (
 
     connectionToBackgroundService.onMessage.addListener(
       (message: IMessagePayload) => {
-        logMessage(`imp! message received at content-script`, message);
+        logMessage(`message received at content-script`, { message });
         const event = new CustomEvent(message.destination.name, {
           detail: message,
         });
         contentScript.dispatchEvent(event);
       }
     );
+
+    setupWindowEventListeners(context);
 
     setupContentScriptsActions({
       contentScript,
@@ -121,17 +124,16 @@ const runContentScriptInitialization = (
   };
 };
 
-function listenToPostMessage(
+const listenToPostMessage = (
   contentScript: CustomEventTarget,
   addToCleanUp: (removeListener: () => void) => void
-) {
+) => {
   const listener = (event: { data: IMessagePayload }) => {
     const message = event.data;
     message.destination?.name &&
-      logMessage(
-        `message received at content-script from postmessage`,
-        message
-      );
+      logMessage(`message received at content-script from postmessage`, {
+        message,
+      });
     const customEvent = new CustomEvent(event.data?.destination?.name, {
       detail: message,
     });
@@ -141,6 +143,17 @@ function listenToPostMessage(
   addToCleanUp(() => {
     window.removeEventListener("message", listener);
   });
-}
+};
+
+const setupWindowEventListeners = (context: IContentScriptInitialContext) => {
+  const {
+    store: { cleanUps },
+  } = context;
+  const beforeUnloadListener = getContentScriptUnloadReducer(context);
+  window.onbeforeunload = () => {
+    beforeUnloadListener();
+    cleanUps.forEach((cleanUp) => cleanUp());
+  };
+};
 
 const logMessage = createLogger(`content-script`);
