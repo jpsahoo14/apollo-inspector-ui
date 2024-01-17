@@ -12,7 +12,7 @@ export const useStyles = makeStyles({
   innerContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.colorNeutralForegroundOnBrand,
+    backgroundColor: tokens.colorNeutralForegroundInverted,
     height: "100%",
     ...shorthands.overflow("hidden"),
     flexGrow: 1,

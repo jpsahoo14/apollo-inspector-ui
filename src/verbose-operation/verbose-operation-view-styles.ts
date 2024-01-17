@@ -1,11 +1,10 @@
-import { makeStyles, shorthands,tokens} from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   operationView: {
     display: "flex",
     flexDirection: "column",
     flexGrow: 2,
-    color: "black",
     minWidth: "15rem",
     height: "100%",
     minHeight: 0,
@@ -13,31 +12,44 @@ export const useStyles = makeStyles({
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: tokens.colorNeutralForegroundOnBrand,
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("10px"),
+    backgroundColor: tokens.colorNeutralForegroundInverted,
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: tokens.colorNeutralForegroundOnBrand,
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("10px"),
+    backgroundColor: tokens.colorNeutralForegroundInverted,
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.colorNeutralForegroundOnBrand,
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("10px"),
+    backgroundColor: tokens.colorNeutralForegroundInverted,
   },
-  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: tokens.colorNeutralForegroundOnBrand },
-  errorAccPanel: { marginLeft: "1rem", backgroundColor: tokens.colorNeutralForegroundOnBrand },
-  warningAccPanel: { marginLeft: "1rem", backgroundColor: tokens.colorNeutralForegroundOnBrand },
+  accPanel: {
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("10px"),
+    marginLeft: "1rem",
+    backgroundColor: tokens.colorNeutralForegroundInverted,
+  },
   resultPanel: {
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("10px"),
     whiteSpace: "pre-wrap",
-    backgroundColor: tokens.colorNeutralForegroundOnBrand,
+    backgroundColor: tokens.colorNeutralForegroundInverted,
   },
   affectedQueriesAccPanel: {
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("10px"),
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.colorNeutralForegroundOnBrand,
+    backgroundColor: tokens.colorNeutralForegroundInverted,
   },
   operationDetails: {
     minHeight: 0,
@@ -66,6 +78,7 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    paddingTop: "5px"
   },
   accordionWrapper: {
     display: "flex",
@@ -105,8 +118,8 @@ export const useStyles = makeStyles({
     ...shorthands.border("0px", "solid", "transparent"),
   },
   buttons: {
-   alignItems: "left"
-  }
+    alignItems: "left",
+  },
 });
 
 export type stylesKeys =
@@ -114,9 +127,7 @@ export type stylesKeys =
   | "operationNameAccPanel"
   | "operationVariablesAccPanel"
   | "durationAccPanel"
-  | "fetchPolicyAccPanel"
-  | "errorAccPanel"
-  | "warningAccPanel"
+  | "accPanel"
   | "affectedQueriesAccPanel"
   | "operationDetails"
   | "operationName"

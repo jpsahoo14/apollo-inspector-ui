@@ -205,7 +205,7 @@ const getClientIdPanel = (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.fetchPolicyAccPanel}> {clientId}</div>
+      <div className={classes.accPanel}> {clientId}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -223,7 +223,7 @@ const getFetchPolicyPanel = (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.fetchPolicyAccPanel}> {fetchPolicy}</div>
+      <div className={classes.accPanel}> {fetchPolicy}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -333,7 +333,7 @@ const getErrorPanel = (error: unknown, classes: Record<stylesKeys, string>) => (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.errorAccPanel}> {JSON.stringify(error)}</div>
+      <div className={classes.accPanel}> {JSON.stringify(error)}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -354,7 +354,7 @@ const getWarningPanel = (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.warningAccPanel}> {JSON.stringify(warning)}</div>
+      <div className={classes.accPanel}> {JSON.stringify(warning)}</div>
     </AccordionPanel>
   </AccordionItem>
 );

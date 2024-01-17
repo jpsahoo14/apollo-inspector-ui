@@ -57,7 +57,7 @@ export const OperationsTrackerHeader = React.memo(
             <CopyButton operationsState={operationsState} onCopy={onCopy} />
             {recordingState === RecordingState.Initial ? null : (
               <Button
-                style={{ marginLeft: "0.5rem" }}
+                style={{ margin: "0 0.5rem" }}
                 onClick={clearApolloOperations}
               >
                 Clear All

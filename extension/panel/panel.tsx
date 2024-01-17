@@ -10,7 +10,7 @@ const themeMap = {
 
 const ApolloUIComponent = ()=>{
   return (
-    <FluentProvider theme={themeMap['light']} style={{ width: "100%" }}>
+    <FluentProvider theme={themeMap['dark']} style={{ width: "100%" }}>
       <PanelContainer />
     </FluentProvider>
   );
