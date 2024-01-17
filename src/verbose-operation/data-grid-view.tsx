@@ -37,7 +37,7 @@ export const DataGridView = (props: IDataGridView) => {
 
   return (
     <div className={classes.wholeBody}>
-      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters)}
+      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters, operationsState)}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
           showFilters,
@@ -128,13 +128,14 @@ export const DataGridView = (props: IDataGridView) => {
 
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
-  handleToggleFilters: () => void
+  handleToggleFilters: () => void,
+  operationsState: IOperationsReducerState
 ) => (
   <div className={classes.headers}>
     <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
       Filters
     </Button>
-    <ColumnOptions />
+    {!operationsState.selectedOperation && <ColumnOptions />}
   </div>
 );
 
