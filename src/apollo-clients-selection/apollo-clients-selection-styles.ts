@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands,tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   root: {
@@ -20,7 +20,7 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   errorLabel: {
-    color: "red",
+    color: tokens.colorPaletteRedBackground2,
   },
   copyButton: {
     ...shorthands.margin("0.5rem"),
@@ -31,7 +31,7 @@ export const useStyles = makeStyles({
     flexDirection: "row",
     justifyContent: "space-between",
     ...shorthands.borderWidth("0.1rem"),
-    ...shorthands.borderColor("gray"),
+    ...shorthands.borderColor(tokens.colorPaletteMinkBackground2),
     ...shorthands.borderStyle("groove"),
     alignItems: "center",
   },

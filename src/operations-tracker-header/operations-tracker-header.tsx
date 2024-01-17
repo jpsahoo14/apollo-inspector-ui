@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Button } from "@fluentui/react-components";
+import { Button, MenuButton, Menu, MenuPopover, MenuTrigger, MenuItem, MenuList } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { Search } from "../search/search";
@@ -34,7 +34,18 @@ export const OperationsTrackerHeader = React.memo(
       operationsState,
       onCopy,
     } = useOperationsTrackerheader(props);
+    const trackerStore = React.useContext(TrackerStoreContext);
+    const {
+      setTheme, theme
+    } = useStore(trackerStore, (store) => ({
+      setTheme: store.setTheme,
+      theme: store.theme,
+    }));
 
+    const changeTheme = (e: any)=>{
+      console.log(theme);
+      setTheme(e.target.value)
+    }
     return (
       <>
         <div className={classes.header}>
@@ -52,6 +63,22 @@ export const OperationsTrackerHeader = React.memo(
                 Clear All
               </Button>
             )}
+             {recordingState === RecordingState.Initial ? null : (
+              <Menu>
+              <MenuTrigger> 
+                <MenuButton>
+                  Theme
+                </MenuButton>
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  <MenuItem onClick={(e) => changeTheme(e)}>light</MenuItem>
+                  <MenuItem onClick={(e) => changeTheme(e)}>dark</MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+            )}
+             
           </div>
           <div>
             <Search onSearchChange={debouncedFilter} />
@@ -76,7 +103,6 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     setError,
     setRecordingState,
     setLoader,
-    store,
     apolloOperationsData,
   } = useStore(trackerStore, (store) => ({
     setRecordingState: store.setRecordingState,

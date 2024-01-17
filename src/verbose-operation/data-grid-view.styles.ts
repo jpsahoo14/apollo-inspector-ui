@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   wholeBody: {
@@ -28,11 +28,11 @@ export const useStyles = makeStyles({
   },
   gridRow: {
     ":hover": {
-      backgroundColor: "aliceblue",
+      backgroundColor: tokens.colorBrandBackground2Hover,
     },
   },
   gridHeaderCell: {
-    backgroundColor: "#d4e8fa",
+    backgroundColor: tokens.colorPaletteBlueBackground2,
   },
   gridrowcell: {},
   gridView: {
@@ -47,26 +47,26 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   selectedAndFailedRow: {
-    color: "darkred",
-    backgroundColor: "aliceblue",
+    color: tokens.colorPaletteRedForeground2,
+    backgroundColor: tokens.colorBrandBackground2Pressed,
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "aliceblue",
-      color: "darkred",
+      backgroundColor: tokens.colorBrandBackground2Hover,
+      color: tokens.colorPaletteRedForeground2,
     },
   },
   failedRow: {
     "&:hover": {
       backgroundColor: "unset",
-      color: "red",
+      color: tokens.colorPaletteRedBackground3,
     },
-    color: "red",
+    color: tokens.colorPaletteRedBackground2,
   },
   selectedRow: {
-    backgroundColor: "aliceblue",
+    backgroundColor: tokens.colorBrandBackground2Pressed,
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "aliceblue",
+      backgroundColor: tokens.colorBrandBackground2Hover,
     },
   },
   operationText: {

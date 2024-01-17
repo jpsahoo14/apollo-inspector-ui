@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands,tokens} from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   operationView: {
@@ -13,31 +13,31 @@ export const useStyles = makeStyles({
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white",
+    backgroundColor: tokens.colorNeutralForegroundOnBrand,
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white",
+    backgroundColor: tokens.colorNeutralForegroundOnBrand,
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    backgroundColor: tokens.colorNeutralForegroundOnBrand,
   },
-  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
-  errorAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
-  warningAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: tokens.colorNeutralForegroundOnBrand },
+  errorAccPanel: { marginLeft: "1rem", backgroundColor: tokens.colorNeutralForegroundOnBrand },
+  warningAccPanel: { marginLeft: "1rem", backgroundColor: tokens.colorNeutralForegroundOnBrand },
   resultPanel: {
     whiteSpace: "pre-wrap",
-    backgroundColor: "white",
+    backgroundColor: tokens.colorNeutralForegroundOnBrand,
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    backgroundColor: tokens.colorNeutralForegroundOnBrand,
   },
   operationDetails: {
     minHeight: 0,
@@ -56,7 +56,7 @@ export const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     height: "32.5px",
-    backgroundColor: "aliceblue",
+    backgroundColor: tokens.colorBrandBackground2Pressed,
     minHeight: 0,
     minWidth: 0,
   },
@@ -82,7 +82,7 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   operationType: {
-    color: "black",
+    color: tokens.colorNeutralForeground1,
     fontSize: "10px",
     height: "100%",
     minHeight: 0,
@@ -100,7 +100,7 @@ export const useStyles = makeStyles({
     minWidth: "20px",
     backgroundColor: "transparent",
     height: "100%",
-    color: "black",
+    color: tokens.colorNeutralForeground1,
     minHeight: 0,
     ...shorthands.border("0px", "solid", "transparent"),
   },

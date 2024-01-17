@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   root: {
@@ -12,7 +12,7 @@ export const useStyles = makeStyles({
   innerContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#fff",
+    backgroundColor: tokens.colorNeutralForegroundOnBrand,
     height: "100%",
     ...shorthands.overflow("hidden"),
     flexGrow: 1,

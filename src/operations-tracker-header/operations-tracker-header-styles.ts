@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   header: {
@@ -13,7 +13,7 @@ export const useStyles = makeStyles({
     ...shorthands.padding(0, "5px"),
     ...shorthands.border("none"),
     "&:hover": {
-      color: "#97CBFF",
+      color: tokens.colorBrandBackground2Hover,
     },
   },
   description: {
@@ -28,8 +28,8 @@ export const useStyles = makeStyles({
     display: "flex",
   },
   recordingButton: {
-    color: "red",
-    ...shorthands.borderColor("red"),
-    ":hover": { color: "red", ...shorthands.borderColor("red") },
+    color: tokens.colorPaletteRedBackground2,
+    ...shorthands.borderColor(tokens.colorPaletteRedBackground2),
+    ":hover": { color: tokens.colorPaletteRedBackground2, ...shorthands.borderColor(tokens.colorPaletteRedBackground2) },
   },
 });

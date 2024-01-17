@@ -1,4 +1,4 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   root: {
@@ -18,7 +18,7 @@ export const useStyles = makeStyles({
   selectedOperationView: {
     display: "flex",
     marginTop: "32px",
-    backgroundColor: "aliceblue",
+    backgroundColor: tokens.colorBrandBackground2Hover,
     height: "100%",
     minHeight: 0,
     minWidth: 0,
@@ -59,6 +59,6 @@ export const useStyles = makeStyles({
     whiteSpace: "nowrap",
   },
   filterLabelMsg: {
-    color: "red",
+    color: tokens.colorPaletteRedBackground3,
   },
 });
