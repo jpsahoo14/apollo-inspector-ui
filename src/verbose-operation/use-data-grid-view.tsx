@@ -235,5 +235,5 @@ const useFilterLogic = (props: IDataGridView) => {
     [dispatchOperationsState, filteredItems]
   );
 
-  return { updateFilters, updateVerboseOperations, filters, filteredItems };
+  return { updateFilters, updateVerboseOperations, filters, filteredItems, setFilters };
 };

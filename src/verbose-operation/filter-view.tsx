@@ -3,6 +3,7 @@ import { Checkbox, CheckboxOnChangeData } from "@fluentui/react-components";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
+import { filter } from "rxjs";
 
 interface IFilterView {
   setFilters: (input: React.SetStateAction<IFilterSet>) => void;

@@ -16,6 +16,7 @@ import { ColumnOptions } from "./column-options-view";
 import { Button } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
+import { Dismiss16Filled } from "@fluentui/react-icons";
 
 export const DataGridView = (props: IDataGridView) => {
   const classes = useStyles();
@@ -37,7 +38,7 @@ export const DataGridView = (props: IDataGridView) => {
 
   return (
     <div className={classes.wholeBody}>
-      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters)}
+      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters, filters, updateFilters)}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
           showFilters,
@@ -128,15 +129,46 @@ export const DataGridView = (props: IDataGridView) => {
 
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
-  handleToggleFilters: () => void
-) => (
-  <div className={classes.headers}>
-    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
-      Filters
-    </Button>
-    <ColumnOptions />
-  </div>
-);
+  handleToggleFilters: () => void,
+  filters: IFilterSet,
+  updateFilters: (input: React.SetStateAction<IFilterSet>) => void,
+) => {
+  const handleCrossButtonClick = (event: any) =>{
+    const selectedTypeName = event.currentTarget.name;
+    updateFilters((prevState: IFilterSet) => {
+      const arr = prevState.types.filter(type => type !== selectedTypeName);
+      return {
+        ...prevState,
+        types: arr,
+      };
+    });
+  }
+  
+
+  return (
+    <div className={classes.headers}>
+      <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
+        Filters
+      </Button>
+      <ColumnOptions />
+      <div>
+        {filters.types.map((type, index) => (
+          <Button
+            shape="circular"
+            key={index}
+            icon={<Dismiss16Filled />}
+            iconPosition="after"
+            name = {type}
+            onClick={(e) => handleCrossButtonClick(e)}
+          >
+            {type}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 const renderFilterView = (
   showFilters: boolean,
