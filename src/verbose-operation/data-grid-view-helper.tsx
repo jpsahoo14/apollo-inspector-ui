@@ -39,8 +39,12 @@ export const columnSizingOptions = (selectedColumnOptions: string[]) => {
 
 export const getColumns = (
   anyOperationSelected: boolean,
-  selectedColumnOptions: string[]
+  selectedColumnOptions: string[],
+  selectedApolloClientIds: string[]
 ): TableColumnDefinition<Item>[] => {
+  if(selectedApolloClientIds.length === 1){
+    selectedColumnOptions = selectedColumnOptions.filter(item => item !==  ColumnName.CliendId);
+  }
   if (anyOperationSelected) {
     return getSelectedColumns([
       ColumnName.ID,
