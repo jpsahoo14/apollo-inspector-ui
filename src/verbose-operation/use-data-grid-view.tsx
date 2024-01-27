@@ -122,13 +122,13 @@ const useWindowResize = (
 
 const useGridColumns = (operationsState: IOperationsReducerState) => {
   const store = React.useContext(TrackerStoreContext);
-  const [selectedColumnOptions, selectedApolloClientIds] = useStore(store, (store) => [
-    store.selectedColumnOptions, store.selectedApolloClientIds
+  const [selectedColumnOptions] = useStore(store, (store) => [
+    store.selectedColumnOptions
   ]);
   const columns = React.useMemo(
     () =>
-      getColumns(!!operationsState.selectedOperation, selectedColumnOptions, selectedApolloClientIds),
-    [operationsState.selectedOperation, selectedColumnOptions, selectedApolloClientIds]
+      getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
+    [operationsState.selectedOperation, selectedColumnOptions]
   );
 
   const columnSizing = React.useMemo(

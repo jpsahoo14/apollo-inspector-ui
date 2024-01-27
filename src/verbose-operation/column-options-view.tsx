@@ -115,15 +115,38 @@ export const sampleColumnOptions: IColumnOptions[] = [
 export const ColumnOptions = () => {
   const styles = useStyles();
   const store = React.useContext(TrackerStoreContext);
-  const [selectedColumnOptions, setSelectedColumnOptions] = useStore(
+  let [selectedColumnOptions, setSelectedColumnOptions] = useStore(
     store,
     (store) => [store.selectedColumnOptions, store.setSelectedColumnOptions]
   );
+  const [selectedApolloClientIds] = useStore(store, (store) => [
+    store.selectedApolloClientIds,
+  ]);
 
   const onColumnOptionsChange = useOnColumnOptionsChange(
     selectedColumnOptions,
     setSelectedColumnOptions
   );
+
+  if (selectedApolloClientIds.length === 1) {
+    selectedColumnOptions = selectedColumnOptions.filter(
+      (item) => item !== ColumnName.CliendId
+    );
+  }
+
+  if(selectedApolloClientIds.length === 1){
+    selectedColumnOptions = selectedColumnOptions.filter(item => item !==  ColumnName.CliendId);
+    setSelectedColumnOptions(selectedColumnOptions);
+  }
+
+  const checked = (checkboxValue: IColumnOptions) => {
+    if (checkboxValue.key === ColumnName.CliendId) {
+      if (selectedApolloClientIds.length === 1) {
+        return false;
+      }
+    }
+    return selectedColumnOptions.includes(checkboxValue.key);
+  };
 
   const columnOptionCheckbox = Object.entries(sampleColumnOptions).map(
     (value, key) => {
@@ -135,7 +158,7 @@ export const ColumnOptions = () => {
           label={checkboxValue.header}
           name={checkboxValue.key}
           key={key}
-          checked={selectedColumnOptions.includes(checkboxValue.key)}
+          checked={checked(checkboxValue)}
         />
       );
     }
