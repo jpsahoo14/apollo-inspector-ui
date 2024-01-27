@@ -34,8 +34,6 @@ export const getHandleWebPageUnload = (context: IPanelContext) => {
   return (message: IMessagePayload) => {
     logMessage(`handle webpage unload`, { message });
     resetStore();
-    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
-    cleanUpsRef.current = [];
   };
 };
 
