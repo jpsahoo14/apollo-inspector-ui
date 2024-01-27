@@ -26,12 +26,7 @@ export const useStyles = makeStyles({
     flexBasis: "50%",
   },
   notselectedOperationView: {
-    display: "flex",
-    marginTop: "32px",
-    backgroundColor: "aliceblue",
-    height: "100%",
-    minHeight: 0,
-    minWidth: 0,
+    display: "none",
   },
   operations: {
     display: "flex",
