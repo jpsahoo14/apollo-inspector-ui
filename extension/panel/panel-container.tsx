@@ -81,7 +81,7 @@ export const PanelContainer = () => {
   if (!clientIds) {
     return (
       <>
-        {"No clients"}
+        {"No Apollo clients found"}
         <Spinner />
       </>
     );
@@ -95,7 +95,7 @@ export const PanelContainer = () => {
     <Suspense
       fallback={
         <>
-          {"Loading OperationsTrackerContainer"}
+          {"Loading"}
           <Spinner />
         </>
       }
