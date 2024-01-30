@@ -5,16 +5,15 @@ export const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    ...shorthands.padding("1rem", "1.5rem"),
+    ...shorthands.padding(".5rem", "1rem"),
   },
   infoButton: {
     minWidth: "auto",
-    marginRight: ".5rem",
     ...shorthands.padding(0, ".5rem"),
     ...shorthands.border("none"),
   },
   description: {
-    ...shorthands.padding("0rem", "1.5rem"),
+    ...shorthands.padding("0rem", "1rem"),
   },
   openDescription: {
     visibility: "visible",

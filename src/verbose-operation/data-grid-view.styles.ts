@@ -24,6 +24,7 @@ export const useStyles = makeStyles({
     height: "100%",
   },
   gridHeaderCell: {
+    
   },
   gridrowcell: {
   },
@@ -35,8 +36,7 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   selectedAndFailedRow: {
-    color: tokens.colorPaletteRedForeground2,
-    backgroundColor: tokens.colorBrandBackground2Pressed,
+    color: tokens.colorPaletteRedForeground3,
     fontWeight: "bold",
     "&:hover": {
       backgroundColor: tokens.colorBrandBackground2Hover,
@@ -46,9 +46,9 @@ export const useStyles = makeStyles({
   failedRow: {
     "&:hover": {
       backgroundColor: "unset",
-      color: tokens.colorPaletteRedBackground3,
+      color: tokens.colorPaletteRedBackground2,
     },
-    color: tokens.colorPaletteRedBackground2,
+    color: tokens.colorPaletteRedBackground3,
   },
   selectedRow: {
     fontWeight: "bold",

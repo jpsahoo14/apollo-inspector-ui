@@ -17,7 +17,7 @@ export const useStyles = makeStyles({
   },
   selectedOperationView: {
     display: "flex",
-    marginTop: "3.2rem",
+    marginTop: "2rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,

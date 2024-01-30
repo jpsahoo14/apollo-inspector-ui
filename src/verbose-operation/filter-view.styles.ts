@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   filterView: {
@@ -13,6 +13,7 @@ export const useStyles = makeStyles({
     },
     minHeight: 0,
     minWidth: 0,
+    ...shorthands.borderRight(".1rem","solid", tokens.colorSubtleBackgroundHover),
   },
   filters: {
     display: "flex",
@@ -27,12 +28,12 @@ export const useStyles = makeStyles({
   },
   typeText: {
     fontWeight: "bold",
-    ...shorthands.padding("1rem"),
-    fontSize: "1.2rem",
+    ...shorthands.padding(".3rem"),
+    fontSize: ".9rem",
   },
   operationType: {
     display: "flex",
     flexDirection: "column",
-    paddingBottom: "1rem",
+    paddingBottom: ".5rem",
   },
 });

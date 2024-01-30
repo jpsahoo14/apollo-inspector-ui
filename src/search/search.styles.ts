@@ -6,14 +6,12 @@ export const searchStyles = makeStyles({
     maxWidth: "30rem",
   },
   input: {
+    ...shorthands.padding(".5rem",".5rem", 0, '1.6rem'),
+    ...shorthands.border(".2rem", "solid", "transparent"),
+    ...shorthands.borderRadius(".1rem"),
+    outlineStyle: "none",
     display: "inline-block",
     boxSizing: "border-box",
-    width: "100%",
-    height: "3.2rem",
-    ...shorthands.padding(0, 0, 0, "3rem"),
-    ...shorthands.border(".2rem", "solid", "transparent"),
-    ...shorthands.borderRadius(".6rem"),
-    outlineStyle: "none",
   },
   icon: {
     position: "absolute",
