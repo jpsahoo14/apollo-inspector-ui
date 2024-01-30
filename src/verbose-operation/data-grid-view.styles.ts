@@ -33,8 +33,12 @@ export const useStyles = makeStyles({
   },
   gridHeaderCell: {
     backgroundColor: "#d4e8fa",
+    minWidth: "10px !important",
+    textOverflow: "ellipsis",
   },
-  gridrowcell: {},
+  gridrowcell: {
+    minWidth: "10px !important",
+  },
   gridView: {
     flexGrow: 2,
     display: "flex",

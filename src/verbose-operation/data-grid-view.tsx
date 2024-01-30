@@ -108,7 +108,7 @@ export const DataGridView = (props: IDataGridView) => {
                       const cb = () => onClick(item);
                       return (
                         <DataGridCell
-                          // className={classes.gridrowcell}
+                          className={classes.gridrowcell}
                           onClick={cb}
                         >
                           {renderCell(item as Item)}
