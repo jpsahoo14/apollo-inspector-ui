@@ -24,8 +24,8 @@ export const useStyles = makeStyles({
   },
   label: {
     display: "inline-block",
-    ...shorthands.padding("5px", "10px"),
-    ...shorthands.borderRadius("12px"),
+    ...shorthands.padding(".5rem", "1.0rem"),
+    ...shorthands.borderRadius("1.2rem"),
     ...shorthands.borderStyle("none"),
   },
   centerDiv: {

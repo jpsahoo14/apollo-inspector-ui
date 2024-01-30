@@ -5,8 +5,8 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     overflowY: "scroll",
-    paddingLeft: "10px",
-    paddingRight: "10px",
+    paddingLeft: "1rem",
+    paddingRight: "1rem",
     height: "100%",
     "::-webkit-scrollbar": {
       display: "none",
@@ -23,16 +23,16 @@ export const useStyles = makeStyles({
   type: {
     display: "flex",
     flexDirection: "column",
-    paddingBottom: "10px",
+    paddingBottom: "1rem",
   },
   typeText: {
     fontWeight: "bold",
-    ...shorthands.padding("10px"),
-    fontSize: "12px",
+    ...shorthands.padding("1rem"),
+    fontSize: "1.2rem",
   },
   operationType: {
     display: "flex",
     flexDirection: "column",
-    paddingBottom: "10px",
+    paddingBottom: "1rem",
   },
 });

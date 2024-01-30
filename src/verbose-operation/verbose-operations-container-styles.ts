@@ -1,4 +1,4 @@
-import { makeStyles, tokens } from "@fluentui/react-components";
+import { makeStyles } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   root: {
@@ -17,7 +17,7 @@ export const useStyles = makeStyles({
   },
   selectedOperationView: {
     display: "flex",
-    marginTop: "32px",
+    marginTop: "3.2rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,
@@ -48,8 +48,8 @@ export const useStyles = makeStyles({
     paddingLeft: "1rem",
   },
   copyAllOpBtn: {
-    minHeight: "32px",
-    marginRight: "1rem",
+    minHeight: "3.2rem",
+    marginRight: ".1rem",
   },
   operationName: {
     textOverflow: "ellipsis",

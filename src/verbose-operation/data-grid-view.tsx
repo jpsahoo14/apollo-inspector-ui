@@ -131,7 +131,7 @@ const renderFilterAndColumnOptionsButton = (
   handleToggleFilters: () => void
 ) => (
   <div className={classes.headers}>
-    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
+    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters} className={classes.filtersButton}>
       Filters
     </Button>
     <ColumnOptions />

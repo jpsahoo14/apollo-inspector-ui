@@ -9,12 +9,12 @@ export const useStyles = makeStyles({
   },
   infoButton: {
     minWidth: "auto",
-    marginRight: "5px",
-    ...shorthands.padding(0, "5px"),
+    marginRight: ".5rem",
+    ...shorthands.padding(0, ".5rem"),
     ...shorthands.border("none"),
   },
   description: {
-    ...shorthands.padding("0px", "15px"),
+    ...shorthands.padding("0rem", "1.5rem"),
   },
   openDescription: {
     visibility: "visible",

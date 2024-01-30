@@ -79,16 +79,18 @@ export const useStyles = makeStyles({
   filterViewWrapper: {
     flexGrow: 1,
     display: "flex",
-    maxWidth: "300px",
+    maxWidth: "30rem",
     height: "100%",
     minHeight: 0,
     minWidth: "fit-content",
   },
+  filtersButton: {
+    marginRight: ".5rem"
+  }
 });
 
 export type IClasses = Record<
   | "grid"
-  | "gridRow"
   | "wholeBody"
   | "headers"
   | "gridBody"
