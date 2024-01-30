@@ -18,7 +18,6 @@ export const useStyles = makeStyles({
   selectedOperationView: {
     display: "flex",
     marginTop: "32px",
-    backgroundColor: tokens.colorBrandBackground2Hover,
     height: "100%",
     minHeight: 0,
     minWidth: 0,
@@ -57,8 +56,5 @@ export const useStyles = makeStyles({
     overflowX: "hidden",
     overflowY: "hidden",
     whiteSpace: "nowrap",
-  },
-  filterLabelMsg: {
-    color: tokens.colorPaletteRedBackground3,
   },
 });

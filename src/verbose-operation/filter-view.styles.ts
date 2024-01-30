@@ -1,4 +1,4 @@
-import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   filterView: {
@@ -6,7 +6,6 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     overflowY: "scroll",
     paddingLeft: "10px",
-    backgroundColor: tokens.colorBrandBackground2,
     paddingRight: "10px",
     height: "100%",
     "::-webkit-scrollbar": {
@@ -20,12 +19,10 @@ export const useStyles = makeStyles({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    ...shorthands.borderBottom("0.5px", "solid", "gray"),
   },
   type: {
     display: "flex",
     flexDirection: "column",
-    ...shorthands.borderBottom("0.5px", "solid", "gray"),
     paddingBottom: "10px",
   },
   typeText: {
@@ -36,7 +33,6 @@ export const useStyles = makeStyles({
   operationType: {
     display: "flex",
     flexDirection: "column",
-    ...shorthands.borderBottom("0.5px", "solid", "gray"),
     paddingBottom: "10px",
   },
 });

@@ -64,19 +64,7 @@ export const OperationsTrackerHeader = React.memo(
               </Button>
             )}
              {recordingState === RecordingState.Initial ? null : (
-              <Menu>
-              <MenuTrigger> 
-                <MenuButton>
-                  Theme
-                </MenuButton>
-              </MenuTrigger>
-              <MenuPopover>
-                <MenuList>
-                  <MenuItem onClick={(e) => changeTheme(e)}>light</MenuItem>
-                  <MenuItem onClick={(e) => changeTheme(e)}>dark</MenuItem>
-                </MenuList>
-              </MenuPopover>
-            </Menu>
+              renderThemeButton(changeTheme)
             )}
              
           </div>
@@ -312,6 +300,22 @@ const renderInfoButton = (
   );
 };
 
+const renderThemeButton = (changeTheme: (e: any) => void): React.ReactNode => {
+  return <Menu>
+    <MenuTrigger>
+      <MenuButton>
+        Theme
+      </MenuButton>
+    </MenuTrigger>
+    <MenuPopover>
+      <MenuList>
+        <MenuItem onClick={(e) => changeTheme(e)}>light</MenuItem>
+        <MenuItem onClick={(e) => changeTheme(e)}>dark</MenuItem>
+      </MenuList>
+    </MenuPopover>
+  </Menu>;
+}
+
 const getRecordingString = (recordingState: RecordingState) => {
   if (
     recordingState === RecordingState.Initial ||
@@ -324,3 +328,5 @@ const getRecordingString = (recordingState: RecordingState) => {
 };
 
 OperationsTrackerHeader.displayName = "OperationsTrackerHeader";
+
+

@@ -5,16 +5,13 @@ export const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    ...shorthands.padding("10px", "15px"),
+    ...shorthands.padding("1rem", "1.5rem"),
   },
   infoButton: {
     minWidth: "auto",
     marginRight: "5px",
     ...shorthands.padding(0, "5px"),
     ...shorthands.border("none"),
-    "&:hover": {
-      color: tokens.colorBrandBackground2Hover,
-    },
   },
   description: {
     ...shorthands.padding("0px", "15px"),
@@ -28,8 +25,6 @@ export const useStyles = makeStyles({
     display: "flex",
   },
   recordingButton: {
-    color: tokens.colorPaletteRedBackground2,
-    ...shorthands.borderColor(tokens.colorPaletteRedBackground2),
-    ":hover": { color: tokens.colorPaletteRedBackground2, ...shorthands.borderColor(tokens.colorPaletteRedBackground2) },
+    color: tokens.colorPaletteRedBackground3,
   },
 });

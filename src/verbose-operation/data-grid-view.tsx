@@ -96,7 +96,7 @@ export const DataGridView = (props: IDataGridView) => {
                       ? classes.failedRow
                       : isRowSelected
                         ? classes.selectedRow
-                        : classes.gridRow;
+                        : null;
 
                 return (
                   <DataGridRow<Item>

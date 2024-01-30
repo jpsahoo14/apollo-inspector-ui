@@ -1,7 +1,7 @@
 import { ISet, ITheme } from "../store.interface";
 import { createState } from "../create-state";
 
-export const getSelectedApolloClientId = (
+export const getTheme = (
   set: ISet
 ): ITheme => {
   const [theme, setTheme] = createState<

@@ -1,4 +1,4 @@
-import { makeStyles, shorthands,tokens } from "@fluentui/react-components";
+import { makeStyles, shorthands } from "@fluentui/react-components";
 
 export const searchStyles = makeStyles({
   root: {
@@ -11,13 +11,9 @@ export const searchStyles = makeStyles({
     width: "100%",
     height: "32px",
     ...shorthands.padding(0, 0, 0, "30px"),
-    backgroundColor: tokens.colorNeutralStroke2,
     ...shorthands.border("2px", "solid", "transparent"),
     ...shorthands.borderRadius("6px"),
     outlineStyle: "none",
-    "&:focus": {
-      ...shorthands.borderColor(tokens.colorPaletteBeigeBorderActive),
-    },
   },
   icon: {
     position: "absolute",

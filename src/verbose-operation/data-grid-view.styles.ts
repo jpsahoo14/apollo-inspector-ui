@@ -22,26 +22,14 @@ export const useStyles = makeStyles({
     cursor: "pointer",
     width: "100%",
     height: "100%",
-    // "::-webkit-scrollbar": {
-    //   display: "none",
-    // },
-  },
-  gridRow: {
-    ":hover": {
-      backgroundColor: tokens.colorBrandBackground2Hover,
-    },
   },
   gridHeaderCell: {
-    backgroundColor: tokens.colorPaletteBlueBackground2,
   },
-  gridrowcell: {},
+  gridrowcell: {
+  },
   gridView: {
     flexGrow: 2,
     display: "flex",
-    "&:hover": {
-      backgroundColor: "unset !important",
-      color: "unset !important",
-    },
     height: "100%",
     minHeight: 0,
     minWidth: 0,
@@ -63,11 +51,7 @@ export const useStyles = makeStyles({
     color: tokens.colorPaletteRedBackground2,
   },
   selectedRow: {
-    backgroundColor: tokens.colorBrandBackground2Pressed,
     fontWeight: "bold",
-    "&:hover": {
-      backgroundColor: tokens.colorBrandBackground2Hover,
-    },
   },
   operationText: {
     ...shorthands.overflow("hidden"),
