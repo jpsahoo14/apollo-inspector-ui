@@ -115,38 +115,36 @@ export const sampleColumnOptions: IColumnOptions[] = [
 export const ColumnOptions = () => {
   const styles = useStyles();
   const store = React.useContext(TrackerStoreContext);
-  let [selectedColumnOptions, setSelectedColumnOptions] = useStore(
+  let [selectedColumnOptions, setSelectedColumnOptions, selectedApolloClientIds] = useStore(
     store,
-    (store) => [store.selectedColumnOptions, store.setSelectedColumnOptions]
+    (store) => [store.selectedColumnOptions, store.setSelectedColumnOptions,  store.selectedApolloClientIds]
   );
-  const [selectedApolloClientIds] = useStore(store, (store) => [
-    store.selectedApolloClientIds,
-  ]);
-
+  const [clientIdCheck, setClientIdChecked] = React.useState(false);
   const onColumnOptionsChange = useOnColumnOptionsChange(
     selectedColumnOptions,
-    setSelectedColumnOptions
+    setSelectedColumnOptions,
+    setClientIdChecked
   );
 
-  if (selectedApolloClientIds.length === 1) {
-    selectedColumnOptions = selectedColumnOptions.filter(
-      (item) => item !== ColumnName.CliendId
-    );
+  if (selectedApolloClientIds.length === 1 && !clientIdCheck) {
+    setSelectedColumnOptions((prevSelectedColumnOptions) => {
+      // Check if ColumnName.CliendId is present in the array
+      const updatedOptions = prevSelectedColumnOptions.includes(ColumnName.CliendId)
+        ? prevSelectedColumnOptions.filter((item) => item !== ColumnName.CliendId)
+        : prevSelectedColumnOptions;
+  
+      return updatedOptions;
+    });
   }
 
-  if(selectedApolloClientIds.length === 1){
-    selectedColumnOptions = selectedColumnOptions.filter(item => item !==  ColumnName.CliendId);
-    setSelectedColumnOptions(selectedColumnOptions);
-  }
-
-  const checked = (checkboxValue: IColumnOptions) => {
-    if (checkboxValue.key === ColumnName.CliendId) {
-      if (selectedApolloClientIds.length === 1) {
-        return false;
-      }
-    }
-    return selectedColumnOptions.includes(checkboxValue.key);
-  };
+  // const checked = (checkboxValue: IColumnOptions) => {
+  //   if (checkboxValue.key === ColumnName.CliendId) {
+  //     if (selectedApolloClientIds.length === 1) {
+  //       return false;
+  //     }
+  //   }
+  //   return selectedColumnOptions.includes(checkboxValue.key);
+  // };
 
   const columnOptionCheckbox = Object.entries(sampleColumnOptions).map(
     (value, key) => {
@@ -158,7 +156,7 @@ export const ColumnOptions = () => {
           label={checkboxValue.header}
           name={checkboxValue.key}
           key={key}
-          checked={checked(checkboxValue)}
+          checked={selectedColumnOptions.includes(checkboxValue.key)}
         />
       );
     }
@@ -186,7 +184,8 @@ export const ColumnOptions = () => {
 
 const useOnColumnOptionsChange = (
   selectedColumnOptions: string[],
-  setSelectedColumnOptions: ISetState<string[]>
+  setSelectedColumnOptions: ISetState<string[]>,
+  setClientIdChecked: ISetState<boolean>
 ) =>
   React.useCallback(
     (
@@ -199,8 +198,12 @@ const useOnColumnOptionsChange = (
       } else {
         arr = arr.filter((x) => x !== value);
       }
-
+      if(value === ColumnName.CliendId && checked){
+        setClientIdChecked(true);
+      } else {
+        setClientIdChecked(false);
+      }
       setSelectedColumnOptions(arr);
     },
-    [selectedColumnOptions, setSelectedColumnOptions]
+    [selectedColumnOptions, setSelectedColumnOptions, setClientIdChecked]
   );
