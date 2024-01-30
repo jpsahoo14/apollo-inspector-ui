@@ -137,15 +137,6 @@ export const ColumnOptions = () => {
     });
   }
 
-  // const checked = (checkboxValue: IColumnOptions) => {
-  //   if (checkboxValue.key === ColumnName.CliendId) {
-  //     if (selectedApolloClientIds.length === 1) {
-  //       return false;
-  //     }
-  //   }
-  //   return selectedColumnOptions.includes(checkboxValue.key);
-  // };
-
   const columnOptionCheckbox = Object.entries(sampleColumnOptions).map(
     (value, key) => {
       const checkboxValue = value[1];
