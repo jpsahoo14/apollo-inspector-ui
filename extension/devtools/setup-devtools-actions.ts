@@ -5,7 +5,6 @@ import {
   DEVTOOLS_ACTIONS,
   PANEL_PAGE,
   WEB_PAGE,
-  WEBPAGE_ACTIONS,
 } from "../utils";
 import {
   createDevtoolsPanel,
@@ -18,6 +17,8 @@ import { IDevtoolContext } from "./devtools.interface";
 
 export const setupDevtoolActions = (context: IDevtoolContext) => {
   const { backgroundConnection, devtools } = context;
+  const cleanUps: (() => void)[] = [];
+
   const actionsToReducers = {
     [DEVTOOLS_ACTIONS.CREATE_DEVTOOLS_PANEL]: createDevtoolsPanel(context),
     [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE]:
@@ -33,6 +34,9 @@ export const setupDevtoolActions = (context: IDevtoolContext) => {
   };
 
   for (const prop in actionsToReducers) {
-    devtools.addEventListener(prop, actionsToReducers[prop]);
+    cleanUps.push(devtools.addEventListener(prop, actionsToReducers[prop]));
   }
+  return () => {
+    cleanUps.forEach((cleanUp) => cleanUp());
+  };
 };
