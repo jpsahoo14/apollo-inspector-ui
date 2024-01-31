@@ -9,13 +9,13 @@ import {
   getColumns,
   getFilteredItems,
 } from "./data-grid-view-helper";
-import { IDataGridView } from "./data-grid.interface";
+import { ColumnName, IDataGridView } from "./data-grid.interface";
 import {
   IOperationsAction,
   IOperationsReducerState,
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
-import { TrackerStoreContext } from "../store";
+import { ISetState, TrackerStoreContext } from "../store";
 import { useStore } from "zustand";
 
 const ItemSize = 20;
@@ -123,8 +123,10 @@ const useWindowResize = (
 const useGridColumns = (operationsState: IOperationsReducerState) => {
   const store = React.useContext(TrackerStoreContext);
   const [selectedColumnOptions] = useStore(store, (store) => [
-    store.selectedColumnOptions
+    store.selectedColumnOptions,
+    store.setSelectedColumnOptions,
   ]);
+
   const columns = React.useMemo(
     () =>
       getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
@@ -135,6 +137,8 @@ const useGridColumns = (operationsState: IOperationsReducerState) => {
     () => columnSizingOptions(selectedColumnOptions),
     [selectedColumnOptions]
   );
+
+  useShowClientIdColumn();
   return { columns, columnSizing };
 };
 
@@ -236,4 +240,31 @@ const useFilterLogic = (props: IDataGridView) => {
   );
 
   return { updateFilters, updateVerboseOperations, filters, filteredItems };
+};
+
+const useShowClientIdColumn = () => {
+  const store = React.useContext(TrackerStoreContext);
+  const [setSelectedColumnOptions] = useStore(store, (store) => [
+    store.setSelectedColumnOptions,
+  ]);
+
+  const [selectedApolloClientIds] = useStore(store, (store) => [
+    store.selectedApolloClientIds,
+  ]);
+  const hasCheckedRef = React.useRef(false);
+
+  if (hasCheckedRef.current === false) {
+    if (selectedApolloClientIds.length > 1) {
+      setSelectedColumnOptions((prev) => {
+        if (!prev.find((elem) => elem === ColumnName.CliendId)) {
+          const modifiedColumnOptions = [...prev];
+          modifiedColumnOptions.splice(1, 0, ColumnName.CliendId);
+          return modifiedColumnOptions;
+        }
+
+        return prev;
+      });
+    }
+    hasCheckedRef.current = true;
+  }
 };
