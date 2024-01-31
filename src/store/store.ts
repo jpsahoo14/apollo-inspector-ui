@@ -11,6 +11,7 @@ import {
   getErrorStore,
   getSelectedTabStore,
   getOpenDescriptionStore,
+  getTheme,
 } from "./states";
 import { getFilterSetStore } from "./states/get-filterset";
 import { getColumnOptions } from "./states/get-column-options";
@@ -21,6 +22,7 @@ export const useTrackerStore = create<IStore>((set: ISet) => {
     ...getLoaderStore(set),
     ...getIsRecordingStore(set),
     ...getApolloClients(set),
+    ...getTheme(set),
     ...getSelectedApolloClientId(set),
     ...getApolloInspectorStopTracking(set),
     ...getSearchBannerStore(set),

@@ -36,15 +36,13 @@ export const OperationsTrackerHeader = React.memo(
     } = useOperationsTrackerheader(props);
     const trackerStore = React.useContext(TrackerStoreContext);
     const {
-      setTheme, theme
+      setTheme
     } = useStore(trackerStore, (store) => ({
       setTheme: store.setTheme,
-      theme: store.theme,
     }));
 
     const changeTheme = (e: any)=>{
-      console.log(theme);
-      setTheme(e.target.value)
+      setTheme(e.target.innerText)
     }
     return (
       <>
