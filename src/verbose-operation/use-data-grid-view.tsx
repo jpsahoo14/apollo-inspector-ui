@@ -9,7 +9,7 @@ import {
   getColumns,
   getFilteredItems,
 } from "./data-grid-view-helper";
-import { IDataGridView } from "./data-grid.interface";
+import { ColumnName, IDataGridView } from "./data-grid.interface";
 import {
   IOperationsAction,
   IOperationsReducerState,
@@ -135,6 +135,7 @@ const useGridColumns = (operationsState: IOperationsReducerState) => {
     () => columnSizingOptions(selectedColumnOptions),
     [selectedColumnOptions]
   );
+  useShowClientIdColumn();
   return { columns, columnSizing };
 };
 
@@ -236,4 +237,31 @@ const useFilterLogic = (props: IDataGridView) => {
   );
 
   return { updateFilters, updateVerboseOperations, filters, filteredItems };
+};
+
+const useShowClientIdColumn = () => {
+  const store = React.useContext(TrackerStoreContext);
+  const [setSelectedColumnOptions] = useStore(store, (store) => [
+    store.setSelectedColumnOptions,
+  ]);
+
+  const [selectedApolloClientIds] = useStore(store, (store) => [
+    store.selectedApolloClientIds,
+  ]);
+  const hasCheckedRef = React.useRef(false);
+
+  if (hasCheckedRef.current === false) {
+    if (selectedApolloClientIds.length > 1) {
+      setSelectedColumnOptions((prev) => {
+        if (!prev.find((elem) => elem === ColumnName.CliendId)) {
+          const modifiedColumnOptions = [...prev];
+          modifiedColumnOptions.splice(1, 0, ColumnName.CliendId);
+          return modifiedColumnOptions;
+        }
+
+        return prev;
+      });
+    }
+    hasCheckedRef.current = true;
+  }
 };
