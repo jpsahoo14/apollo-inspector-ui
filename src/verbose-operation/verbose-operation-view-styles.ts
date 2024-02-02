@@ -17,32 +17,32 @@ export const useStyles = makeStyles({
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    ...getPanelPadding(),
+    ...getPanelCommonCss(),
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    ...getPanelPadding(),
+    ...getPanelCommonCss(),
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    ...getPanelPadding(),
+    ...getPanelCommonCss(),
   },
   accPanel: {
     marginLeft: "1rem",
-    ...getPanelPadding(),
+    ...getPanelCommonCss(),
   },
   resultPanel: {
     whiteSpace: "pre-wrap",
-    ...getPanelPadding(),
+    ...getPanelCommonCss(),
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    ...getPanelPadding(),
+    ...getPanelCommonCss(),
   },
   operationDetails: {
     minHeight: 0,
@@ -56,15 +56,14 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
-  subHeading: {
+  header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     minHeight: 0,
     minWidth: 0,
-    paddingTop: ".1rem",
-    paddingBottom: ".1rem",
     backgroundColor: tokens.colorBrandBackground2Hover,
+    ...shorthands.padding("0.5rem"),
   },
   heading: {
     display: "flex",
@@ -72,8 +71,8 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
-    paddingTop: ".5rem",
-    paddingLeft: ".5rem",
+    flexDirection: "column",
+    WebkitAlignItems: "start",
   },
   accordionWrapper: {
     display: "flex",
@@ -90,18 +89,16 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   operationType: {
-    fontSize: ".5rem",
+    fontSize: ".8rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,
   },
   operationNameText: {
     fontWeight: "bold",
-    paddingLeft: ".2rem",
-    paddingRight: ".2rem",
     height: "100%",
-    minHeight: 0,
     minWidth: 0,
+    wordBreak: "break-all",
   },
   button: {
     minWidth: "2rem",
@@ -110,14 +107,19 @@ export const useStyles = makeStyles({
     minHeight: 0,
     ...shorthands.border("0rem"),
   },
-  buttons: {
+  headerButtons: {
+    display: "flex",
+    flexDirection: "row",
     alignItems: "left",
+    ...shorthands.margin("0.5rem"),
+    minWidth: 0,
+    minHeight: 0,
+    ...shorthands.margin("0.5rem"),
   },
 });
 
-function getPanelPadding() {
+function getPanelCommonCss() {
   return {
-    ...shorthands.padding("1rem"),
     ...shorthands.borderRadius("1rem"),
     backgroundColor: tokens.colorBrandBackground2Hover,
   };
