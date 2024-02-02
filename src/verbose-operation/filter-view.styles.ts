@@ -13,7 +13,11 @@ export const useStyles = makeStyles({
     },
     minHeight: 0,
     minWidth: 0,
-    ...shorthands.borderRight(".1rem","solid", tokens.colorSubtleBackgroundHover),
+    ...shorthands.borderRight(
+      ".1rem",
+      "solid",
+      tokens.colorSubtleBackgroundHover
+    ),
   },
   filters: {
     display: "flex",
