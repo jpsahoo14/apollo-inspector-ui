@@ -13,6 +13,7 @@ export interface IStore
     IOpenDescriptionStore,
     IFilterSetStore,
     IColumnOptions,
+    ITheme,
     IStopApolloInspectorTracking {}
 
 export type ISet = (
@@ -87,6 +88,11 @@ export interface IOpenDescriptionStore {
 export interface IApolloClientsStore {
   apolloClients: string[];
   setApolloClients: ISetState<string[]>;
+}
+
+export interface ITheme {
+  theme: string;
+  setTheme: ISetState<string>;
 }
 
 export interface ISelectedApolloClientId {

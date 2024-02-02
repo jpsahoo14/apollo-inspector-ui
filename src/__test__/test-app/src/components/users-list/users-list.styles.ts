@@ -1,8 +1,6 @@
 import {
   makeStyles,
   shorthands,
-  Tab,
-  TabList,
 } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
@@ -11,7 +9,7 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    ...shorthands.padding("50px", "20px"),
-    rowGap: "20px",
+    ...shorthands.padding("5.0rem", "2.0rem"),
+    rowGap: "2.0rem",
   },
 });

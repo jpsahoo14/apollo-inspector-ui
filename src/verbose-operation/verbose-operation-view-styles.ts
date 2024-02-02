@@ -1,43 +1,48 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   operationView: {
     display: "flex",
     flexDirection: "column",
     flexGrow: 2,
-    color: "black",
     minWidth: "15rem",
     height: "100%",
     minHeight: 0,
+    ...shorthands.borderLeft(
+      ".1rem",
+      "solid",
+      tokens.colorSubtleBackgroundHover
+    ),
   },
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white",
+    ...getPanelPadding(),
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white",
+    ...getPanelPadding(),
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    ...getPanelPadding(),
   },
-  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
-  errorAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
-  warningAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  accPanel: {
+    marginLeft: "1rem",
+    ...getPanelPadding(),
+  },
   resultPanel: {
     whiteSpace: "pre-wrap",
-    backgroundColor: "white",
+    ...getPanelPadding(),
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    ...getPanelPadding(),
   },
   operationDetails: {
     minHeight: 0,
@@ -55,10 +60,11 @@ export const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    height: "32.5px",
-    backgroundColor: "aliceblue",
     minHeight: 0,
     minWidth: 0,
+    paddingTop: ".1rem",
+    paddingBottom: ".1rem",
+    backgroundColor: tokens.colorBrandBackground2Hover,
   },
   heading: {
     display: "flex",
@@ -66,6 +72,8 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    paddingTop: ".5rem",
+    paddingLeft: ".5rem",
   },
   accordionWrapper: {
     display: "flex",
@@ -82,41 +90,45 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   operationType: {
-    color: "black",
-    fontSize: "10px",
+    fontSize: ".5rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,
   },
   operationNameText: {
     fontWeight: "bold",
-    paddingLeft: "10px",
-    paddingRight: "10px",
+    paddingLeft: ".2rem",
+    paddingRight: ".2rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,
   },
   button: {
-    minWidth: "20px",
+    minWidth: "2rem",
     backgroundColor: "transparent",
     height: "100%",
-    color: "black",
     minHeight: 0,
-    ...shorthands.border("0px", "solid", "transparent"),
+    ...shorthands.border("0rem"),
   },
   buttons: {
-   alignItems: "left"
-  }
+    alignItems: "left",
+  },
 });
+
+function getPanelPadding() {
+  return {
+    ...shorthands.padding("1rem"),
+    ...shorthands.borderRadius("1rem"),
+    backgroundColor: tokens.colorBrandBackground2Hover,
+  };
+}
 
 export type stylesKeys =
   | "operationView"
   | "operationNameAccPanel"
   | "operationVariablesAccPanel"
   | "durationAccPanel"
-  | "fetchPolicyAccPanel"
-  | "errorAccPanel"
-  | "warningAccPanel"
+  | "accPanel"
   | "affectedQueriesAccPanel"
   | "operationDetails"
   | "operationName"

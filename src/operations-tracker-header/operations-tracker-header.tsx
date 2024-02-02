@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Button } from "@fluentui/react-components";
+import { Button, MenuButton, Menu, MenuPopover, MenuTrigger, MenuItem, MenuList } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { Search } from "../search/search";
@@ -34,7 +34,16 @@ export const OperationsTrackerHeader = React.memo(
       operationsState,
       onCopy,
     } = useOperationsTrackerheader(props);
+    const trackerStore = React.useContext(TrackerStoreContext);
+    const {
+      setTheme
+    } = useStore(trackerStore, (store) => ({
+      setTheme: store.setTheme,
+    }));
 
+    const changeTheme = (e: any)=>{
+      setTheme(e.target.innerText)
+    }
     return (
       <>
         <div className={classes.header}>
@@ -46,12 +55,16 @@ export const OperationsTrackerHeader = React.memo(
             <CopyButton operationsState={operationsState} onCopy={onCopy} />
             {recordingState === RecordingState.Initial ? null : (
               <Button
-                style={{ marginLeft: "0.5rem" }}
+                style={{ margin: "0 0.5rem" }}
                 onClick={clearApolloOperations}
               >
                 Clear All
               </Button>
             )}
+             {recordingState === RecordingState.Initial ? null : (
+              renderThemeButton(changeTheme)
+            )}
+             
           </div>
           <div>
             <Search onSearchChange={debouncedFilter} />
@@ -76,7 +89,6 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     setError,
     setRecordingState,
     setLoader,
-    store,
     apolloOperationsData,
   } = useStore(trackerStore, (store) => ({
     setRecordingState: store.setRecordingState,
@@ -286,6 +298,22 @@ const renderInfoButton = (
   );
 };
 
+const renderThemeButton = (changeTheme: (e: any) => void): React.ReactNode => {
+  return <Menu>
+    <MenuTrigger>
+      <MenuButton>
+        Theme
+      </MenuButton>
+    </MenuTrigger>
+    <MenuPopover>
+      <MenuList>
+        <MenuItem onClick={(e) => changeTheme(e)}>light</MenuItem>
+        <MenuItem onClick={(e) => changeTheme(e)}>dark</MenuItem>
+      </MenuList>
+    </MenuPopover>
+  </Menu>;
+}
+
 const getRecordingString = (recordingState: RecordingState) => {
   if (
     recordingState === RecordingState.Initial ||
@@ -298,3 +326,5 @@ const getRecordingString = (recordingState: RecordingState) => {
 };
 
 OperationsTrackerHeader.displayName = "OperationsTrackerHeader";
+
+

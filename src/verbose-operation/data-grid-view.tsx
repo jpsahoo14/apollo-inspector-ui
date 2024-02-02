@@ -96,7 +96,7 @@ export const DataGridView = (props: IDataGridView) => {
                       ? classes.failedRow
                       : isRowSelected
                         ? classes.selectedRow
-                        : classes.gridRow;
+                        : null;
 
                 return (
                   <DataGridRow<Item>
@@ -132,7 +132,7 @@ const renderFilterAndColumnOptionsButton = (
   operationsState: IOperationsReducerState
 ) => (
   <div className={classes.headers}>
-    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
+    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters} className={classes.filtersButton}>
       Filters
     </Button>
     {!operationsState.selectedOperation && <ColumnOptions />}

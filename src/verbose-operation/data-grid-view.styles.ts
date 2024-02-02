@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   wholeBody: {
@@ -22,14 +22,6 @@ export const useStyles = makeStyles({
     cursor: "pointer",
     width: "100%",
     height: "100%",
-    // "::-webkit-scrollbar": {
-    //   display: "none",
-    // },
-  },
-  gridRow: {
-    ":hover": {
-      backgroundColor: "aliceblue",
-    },
   },
   gridHeaderCell: {
     backgroundColor: "#d4e8fa",
@@ -42,36 +34,27 @@ export const useStyles = makeStyles({
   gridView: {
     flexGrow: 2,
     display: "flex",
-    "&:hover": {
-      backgroundColor: "unset !important",
-      color: "unset !important",
-    },
     height: "100%",
     minHeight: 0,
     minWidth: 0,
   },
   selectedAndFailedRow: {
-    color: "darkred",
-    backgroundColor: "aliceblue",
+    color: tokens.colorPaletteRedForeground3,
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "aliceblue",
-      color: "darkred",
+      backgroundColor: tokens.colorBrandBackground2Hover,
+      color: tokens.colorPaletteRedForeground2,
     },
   },
   failedRow: {
     "&:hover": {
       backgroundColor: "unset",
-      color: "red",
+      color: tokens.colorPaletteRedBackground2,
     },
-    color: "red",
+    color: tokens.colorPaletteRedBackground3,
   },
   selectedRow: {
-    backgroundColor: "aliceblue",
     fontWeight: "bold",
-    "&:hover": {
-      backgroundColor: "aliceblue",
-    },
   },
   operationText: {
     ...shorthands.overflow("hidden"),
@@ -99,16 +82,18 @@ export const useStyles = makeStyles({
   filterViewWrapper: {
     flexGrow: 1,
     display: "flex",
-    maxWidth: "300px",
+    maxWidth: "30rem",
     height: "100%",
     minHeight: 0,
     minWidth: "fit-content",
+  },
+  filtersButton: {
+    marginRight: ".5rem",
   },
 });
 
 export type IClasses = Record<
   | "grid"
-  | "gridRow"
   | "wholeBody"
   | "headers"
   | "gridBody"

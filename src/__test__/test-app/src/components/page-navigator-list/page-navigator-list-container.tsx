@@ -84,24 +84,29 @@ const setSelectedPageMutationCB = async (
   client: any,
   pageId: number,
   optimisticData: { setSelectedPage: any }
-) =>
-  await client.mutate({
-    mutation: setSelectedPageMutation,
-    variables: { input: { pageId } },
-    optimisticResponse: optimisticData,
-    update: (cache: InMemoryCache, { data }: { data: any }) => {
-      const editorQueryData = readEditorQueryData(client);
+) => {
+  try {
+    await client.mutate({
+      mutation: setSelectedPageMutation,
+      variables: { input: { pageId } },
+      optimisticResponse: optimisticData,
+      update: (cache: InMemoryCache, { data }: { data: any }) => {
+        const editorQueryData = readEditorQueryData(client);
 
-      const updatedState = produce(editorQueryData, (draft) => {
-        draft.editor.selectedPage = data.setSelectedPage;
-      });
-      client.writeQuery({
-        query: editorQuery,
-        variables: { input: { id: 1 } },
-        data: updatedState,
-      });
-    },
-  });
+        const updatedState = produce(editorQueryData, (draft) => {
+          draft.editor.selectedPage = data.setSelectedPage;
+        });
+        client.writeQuery({
+          query: editorQuery,
+          variables: { input: { id: 1 } },
+          data: updatedState,
+        });
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const readEditorQueryData = (client: any) =>
   client.readQuery({
