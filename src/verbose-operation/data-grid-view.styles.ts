@@ -66,6 +66,7 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     flexGrow: 1,
+    ...getGridPaddingMargin(),
   },
   gridWrapper: {
     flexGrow: 1,
@@ -73,6 +74,7 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    ...getGridPaddingMargin(),
   },
   grid: {
     height: "100%",
@@ -86,11 +88,16 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: "fit-content",
+    boxShadow: `${tokens.colorNeutralShadowAmbientLighter} 0.2rem 0 2.6px`,
   },
   filtersButton: {
     marginRight: ".5rem",
   },
 });
+
+function getGridPaddingMargin() {
+  return { paddingLeft: "0.2rem", marginRight: "0.2rem" };
+}
 
 export type IClasses = Record<
   | "grid"
