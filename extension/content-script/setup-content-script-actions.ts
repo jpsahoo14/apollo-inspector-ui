@@ -11,6 +11,7 @@ import {
   WEBPAGE_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
+  BACKGROUND,
 } from "../utils";
 import {
   getTabId,
@@ -23,7 +24,7 @@ import { IContentScriptInitialContext } from "./content-script.interface";
 
 export const setupContentScriptsActions = (context: IContentScriptContext) => {
   const { contentScript, addToCleanUp } = context;
-
+  const cleanUps: (() => void)[] = [];
   const actionToReducers = {
     [DEVTOOL]: getDevtoolAction(context),
     [PANEL_PAGE]: getDevtoolAction(context),
@@ -31,14 +32,17 @@ export const setupContentScriptsActions = (context: IContentScriptContext) => {
 
   for (const prop in actionToReducers) {
     const modifiedProp = prop as CONTENT_SCRIPT_ACTIONS;
-
-    addToCleanUp(
-      contentScript.addEventListener(
-        modifiedProp,
-        actionToReducers[modifiedProp]
-      )
+    const cleanUp = contentScript.addEventListener(
+      modifiedProp,
+      actionToReducers[modifiedProp]
     );
+    addToCleanUp(cleanUp);
+    cleanUps.push(cleanUp);
   }
+
+  return () => {
+    cleanUps.forEach((cleanUp) => cleanUp());
+  };
 };
 
 export const setupInitialContentScriptAction = (
@@ -72,34 +76,8 @@ const runContentScriptInitialization = (
 ) => {
   const { store, contentScript, addToCleanUp } = context;
   return (message: IMessagePayload) => {
-    const { tabId, cleanUps } = store;
-    const connectionToBackgroundService: browser.Runtime.Port =
-      browser.runtime.connect({
-        name: `${JSON.stringify({ name: CONTENT_SCRIPT, tabId })}`,
-      });
-
-    connectionToBackgroundService.onMessage.addListener(
-      (message: IMessagePayload) => {
-        logMessage(`message received at content-script`, { message });
-        const event = new CustomEvent(message.destination.name, {
-          detail: message,
-        });
-        contentScript.dispatchEvent(event);
-      }
-    );
-
-    setupWindowEventListeners(context);
-
-    setupContentScriptsActions({
-      contentScript,
-      backgroundService: connectionToBackgroundService,
-      addToCleanUp,
-      tabId: tabId as number,
-    });
-
-    connectionToBackgroundService.onDisconnect.addListener((port) => {
-      cleanUps.forEach((cleanUp) => cleanUp());
-    });
+    const { tabId } = store;
+    connectToBackgroundServiceWorker(contentScript, context);
 
     sendMessageViaEventTarget(contentScript, {
       action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE,
@@ -150,10 +128,61 @@ const setupWindowEventListeners = (context: IContentScriptInitialContext) => {
     store: { cleanUps },
   } = context;
   const beforeUnloadListener = getContentScriptUnloadReducer(context);
-  window.onbeforeunload = () => {
+  const handler = () => {
     beforeUnloadListener();
     cleanUps.forEach((cleanUp) => cleanUp());
   };
+  window.addEventListener("beforeunload", handler);
+
+  return () => {
+    window.removeEventListener("beforeunload", handler);
+  };
+};
+
+const connectToBackgroundServiceWorker = (
+  contentScript: CustomEventTarget,
+  context: IContentScriptInitialContext
+) => {
+  const { addToCleanUp, store } = context;
+  const { tabId } = store;
+  const onDisconnectCleanUps: (() => void)[] = [];
+  const connectionToBackgroundService: browser.Runtime.Port =
+    browser.runtime.connect({
+      name: `${JSON.stringify({ name: CONTENT_SCRIPT, tabId })}`,
+    });
+
+  connectionToBackgroundService.onMessage.addListener(
+    (message: IMessagePayload) => {
+      logMessage(`message received at content-script`, { message });
+      const event = new CustomEvent(message.destination.name, {
+        detail: message,
+      });
+      contentScript.dispatchEvent(event);
+    }
+  );
+
+  addToCleanUp(() => {
+    connectionToBackgroundService.disconnect();
+  });
+
+  onDisconnectCleanUps.push(setupWindowEventListeners(context));
+
+  onDisconnectCleanUps.push(
+    setupContentScriptsActions({
+      contentScript,
+      backgroundService: connectionToBackgroundService,
+      addToCleanUp,
+      tabId: tabId as number,
+    })
+  );
+
+  connectionToBackgroundService.onDisconnect.addListener((port) => {
+    logMessage(`content-script disconnected from background`, {
+      data: port,
+    });
+    onDisconnectCleanUps.forEach((cleanUp) => cleanUp());
+    connectToBackgroundServiceWorker(contentScript, context);
+  });
 };
 
 const logMessage = createLogger(`content-script`);

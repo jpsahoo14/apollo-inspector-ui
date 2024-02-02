@@ -18,6 +18,8 @@ import {
 
 export const setupPanelActions = (context: IPanelContext) => {
   const { panel } = context;
+  const cleanUps: (() => void)[] = [];
+
   const actionsToReducers = {
     [WEB_PAGE]: sendMessageFromPanelPage(context),
     [BACKGROUND]: sendMessageFromPanelPage(context),
@@ -32,6 +34,10 @@ export const setupPanelActions = (context: IPanelContext) => {
   };
 
   for (const prop in actionsToReducers) {
-    panel.addEventListener(prop, actionsToReducers[prop]);
+    cleanUps.push(panel.addEventListener(prop, actionsToReducers[prop]));
   }
+
+  return () => {
+    cleanUps.forEach((cleanUp) => cleanUp());
+  };
 };

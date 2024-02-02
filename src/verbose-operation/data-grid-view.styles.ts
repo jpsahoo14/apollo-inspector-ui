@@ -24,9 +24,12 @@ export const useStyles = makeStyles({
     height: "100%",
   },
   gridHeaderCell: {
-    
+    backgroundColor: "#d4e8fa",
+    minWidth: "10px !important",
+    textOverflow: "ellipsis",
   },
   gridrowcell: {
+    minWidth: "10px !important",
   },
   gridView: {
     flexGrow: 2,
@@ -85,8 +88,8 @@ export const useStyles = makeStyles({
     minWidth: "fit-content",
   },
   filtersButton: {
-    marginRight: ".5rem"
-  }
+    marginRight: ".5rem",
+  },
 });
 
 export type IClasses = Record<

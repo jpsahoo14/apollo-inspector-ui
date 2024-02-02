@@ -21,23 +21,39 @@ const devtoolState: IDevtoolState = {
 
 const devtoolsEventTarget = new CustomEventTarget("devtools");
 
-const backgroundConnection: browser.Runtime.Port = browser.runtime.connect({
-  name: JSON.stringify({ name: DEVTOOL, tabId }),
-});
+const connectToBackgroundServiceWorker = () => {
+  const onDisconnectCleanUps: (() => void)[] = [];
 
-backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-  logMessage(`received message in devtools onMessage`, { message });
-  const event = new CustomEvent(message.destination.name, {
-    detail: message,
+  const backgroundConnection: browser.Runtime.Port = browser.runtime.connect({
+    name: JSON.stringify({ name: DEVTOOL, tabId }),
   });
-  devtoolsEventTarget.dispatchEvent(event);
-});
 
-setupDevtoolActions({
-  backgroundConnection,
-  devtools: devtoolsEventTarget,
-  devtoolState,
-});
+  backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
+    logMessage(`received message in devtools onMessage`, { message });
+    const event = new CustomEvent(message.destination.name, {
+      detail: message,
+    });
+    devtoolsEventTarget.dispatchEvent(event);
+  });
+
+  onDisconnectCleanUps.push(
+    setupDevtoolActions({
+      backgroundConnection,
+      devtools: devtoolsEventTarget,
+      devtoolState,
+    })
+  );
+
+  backgroundConnection.onDisconnect.addListener((port) => {
+    logMessage(`devtool disconnected from background`, {
+      data: port,
+    });
+    onDisconnectCleanUps.forEach((cleanUp) => cleanUp());
+    connectToBackgroundServiceWorker();
+  });
+};
+
+connectToBackgroundServiceWorker();
 
 function sendDevtoolsScripLoadedEvent() {
   sendMessageViaEventTarget(devtoolsEventTarget, {

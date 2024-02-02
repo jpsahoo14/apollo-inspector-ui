@@ -30,4 +30,4 @@ import { IWebpageStore } from "./web-page.interface";
 
 const logMessage = createLogger(`mainThread`);
 
-logMessage(`apollo inspector script started`, {});
+logMessage(`apollo inspector web-script started`, {});

@@ -14,6 +14,7 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     flexGrow: 1,
+    flexBasis: "30%",
   },
   selectedOperationView: {
     display: "flex",
@@ -21,6 +22,10 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    flexBasis: "50%",
+  },
+  notselectedOperationView: {
+    display: "none",
   },
   operations: {
     display: "flex",
