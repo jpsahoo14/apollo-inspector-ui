@@ -10,13 +10,13 @@ import { PanelContainer } from "./panel-container";
 // import { useStore } from "zustand";
 
 const ApolloUIComponent = () => {
-  // const trackerStore = React.useContext(TrackerStoreContext);
-  // const { theme } = useStore(trackerStore);
-  // const isLightTheme = theme === "light";
-  const isLightTheme = false;
+  const isLightTheme = true;
 
   return (
-    <FluentProvider theme={isLightTheme ? webLightTheme : webDarkTheme} style={{ width: "100%" }}>
+    <FluentProvider
+      theme={isLightTheme ? webLightTheme : webDarkTheme}
+      style={{ width: "100%" }}
+    >
       <PanelContainer />
     </FluentProvider>
   );
