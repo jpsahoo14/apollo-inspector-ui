@@ -8,7 +8,7 @@ export const useStyles = makeStyles({
     minWidth: "15rem",
     height: "100%",
     minHeight: 0,
-    boxShadow: `-0.2rem 0 ${tokens.colorNeutralShadowAmbientLighter}`,
+    boxShadow: `-1.5rem 0 1.2rem -1.2rem ${tokens.colorNeutralShadowAmbientLighter}`,
     ...shorthands.borderLeft(
       ".1rem",
       "solid",

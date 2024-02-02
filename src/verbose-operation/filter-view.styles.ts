@@ -4,6 +4,7 @@ export const useStyles = makeStyles({
   filterView: {
     display: "flex",
     flexDirection: "column",
+    backgroundColor: tokens.colorNeutralBackground2,
     overflowY: "scroll",
     paddingLeft: "1rem",
     paddingRight: "1rem",
