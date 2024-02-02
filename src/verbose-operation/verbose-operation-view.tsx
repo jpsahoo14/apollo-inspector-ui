@@ -68,12 +68,12 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
 
   return (
     <div className={classes.operationView} key="verboseOperationView">
-      <div className={classes.subHeading} key="verboseHeader">
+      <div className={classes.header} key="verboseHeader">
         <div className={classes.heading} key="operationType1">
           <div className={classes.operationNameText}> {operationName} </div>
           <div className={classes.operationType}> {operationType} </div>
         </div>
-        <div className={classes.buttons}>
+        <div className={classes.headerButtons}>
           <Button
             key={`copy-btn`}
             onClick={copyOperation}
