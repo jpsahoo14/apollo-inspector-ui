@@ -8,6 +8,7 @@ export const useStyles = makeStyles({
     minHeight: 0,
     height: "100%",
     width: "100%",
+    ...shorthands.padding("0.5rem"),
   },
   innerContainer: {
     display: "flex",
