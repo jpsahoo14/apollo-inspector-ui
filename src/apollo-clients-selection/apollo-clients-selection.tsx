@@ -16,6 +16,7 @@ import {
 } from "@fluentui/react-icons";
 import { CopyType, ICopyData, RecordingState } from "../types";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 export interface IApolloClientSelectionProps {
   clientIds: string[];
@@ -33,12 +34,15 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
     setSelectedApolloClientIds,
     error,
     recordingState,
-  } = useStore(store, (store) => ({
-    selectedApolloClientIds: store.selectedApolloClientIds,
-    setSelectedApolloClientIds: store.setSelectedApolloClientIds,
-    error: store.error,
-    recordingState: store.recordingState,
-  }));
+  } = useStore(
+    store,
+    useShallow((store) => ({
+      selectedApolloClientIds: store.selectedApolloClientIds,
+      setSelectedApolloClientIds: store.setSelectedApolloClientIds,
+      error: store.error,
+      recordingState: store.recordingState,
+    }))
+  );
 
   const checkBoxes = useApolloClientCheckboxes({
     clientIds,

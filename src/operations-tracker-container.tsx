@@ -19,15 +19,18 @@ import {
   TrackerStoreProvider,
   createTrackerStore,
   TrackerStoreContext,
+  ISetState,
 } from "./store";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import { RecordingState } from "./types";
 import { ApolloClientSelection } from "./apollo-clients-selection/apollo-clients-selection";
 
 export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
-  const trackerStoreRef = React.useRef(createTrackerStore());
+  const trackerStore = React.useMemo(() => createTrackerStore(), []);
+  const trackerStoreRef = React.useRef(trackerStore);
   return (
     <TrackerStoreProvider value={trackerStoreRef.current}>
       <OperationsTrackerContainerInner {...props} />
@@ -92,41 +95,26 @@ const useSetSelectedApolloClient = (props: IOperationsTrackerContainer) => {
     setApolloClients,
     selectedApolloClientIds,
     setSelectedApolloClientIds,
-  ] = useStore(store, (store) => [
-    store.setApolloClients,
-    store.selectedApolloClientIds,
-    store.setSelectedApolloClientIds,
-  ]);
+  ] = useStore(
+    store,
+    useShallow((store) => [
+      store.setApolloClients,
+      store.selectedApolloClientIds,
+      store.setSelectedApolloClientIds,
+    ])
+  );
 
   React.useEffect(() => {
     const currentApolloClients = props.apolloClientIds;
     setApolloClients(currentApolloClients);
   }, [props.apolloClientIds, setApolloClients]);
 
-  React.useEffect(() => {
-    const currentApolloClientsIds = props.apolloClientIds;
-    if (selectedApolloClientIds.length !== 0) {
-      const finalSelectedApolloClientsIds: string[] = [];
-      selectedApolloClientIds.forEach((apolloClientId) => {
-        const result = currentApolloClientsIds.find(
-          (cliendId) => cliendId === apolloClientId
-        );
-        if (result) {
-          finalSelectedApolloClientsIds.push(apolloClientId);
-        }
-      });
-      if (
-        finalSelectedApolloClientsIds.length !== selectedApolloClientIds.length
-      ) {
-        setSelectedApolloClientIds(finalSelectedApolloClientsIds);
-      }
-    }
-  }, [
-    props.apolloClientIds,
-    setApolloClients,
+  useResetSelectedApolloClientIdsWithCurrentApolloClientIds({
+    props,
     selectedApolloClientIds,
     setSelectedApolloClientIds,
-  ]);
+    setApolloClients,
+  });
 };
 
 const useMainSlot = (
@@ -138,13 +126,13 @@ const useMainSlot = (
 
   const { apollOperationsData, error, loader, recordingState } = useStore(
     store,
-    (store) => ({
+    useShallow((store) => ({
       apollOperationsData: store.apolloOperationsData,
       error: store.error,
       loader: store.loader,
       recordingState: store.recordingState,
       selectedApolloClientIds: store.selectedApolloClientIds,
-    })
+    }))
   );
 
   if (
@@ -189,9 +177,12 @@ const useMainSlot = (
 
 const useOperationsTrackerContainer = (props: IOperationsTrackerContainer) => {
   const store = React.useContext(TrackerStoreContext);
-  const { openDescription } = useStore(store, (store) => ({
-    openDescription: store.openDescription,
-  }));
+  const { openDescription } = useStore(
+    store,
+    useShallow((store) => ({
+      openDescription: store.openDescription,
+    }))
+  );
 
   const [operationsState, dispatchOperationsState] = React.useReducer(
     reducers,
@@ -216,4 +207,42 @@ const useOperationsTrackerContainer = (props: IOperationsTrackerContainer) => {
     dispatchOperationsState,
     setSearchText,
   };
+};
+
+interface IUseResetSelectedApolloClientIdsWithCurrentApolloClientIds {
+  props: IOperationsTrackerContainer;
+  selectedApolloClientIds: string[];
+  setSelectedApolloClientIds: ISetState<string[]>;
+  setApolloClients: ISetState<string[]>;
+}
+const useResetSelectedApolloClientIdsWithCurrentApolloClientIds = ({
+  props,
+  selectedApolloClientIds,
+  setApolloClients,
+  setSelectedApolloClientIds,
+}: IUseResetSelectedApolloClientIdsWithCurrentApolloClientIds) => {
+  React.useEffect(() => {
+    const currentApolloClientsIds = props.apolloClientIds;
+    if (selectedApolloClientIds.length !== 0) {
+      const finalSelectedApolloClientsIds: string[] = [];
+      selectedApolloClientIds.forEach((selectedApolloClientId) => {
+        const found = currentApolloClientsIds.find(
+          (cliendId) => cliendId === selectedApolloClientId
+        );
+        if (found) {
+          finalSelectedApolloClientsIds.push(selectedApolloClientId);
+        }
+      });
+      if (
+        finalSelectedApolloClientsIds.length !== selectedApolloClientIds.length
+      ) {
+        setSelectedApolloClientIds(finalSelectedApolloClientsIds);
+      }
+    }
+  }, [
+    props.apolloClientIds,
+    setApolloClients,
+    selectedApolloClientIds,
+    setSelectedApolloClientIds,
+  ]);
 };

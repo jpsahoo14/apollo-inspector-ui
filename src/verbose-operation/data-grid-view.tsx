@@ -31,7 +31,6 @@ export const DataGridView = React.memo((props: IDataGridView) => {
     columns,
     columnSizing,
     updateVerboseOperations,
-    scrollbarWidth,
     onClick,
   } = useDataGridView(props);
 
@@ -67,12 +66,7 @@ export const DataGridView = React.memo((props: IDataGridView) => {
             onSelectionChange={updateVerboseOperations as any}
             className={classes.grid}
           >
-            <DataGridHeader
-              style={{
-                paddingRight: scrollbarWidth,
-                backgroundColor: "#d4e8fa",
-              }}
-            >
+            <DataGridHeader>
               <DataGridRow>
                 {({ renderHeaderCell }) => (
                   <DataGridHeaderCell className={classes.gridHeaderCell}>

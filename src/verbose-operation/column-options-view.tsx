@@ -13,6 +13,7 @@ import {
 } from "@fluentui/react-components";
 import { ISetState, TrackerStoreContext } from "../store";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import {
   secondsToTime,
   sizeInBytes,
@@ -93,7 +94,9 @@ export const sampleColumnOptions: IColumnOptions[] = [
     value: (item) =>
       item.duration.totalTime > 1000
         ? secondsToTime(item.duration.totalTime)
-        : `${item.duration.totalTime} ms`,
+        : item.duration.totalTime
+          ? `${item.duration.totalTime} ms`
+          : ``,
     compare: (a, b) => b.duration.totalTime - a.duration.totalTime,
     size: {
       minWidth: 10,
@@ -117,7 +120,10 @@ export const ColumnOptions = () => {
   const store = React.useContext(TrackerStoreContext);
   const [selectedColumnOptions, setSelectedColumnOptions] = useStore(
     store,
-    (store) => [store.selectedColumnOptions, store.setSelectedColumnOptions]
+    useShallow((store) => [
+      store.selectedColumnOptions,
+      store.setSelectedColumnOptions,
+    ])
   );
 
   const onColumnOptionsChange = useOnColumnOptionsChange(

@@ -17,6 +17,7 @@ import {
 } from "../operations-tracker-container-helper";
 import { TrackerStoreContext } from "../store";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 const ItemSize = 20;
 
@@ -51,6 +52,11 @@ export const useDataGridView = (props: IDataGridView) => {
   };
 };
 
+/**
+ * Computes the width of the scrollbar, which can be used as padding
+ * to data-grid so that scrollbar doesn't overlay on content
+ * @returns scrollbarWidth
+ */
 const useScrollbarWidthInternal = () => {
   const { targetDocument } = useFluent();
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
@@ -122,9 +128,10 @@ const useWindowResize = (
 
 const useGridColumns = (operationsState: IOperationsReducerState) => {
   const store = React.useContext(TrackerStoreContext);
-  const [selectedColumnOptions] = useStore(store, (store) => [
-    store.selectedColumnOptions,
-  ]);
+  const [selectedColumnOptions] = useStore(
+    store,
+    useShallow((store) => [store.selectedColumnOptions])
+  );
   const columns = React.useMemo(
     () =>
       getColumns(!!operationsState.selectedOperation, selectedColumnOptions),
@@ -135,7 +142,8 @@ const useGridColumns = (operationsState: IOperationsReducerState) => {
     () => columnSizingOptions(selectedColumnOptions),
     [selectedColumnOptions]
   );
-  useShowClientIdColumn();
+
+  useShouldShowClientIdColumn();
   return { columns, columnSizing };
 };
 
@@ -241,15 +249,17 @@ const useFilterLogic = (props: IDataGridView) => {
   return { updateFilters, updateVerboseOperations, filters, filteredItems };
 };
 
-const useShowClientIdColumn = () => {
+const useShouldShowClientIdColumn = () => {
   const store = React.useContext(TrackerStoreContext);
-  const [setSelectedColumnOptions] = useStore(store, (store) => [
-    store.setSelectedColumnOptions,
-  ]);
+  const [setSelectedColumnOptions] = useStore(
+    store,
+    useShallow((store) => [store.setSelectedColumnOptions])
+  );
 
-  const [selectedApolloClientIds] = useStore(store, (store) => [
-    store.selectedApolloClientIds,
-  ]);
+  const [selectedApolloClientIds] = useStore(
+    store,
+    useShallow((store) => [store.selectedApolloClientIds])
+  );
   const hasCheckedRef = React.useRef(false);
 
   if (hasCheckedRef.current === false) {
