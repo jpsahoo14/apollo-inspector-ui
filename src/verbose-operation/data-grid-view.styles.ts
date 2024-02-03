@@ -14,6 +14,7 @@ export const useStyles = makeStyles({
     flexDirection: "row",
     minHeight: 0,
     minWidth: 0,
+    paddingBottom: "0.5rem",
   },
   gridBody: {
     position: "relative",

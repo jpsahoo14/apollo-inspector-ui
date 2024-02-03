@@ -74,18 +74,22 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
           <div className={classes.operationType}> {operationType} </div>
         </div>
         <div className={classes.headerButtons}>
-          <Button
-            key={`copy-btn`}
-            onClick={copyOperation}
-            className={classes.button}
-            icon={<Copy16Regular />}
-          ></Button>
-          <Button
-            key={`dismiss-btn`}
-            onClick={closePreview}
-            className={classes.button}
-            icon={<Dismiss16Filled />}
-          ></Button>
+          <Tooltip content={"Copy operation details"} relationship="label">
+            <Button
+              key={`copy-btn`}
+              onClick={copyOperation}
+              className={classes.button}
+              icon={<Copy16Regular />}
+            ></Button>
+          </Tooltip>
+          <Tooltip content={"Close operation view"} relationship="label">
+            <Button
+              key={`dismiss-btn`}
+              onClick={closePreview}
+              className={classes.button}
+              icon={<Dismiss16Filled />}
+            ></Button>
+          </Tooltip>
         </div>
       </div>
       <div
