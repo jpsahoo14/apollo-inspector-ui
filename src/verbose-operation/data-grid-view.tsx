@@ -7,17 +7,17 @@ import {
   DataGridCell,
   DataGridHeaderCell,
 } from "@fluentui-contrib/react-data-grid-react-window";
-import { IVerboseOperation } from "apollo-inspector";
+import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
 import { LineHorizontal3Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
-import { Button } from "@fluentui/react-components";
+import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
-export const DataGridView = (props: IDataGridView) => {
+export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
   const {
     gridHeight,
@@ -37,7 +37,11 @@ export const DataGridView = (props: IDataGridView) => {
 
   return (
     <div className={classes.wholeBody}>
-      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters, operationsState)}
+      {renderFilterAndColumnOptionsButton(
+        classes,
+        handleToggleFilters,
+        operationsState
+      )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
           showFilters,
@@ -60,7 +64,6 @@ export const DataGridView = (props: IDataGridView) => {
             resizableColumns
             selectionAppearance="brand"
             columnSizingOptions={columnSizing}
-            selectionMode="multiselect"
             onSelectionChange={updateVerboseOperations as any}
             className={classes.grid}
           >
@@ -86,12 +89,13 @@ export const DataGridView = (props: IDataGridView) => {
               {({ item, rowId }, style) => {
                 const isRowSelected =
                   operationsState.selectedOperation?.id === (item as Item).id;
-                const isFailed = (item as Item).status
-                  .toLowerCase()
-                  .includes("failed");
+                const isFailed =
+                  (item as Item).status === OperationStatus.Failed ||
+                  (item as Item).status === OperationStatus.PartialSuccess;
+
                 const rowClassName =
                   isRowSelected && isFailed
-                    ? classes.selectedAndFailedRow
+                    ? mergeClasses(classes.selectedRow, classes.failedRow)
                     : isFailed
                       ? classes.failedRow
                       : isRowSelected
@@ -124,7 +128,7 @@ export const DataGridView = (props: IDataGridView) => {
       </div>
     </div>
   );
-};
+});
 
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
@@ -132,7 +136,11 @@ const renderFilterAndColumnOptionsButton = (
   operationsState: IOperationsReducerState
 ) => (
   <div className={classes.headers}>
-    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters} className={classes.filtersButton}>
+    <Button
+      icon={<LineHorizontal3Regular />}
+      onClick={handleToggleFilters}
+      className={classes.filtersButton}
+    >
       Filters
     </Button>
     {!operationsState.selectedOperation && <ColumnOptions />}
@@ -155,3 +163,5 @@ const renderFilterView = (
       />
     </div>
   );
+
+DataGridView.displayName = "DataGridView";

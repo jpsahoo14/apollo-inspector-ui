@@ -38,23 +38,18 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
   },
-  selectedAndFailedRow: {
-    color: tokens.colorPaletteRedForeground3,
+  selectedRow: {
     fontWeight: "bold",
+    backgroundColor: tokens.colorBrandBackgroundInvertedSelected,
     "&:hover": {
-      backgroundColor: tokens.colorBrandBackground2Hover,
-      color: tokens.colorPaletteRedForeground2,
+      backgroundColor: tokens.colorBrandBackgroundInvertedSelected,
     },
   },
   failedRow: {
-    "&:hover": {
-      backgroundColor: "unset",
-      color: tokens.colorPaletteRedBackground2,
-    },
     color: tokens.colorPaletteRedBackground3,
-  },
-  selectedRow: {
-    fontWeight: "bold",
+    "&:hover": {
+      color: tokens.colorPaletteRedBackground3,
+    },
   },
   operationText: {
     ...shorthands.overflow("hidden"),
@@ -107,12 +102,12 @@ export type IClasses = Record<
   | "gridHeaderCell"
   | "gridrowcell"
   | "gridView"
-  | "selectedAndFailedRow"
   | "failedRow"
   | "selectedRow"
   | "operationText"
   | "selectedOperationGridWrapper"
   | "gridWrapper"
-  | "filterViewWrapper",
+  | "filterViewWrapper"
+  | "filtersButton",
   string
 >;
