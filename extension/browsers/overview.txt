@@ -1,4 +1,4 @@
-Apollo Inspector is a c extension designed for the open-source GraphQL client, Apollo Client.
+Apollo Inspector is a chrome extension designed for the open-source GraphQL client, Apollo Client.
 
 This tool is particularly useful for debugging various issues related to GraphQL operations in Apollo Client.
 
