@@ -24,7 +24,7 @@ export const useStyles = makeStyles({
     height: "100%",
   },
   gridHeaderCell: {
-    backgroundColor: "#d4e8fa",
+    backgroundColor: tokens.colorBrandBackground2Hover,
     minWidth: "10px !important",
     textOverflow: "ellipsis",
   },
@@ -40,9 +40,9 @@ export const useStyles = makeStyles({
   },
   selectedRow: {
     fontWeight: "bold",
-    backgroundColor: tokens.colorBrandBackgroundInvertedSelected,
+    backgroundColor: tokens.colorBrandBackground2Hover,
     "&:hover": {
-      backgroundColor: tokens.colorBrandBackgroundInvertedSelected,
+      backgroundColor: tokens.colorBrandBackground2Hover,
     },
   },
   failedRow: {
