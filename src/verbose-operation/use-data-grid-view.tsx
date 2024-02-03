@@ -181,7 +181,9 @@ const useFilterLogic = (props: IDataGridView) => {
     types: [],
     statuses: [],
   });
-  const [filteredItems, setFilteredItems] = React.useState(operations || []);
+  const [filteredItems, setFilteredItems] = React.useState<IVerboseOperation[]>(
+    operations || []
+  );
 
   React.useEffect(() => {
     const items = getFilteredItems(
