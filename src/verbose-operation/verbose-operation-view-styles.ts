@@ -122,6 +122,7 @@ export const useStyles = makeStyles({
 function getPanelCommonCss() {
   return {
     ...shorthands.borderRadius("1rem"),
+    ...shorthands.padding("0.5rem"),
     backgroundColor: tokens.colorBrandBackground2Hover,
   };
 }
