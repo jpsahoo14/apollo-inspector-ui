@@ -59,13 +59,6 @@ export const OperationsTrackerContainerInner = (
     { classes }
   );
 
-  React.useEffect(() => {
-    console.log(`operations tracker container mounted`);
-    return () => {
-      console.log(`operations tracker container unmounted`);
-    };
-  }, []);
-
   return (
     <ErrorBoundary>
       <div className={classes.root}>

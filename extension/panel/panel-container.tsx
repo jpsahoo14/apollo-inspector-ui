@@ -4,12 +4,11 @@ import { Spinner } from "@fluentui/react-components";
 import {
   CustomEventTarget,
   IMessagePayload,
-  PANEL_PAGE,
   PANEL_PAGE_ACTIONS,
   WEBPAGE_ACTIONS,
-  WEB_PAGE,
   createLogger,
   sendMessageViaEventTarget,
+  Context,
 } from "../utils";
 import { Observable } from "rxjs";
 import { IDataView } from "apollo-inspector";
@@ -29,7 +28,7 @@ export const PanelContainer = () => {
   const cleanUpsRef = React.useRef<(() => void)[]>([]);
   const [backgroundConnection, setBackgroundConnection] =
     React.useState<browser.Runtime.Port | null>(null);
-  const panelRef = React.useRef(new CustomEventTarget(PANEL_PAGE));
+  const panelRef = React.useRef(new CustomEventTarget(Context.PANEL_PAGE));
 
   logMessage(`rendering Panel container`, {
     log: {
@@ -141,8 +140,8 @@ const useOperationTrackerProps = ({
     if (copyType === CopyType.WholeApolloCache) {
       sendMessageViaEventTarget(panelRef.current, {
         action: PANEL_PAGE_ACTIONS.COPY_WHOLE_CACHE,
-        callerName: PANEL_PAGE,
-        destinationName: WEB_PAGE,
+        callerName: Context.PANEL_PAGE,
+        destinationName: Context.WEB_PAGE,
         tabId: tabIdRef.current,
         data,
       });
@@ -164,8 +163,8 @@ const useApolloClientStoreCB = (
   const onClearStore = React.useCallback((clientId: string) => {
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.CLEAR_STORE,
-      callerName: PANEL_PAGE,
-      destinationName: WEB_PAGE,
+      callerName: Context.PANEL_PAGE,
+      destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
       data: {
         clientId,
@@ -175,8 +174,8 @@ const useApolloClientStoreCB = (
   const onResetStore = React.useCallback((clientId: string) => {
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.RESET_STORE,
-      callerName: PANEL_PAGE,
-      destinationName: WEB_PAGE,
+      callerName: Context.PANEL_PAGE,
+      destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
       data: {
         clientId,
@@ -200,10 +199,10 @@ const useGetApolloClientIds = (
       const fetchUntil = 10000;
       const intervalNumber = setInterval(() => {
         sendMessageViaEventTarget(panelRef.current, {
-          destinationName: WEB_PAGE,
+          destinationName: Context.WEB_PAGE,
           action: WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS,
           tabId: tabIdRef.current,
-          callerName: PANEL_PAGE,
+          callerName: Context.PANEL_PAGE,
         });
       }, 100);
 
@@ -269,9 +268,9 @@ const useOnRecordStartAndOnRecordStop = (
         setSubscription({ unsubscribe });
         sendMessageViaEventTarget(panelRef.current, {
           action: PANEL_PAGE_ACTIONS.START_RECORDING,
-          destinationName: WEB_PAGE,
+          destinationName: Context.WEB_PAGE,
           tabId: tabIdRef.current,
-          callerName: PANEL_PAGE,
+          callerName: Context.PANEL_PAGE,
           data: {
             apolloClientIds: clientIds,
           },
@@ -288,9 +287,9 @@ const useOnRecordStartAndOnRecordStop = (
     });
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
-      destinationName: WEB_PAGE,
+      destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
-      callerName: PANEL_PAGE,
+      callerName: Context.PANEL_PAGE,
     });
   }, [panelRef, setSubscription, tabIdRef]);
   return { onRecordStart, onRecordStop };

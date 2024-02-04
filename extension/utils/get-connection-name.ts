@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import { IConnection } from "./types";
+import { Context } from "./constants";
 
 export const getConnectionObject = (
   connection: browser.Runtime.Port
@@ -11,6 +12,6 @@ export const getConnectionObject = (
 
     return connection;
   } catch {
-    return { name: "unknown", tabId: 0 };
+    return { name: Context.Unknown, tabId: 0 };
   }
 };

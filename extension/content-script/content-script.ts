@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import { CustomEventTarget, createLogger } from "../utils";
+import { CustomEventTarget, createLogger, Context } from "../utils";
 import {
   IContentScriptInitialContext,
   IContentScriptStore,
@@ -16,7 +16,9 @@ async function init() {
     cleanUps,
   };
 
-  const contentScriptEventTarget = new CustomEventTarget("content-script");
+  const contentScriptEventTarget = new CustomEventTarget(
+    Context.CONTENT_SCRIPT
+  );
 
   const context: IContentScriptInitialContext = {
     addToCleanUp,

@@ -1,16 +1,14 @@
 import {
   isTestEnabled,
   IMessagePayload,
-  DEVTOOL,
   DEVTOOLS_ACTIONS,
   CONTENT_SCRIPT_ACTIONS,
-  CONTENT_SCRIPT,
-  WEB_PAGE,
   WEBPAGE_ACTIONS,
-  PANEL_PAGE,
   generateRequestInfo,
   createLogger,
   sendMessageViaEventTarget,
+  Context,
+  getLastSender,
 } from "../utils";
 import { IWebpageContext } from "./web-page.interface";
 import { ApolloInspector, IDataView } from "apollo-inspector";
@@ -24,10 +22,10 @@ export const devtoolScriptLoadedAction = (context: IWebpageContext) => {
     const apolloClientIds = getApolloClients();
     if (apolloClientIds.length > 0) {
       sendMessageViaEventTarget(webpage, {
-        destinationName: DEVTOOL,
+        destinationName: Context.DEVTOOL,
         action: DEVTOOLS_ACTIONS.CREATE_DEVTOOLS_PANEL,
         tabId,
-        callerName: WEB_PAGE,
+        callerName: Context.WEB_PAGE,
         data: {
           apolloClientIds,
         },
@@ -42,17 +40,10 @@ export const getApolloClientsIdsAction = (context: IWebpageContext) => {
     const apolloClientIds = getApolloClients();
 
     sendMessageViaEventTarget(webpage, {
-      destinationName: PANEL_PAGE,
+      destinationName: Context.PANEL_PAGE,
       action: WEBPAGE_ACTIONS.APOLLO_CLIENT_IDS,
       tabId,
-      callerName: WEB_PAGE,
-      data: { apolloClientsIds: apolloClientIds },
-    });
-    sendMessageViaEventTarget(webpage, {
-      destinationName: DEVTOOL,
-      action: WEBPAGE_ACTIONS.APOLLO_CLIENT_IDS,
-      tabId,
-      callerName: WEB_PAGE,
+      callerName: Context.WEB_PAGE,
       data: { apolloClientsIds: apolloClientIds },
     });
   };
@@ -66,8 +57,8 @@ export const getCopyWholeCacheCB = (context: IWebpageContext) => {
     const data = ac?.cache.data.data;
     sendMessageViaEventTarget(webpage, {
       action: WEBPAGE_ACTIONS.WHOLE_APOLLO_CACHE_DATA,
-      callerName: WEB_PAGE,
-      destinationName: PANEL_PAGE,
+      callerName: Context.WEB_PAGE,
+      destinationName: Context.PANEL_PAGE,
       tabId,
       data,
     });
@@ -131,11 +122,11 @@ const sendMessageToContentScript = (
   const message: IMessagePayload = {
     destination: {
       action,
-      name: CONTENT_SCRIPT,
+      name: Context.CONTENT_SCRIPT,
       tabId: 0,
     },
     requestInfo: {
-      ...generateRequestInfo(WEB_PAGE, action),
+      ...generateRequestInfo(Context.WEB_PAGE, action),
     },
   };
   logMessage(`sending message from webpage`, { message });
@@ -144,7 +135,9 @@ const sendMessageToContentScript = (
 
 export const sendMessage = (message: IMessagePayload) => {
   logMessage(`message being sent from webpage`, { message });
-  window.postMessage(message, "*");
+  if (getLastSender(message.requestInfo.path) !== Context.CONTENT_SCRIPT) {
+    window.postMessage(message, "*");
+  }
 };
 
 export const getTabId = (): Promise<number> => {
@@ -153,7 +146,7 @@ export const getTabId = (): Promise<number> => {
     const listener = (event: { data: IMessagePayload }) => {
       const message = event.data;
       if (
-        message.destination?.name === WEB_PAGE &&
+        message.destination?.name === Context.WEB_PAGE &&
         message.destination.action === CONTENT_SCRIPT_ACTIONS.TAB_ID_VALUE
       ) {
         logMessage(`message received at web-page `, { message });
@@ -210,10 +203,10 @@ export const getStartRecordingAction = (context: IWebpageContext) => {
     const subscription = observable.subscribe({
       next: (data: IDataView) => {
         sendMessageViaEventTarget(webpage, {
-          destinationName: PANEL_PAGE,
+          destinationName: Context.PANEL_PAGE,
           action: WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
           tabId,
-          callerName: WEB_PAGE,
+          callerName: Context.WEB_PAGE,
           data,
         });
       },
@@ -239,14 +232,8 @@ export const getWebpageUnloadReducer = (context: IWebpageContext) => {
   return () => {
     sendMessageViaEventTarget(webpage, {
       action: WEBPAGE_ACTIONS.WEB_PAGE_UNLOAD,
-      callerName: WEB_PAGE,
-      destinationName: PANEL_PAGE,
-      tabId,
-    });
-    sendMessageViaEventTarget(webpage, {
-      action: WEBPAGE_ACTIONS.WEB_PAGE_UNLOAD,
-      callerName: WEB_PAGE,
-      destinationName: DEVTOOL,
+      callerName: Context.WEB_PAGE,
+      destinationName: Context.PANEL_PAGE,
       tabId,
     });
   };

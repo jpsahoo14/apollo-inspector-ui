@@ -1,8 +1,11 @@
-export const DEVTOOL = "devtool";
-export const CONTENT_SCRIPT = "content-script";
-export const PANEL_PAGE = "panel-page";
-export const WEB_PAGE = "web-page";
-export const BACKGROUND = "background";
+export const enum Context {
+  DEVTOOL = "devtool",
+  CONTENT_SCRIPT = "content-script",
+  PANEL_PAGE = "panel-page",
+  WEB_PAGE = "web-page",
+  BACKGROUND = "background",
+  Unknown = "unknown",
+}
 
 export const enum DEVTOOLS_ACTIONS {
   DEVTOOLS_SCRIPT_LOADED = "devtools-script-loaded",

@@ -1,11 +1,12 @@
 import { CustomEventTarget, IMessagePayload } from "./custom-event-target";
 import { generateRequestInfo } from "./generate-request-id";
+import { Context } from "./constants";
 
 interface ISendPostMessageParams {
   action: string;
   destinationName: string;
   tabId: number;
-  callerName: string;
+  callerName: Context;
 }
 export const sendPostMessage = (
   eventTarget: CustomEventTarget,
@@ -23,7 +24,7 @@ interface ISendMessageParams {
   action: string;
   destinationName: string;
   tabId: number;
-  callerName: string;
+  callerName: Context;
   data?: any;
 }
 export const sendMessageViaEventTarget = (
@@ -42,7 +43,9 @@ export const sendMessageViaEventTarget = (
     data,
   };
 
-  const event = new CustomEvent(message.destination.name, { detail: message });
+  const event = new CustomEvent(message.destination.action, {
+    detail: message,
+  });
 
   eventTarget.dispatchEvent(event);
 };

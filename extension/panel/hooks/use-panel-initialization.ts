@@ -3,8 +3,8 @@ import browser from "webextension-polyfill";
 import {
   CustomEventTarget,
   IMessagePayload,
-  PANEL_PAGE,
   createLogger,
+  Context,
 } from "../../utils";
 import { setupPanelActions } from "../setup-panel-actions";
 
@@ -31,14 +31,14 @@ export const usePanelInitialization = ({
   setSubscription,
   cleanUpsRef,
 }: IUseSetBackgroundConnection) => {
-  const resetStore = useResetStore(
+  const resetStore = useResetStoreCb(
     setInitPanelComplete,
     setClientIds,
     setSubscription,
     cleanUpsRef
   );
 
-  const initPanel = useInitPanel(cleanUpsRef, setInitPanelComplete);
+  const initPanel = useInitPanelCb(cleanUpsRef, setInitPanelComplete);
 
   useConnectToBackgroundServiceWorker(
     tabIdRef,
@@ -52,7 +52,7 @@ export const usePanelInitialization = ({
   );
 };
 
-const useResetStore = (
+const useResetStoreCb = (
   setInitPanelComplete: React.Dispatch<React.SetStateAction<boolean>>,
   setClientIds: React.Dispatch<React.SetStateAction<string[] | null>>,
   setSubscription: React.Dispatch<
@@ -72,7 +72,7 @@ const useResetStore = (
     cleanUpsRef.current = [];
   }, [setInitPanelComplete, setClientIds, setSubscription]);
 
-const useInitPanel = (
+const useInitPanelCb = (
   cleanUpsRef: React.MutableRefObject<(() => void)[]>,
   setInitPanelComplete: React.Dispatch<React.SetStateAction<boolean>>
 ) =>
@@ -113,7 +113,9 @@ const useConnectToBackgroundServiceWorker = (
       logMessage(`disconnecting`, {
         data: { backgroundConnection: !!backgroundConnection },
       });
-      backgroundConnection?.disconnect();
+      try {
+        backgroundConnection?.disconnect();
+      } catch {}
     };
   }, []);
 };
@@ -132,20 +134,21 @@ const connectToBackgroundServiceWorker = (
 ) => {
   const onDisconnectCleanUps: (() => void)[] = [];
 
-  const backgroundConnection = browser.runtime.connect({
-    name: JSON.stringify({ name: PANEL_PAGE, tabId: tabIdRef.current }),
+  const connectionToBackground = browser.runtime.connect({
+    name: JSON.stringify({ name: Context.PANEL_PAGE, tabId: tabIdRef.current }),
   });
-  backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
+  connectionToBackground.onMessage.addListener((message: IMessagePayload) => {
     logMessage(`message received at panel-container`, { message });
-    const event = new CustomEvent(message.destination.name, {
+    const event = new CustomEvent(message.destination.action, {
       detail: message,
     });
     panelRef.current.dispatchEvent(event);
   });
-  setBackgroundConnection(backgroundConnection);
+  setBackgroundConnection(connectionToBackground);
+
   onDisconnectCleanUps.push(
     setupPanelActions({
-      backgroundConnection,
+      backgroundConnection: connectionToBackground,
       panel: panelRef.current,
       setClientIds,
       tabId: tabIdRef.current,
@@ -155,7 +158,8 @@ const connectToBackgroundServiceWorker = (
       cleanUpsRef,
     })
   );
-  backgroundConnection.onDisconnect.addListener((port) => {
+
+  connectionToBackground.onDisconnect.addListener((port) => {
     logMessage(`panel-container disconnected from background`, {
       data: port,
     });
@@ -171,7 +175,7 @@ const connectToBackgroundServiceWorker = (
       cleanUpsRef
     );
   });
-  return backgroundConnection;
+  return connectionToBackground;
 };
 
 const logMessage = createLogger(`panel-container`);

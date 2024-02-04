@@ -8,3 +8,4 @@ export { getForwardingPort } from "./get-forwarding-port";
 export { generateRequestInfo } from "./generate-request-id";
 export * from "./send-message";
 export * from "./logger";
+export * from "./get-last-sender";
