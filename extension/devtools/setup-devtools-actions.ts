@@ -2,14 +2,13 @@ import { CONTENT_SCRIPT_ACTIONS, DEVTOOLS_ACTIONS, Context } from "../utils";
 import {
   createDevtoolsPanel,
   handleMessageForDevtool,
-  sendMessageToBackgroundScript,
   getContentScriptLoadedMethod,
   getHandleWebpageUnload,
 } from "./devtool-actions";
 import { IDevtoolContext } from "./devtools.interface";
 
 export const setupDevtoolActions = (context: IDevtoolContext) => {
-  const { backgroundConnection, devtools } = context;
+  const { devtools } = context;
   const cleanUps: (() => void)[] = [];
 
   const actionsToReducers = {

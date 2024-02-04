@@ -45,9 +45,10 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
   backgroundToConnectionsMap[JSON.stringify(connection)] = port;
   const cleanUpConnectionListener =
     backgroundEventTarget.addConnectionListeners((message: IMessagePayload) => {
+      const connectionPort = getConnectionObject(port);
       if (
-        getLastSender(message.requestInfo.path) !==
-        getConnectionObject(port).name
+        getLastSender(message.requestInfo.path) !== connectionPort.name &&
+        connectionPort.tabId === message.destination.tabId
       ) {
         logMessage(`sending message `, {
           message,
