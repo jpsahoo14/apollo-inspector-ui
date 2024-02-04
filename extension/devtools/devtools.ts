@@ -11,6 +11,8 @@ import {
 import { setupDevtoolActions } from "./setup-devtools-actions";
 import { IDevtoolState } from "./devtools.interface";
 
+const logMessage = createLogger(Context.DEVTOOL);
+
 const tabId = browser.devtools.inspectedWindow.tabId;
 const devtoolState: IDevtoolState = {
   isPanelCreated: false,
@@ -62,7 +64,6 @@ const connectToBackgroundServiceWorker = () => {
 };
 
 connectToBackgroundServiceWorker();
-
 function sendDevtoolsScripLoadedEvent() {
   sendMessageViaEventTarget(devtoolsEventTarget, {
     destinationName: Context.WEB_PAGE,
@@ -73,5 +74,3 @@ function sendDevtoolsScripLoadedEvent() {
 }
 
 sendDevtoolsScripLoadedEvent();
-
-const logMessage = createLogger(`devtools`);
