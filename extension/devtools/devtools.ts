@@ -30,12 +30,17 @@ const connectToBackgroundServiceWorker = () => {
 
   backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
     logMessage(`received message in devtools onMessage`, { message });
-    const event = new CustomEvent(message.destination.name, {
+    const event = new CustomEvent(message.destination.action, {
       detail: message,
     });
     devtoolsEventTarget.dispatchEvent(event);
   });
 
+  onDisconnectCleanUps.push(
+    devtoolsEventTarget.addConnectionListeners((message: IMessagePayload) =>
+      backgroundConnection.postMessage(message)
+    )
+  );
   onDisconnectCleanUps.push(
     setupDevtoolActions({
       backgroundConnection,

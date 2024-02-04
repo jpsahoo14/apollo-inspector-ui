@@ -53,7 +53,6 @@ export const setupInitialContentScriptAction = (
     [CONTENT_SCRIPT_ACTIONS.GET_TAB_ID]: getTabId(context),
     [WEBPAGE_ACTIONS.WEB_PAGE_INIT_COMPLETE]:
       runContentScriptInitialization(context),
-    [WEB_PAGE]: getWebpageAction(context),
     [CONTENT_SCRIPT]: getContentScriptAction(context),
   };
 
@@ -67,6 +66,13 @@ export const setupInitialContentScriptAction = (
       )
     );
   }
+
+  addToCleanUp(
+    contentScript.addConnectionListeners((message: IMessagePayload) => {
+      logMessage(`sending message to webpage`, { message });
+      window.postMessage(message, "*");
+    })
+  );
 
   listenToPostMessage(contentScript, addToCleanUp);
 };
@@ -112,7 +118,7 @@ const listenToPostMessage = (
       logMessage(`message received at content-script from postmessage`, {
         message,
       });
-    const customEvent = new CustomEvent(event.data?.destination?.name, {
+    const customEvent = new CustomEvent(event.data?.destination?.action, {
       detail: message,
     });
     contentScript.dispatchEvent(customEvent);
@@ -154,15 +160,23 @@ const connectToBackgroundServiceWorker = (
   connectionToBackgroundService.onMessage.addListener(
     (message: IMessagePayload) => {
       logMessage(`message received at content-script`, { message });
-      const event = new CustomEvent(message.destination.name, {
+      const event = new CustomEvent(message.destination.action, {
         detail: message,
       });
       contentScript.dispatchEvent(event);
     }
   );
 
+  onDisconnectCleanUps.push(
+    contentScript.addConnectionListeners((message: IMessagePayload) =>
+      connectionToBackgroundService.postMessage(message)
+    )
+  );
+
   addToCleanUp(() => {
-    connectionToBackgroundService.disconnect();
+    try {
+      connectionToBackgroundService.disconnect();
+    } catch {}
   });
 
   onDisconnectCleanUps.push(setupWindowEventListeners(context));

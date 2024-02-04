@@ -21,10 +21,6 @@ export const setupPanelActions = (context: IPanelContext) => {
   const cleanUps: (() => void)[] = [];
 
   const actionsToReducers = {
-    [WEB_PAGE]: sendMessageFromPanelPage(context),
-    [BACKGROUND]: sendMessageFromPanelPage(context),
-    [DEVTOOL]: sendMessageFromPanelPage(context),
-    [CONTENT_SCRIPT]: sendMessageFromPanelPage(context),
     [PANEL_PAGE]: getHandlePanelPageActions(context),
     [WEBPAGE_ACTIONS.WHOLE_APOLLO_CACHE_DATA]: getCopyData(context),
     [CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD]:
@@ -36,6 +32,10 @@ export const setupPanelActions = (context: IPanelContext) => {
   for (const prop in actionsToReducers) {
     cleanUps.push(panel.addEventListener(prop, actionsToReducers[prop]));
   }
+
+  cleanUps.push(
+    panel.addConnectionListeners(sendMessageFromPanelPage(context))
+  );
 
   return () => {
     cleanUps.forEach((cleanUp) => cleanUp());

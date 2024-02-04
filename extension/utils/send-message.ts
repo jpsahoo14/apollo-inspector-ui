@@ -42,7 +42,9 @@ export const sendMessageViaEventTarget = (
     data,
   };
 
-  const event = new CustomEvent(message.destination.name, { detail: message });
+  const event = new CustomEvent(message.destination.action, {
+    detail: message,
+  });
 
   eventTarget.dispatchEvent(event);
 };

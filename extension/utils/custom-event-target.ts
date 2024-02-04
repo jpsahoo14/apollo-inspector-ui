@@ -2,6 +2,7 @@ import { Queue } from "@datastructures-js/queue";
 import { createLogger } from "./logger";
 import { EventTarget } from "event-target-shim";
 
+type callback = (message: IMessagePayload) => void;
 export class CustomEventTarget {
   private eventTarget: EventTarget;
   private maxSize = 500;
@@ -9,15 +10,19 @@ export class CustomEventTarget {
   private set: Set<string>;
   private name: string;
   private eventNames: string[];
+  private connectionsListenersMap: Map<number, callback>;
+  private connectionsListenerIndex = 0;
+
   constructor(name: string) {
     this.eventTarget = new EventTarget();
     this.queue = new Queue<string>();
     this.set = new Set<string>();
     this.name = name;
     this.eventNames = [];
+    this.connectionsListenersMap = new Map<number, callback>();
   }
 
-  addEventListener<T>(
+  public addEventListener<T>(
     type: string,
     callback: (message: T) => void,
     options?: EventTarget.AddOptions
@@ -38,7 +43,17 @@ export class CustomEventTarget {
     return () => this.eventTarget.removeEventListener(type, listener, options);
   }
 
-  dispatchEvent(event: CustomEvent<IMessagePayload>) {
+  public addConnectionListeners(callback: callback) {
+    const index = this.connectionsListenerIndex;
+    this.connectionsListenersMap.set(index, callback);
+    this.connectionsListenerIndex++;
+
+    return () => {
+      this.connectionsListenersMap.delete(index);
+    };
+  }
+
+  public dispatchEvent(event: CustomEvent<IMessagePayload>) {
     event.detail?.requestInfo &&
       event.detail?.destination &&
       logMessage(`dispatching event type:${event.type}`, {
@@ -51,7 +66,8 @@ export class CustomEventTarget {
       const key = this.getSetKey(event);
       if (!this.set.has(key)) {
         this.addToQueue(event);
-        this.eventTarget.dispatchEvent(event);
+        this.dispatchEventInternally(event);
+        this.dispatchEventToConnections(event);
       } else {
         logMessage(`key already present`, {
           message: event.detail,
@@ -64,6 +80,14 @@ export class CustomEventTarget {
         });
       }
     }
+  }
+
+  private dispatchEventInternally(event: CustomEvent<IMessagePayload>) {
+    this.eventTarget.dispatchEvent(event);
+  }
+
+  private dispatchEventToConnections(event: CustomEvent<IMessagePayload>) {
+    this.connectionsListenersMap.forEach((value) => value(event.detail));
   }
 
   private shouldHandle(event: CustomEvent<IMessagePayload>) {
@@ -97,6 +121,9 @@ export interface IMessagePayload {
     sender: string;
   };
   destination: {
+    /**
+     * @deprecated Use the action property.
+     */
     name: string;
     tabId: number;
     action: string;

@@ -26,6 +26,7 @@ import { IWebpageContext } from "./web-page.interface";
 
 export const setupWebPageActions = (context: IWebpageContext) => {
   const { webpage } = context;
+  const cleanUps: (() => void)[] = [];
 
   const actionsToReducers = {
     [WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS]:
@@ -38,17 +39,15 @@ export const setupWebPageActions = (context: IWebpageContext) => {
     [PANEL_PAGE_ACTIONS.CLEAR_STORE]: getClearStoreCB(context),
     [PANEL_PAGE_ACTIONS.RESET_STORE]: getResetStoreCB(context),
     [PANEL_PAGE_ACTIONS.COPY_WHOLE_CACHE]: getCopyWholeCacheCB(context),
-    [DEVTOOL]: sendMessage,
-    [PANEL_PAGE]: sendMessage,
     [WEB_PAGE]: getHandleWebpageAction(context),
-    [CONTENT_SCRIPT]: sendMessage,
   };
 
   for (const prop in actionsToReducers) {
     webpage.addEventListener(prop, actionsToReducers[prop]);
   }
-  const cleanUp = listenToPostMessage(webpage);
-  setupWindowEventListeners(context, cleanUp);
+  cleanUps.push(listenToPostMessage(webpage));
+  cleanUps.push(webpage.addConnectionListeners(sendMessage));
+  setupWindowEventListeners(context, cleanUps);
 };
 
 const listenToPostMessage = (webpage: CustomEventTarget) => {
@@ -58,7 +57,7 @@ const listenToPostMessage = (webpage: CustomEventTarget) => {
     }
 
     logMessage(`message recieved at web-page`, { message: event.data });
-    const customEvent = new CustomEvent(event.data.destination.name, {
+    const customEvent = new CustomEvent(event.data.destination.action, {
       detail: event.data,
     });
     webpage.dispatchEvent(customEvent);
@@ -72,12 +71,12 @@ const listenToPostMessage = (webpage: CustomEventTarget) => {
 
 const setupWindowEventListeners = (
   context: IWebpageContext,
-  cleanUp: () => void
+  cleanUps: (() => void)[]
 ) => {
   const beforeUnloadListener = getWebpageUnloadReducer(context);
   window.onbeforeunload = () => {
     beforeUnloadListener();
-    cleanUp();
+    cleanUps.forEach((cleanUp) => cleanUp());
   };
 };
 

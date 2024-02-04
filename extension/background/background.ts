@@ -39,19 +39,24 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
 
   port.onMessage.addListener((message: IMessagePayload) => {
     logMessage(`message received at background `, { message });
-    const event = new CustomEvent(message.destination.name, {
+    const event = new CustomEvent(message.destination.action, {
       detail: message,
     });
     backgroundEventTarget.dispatchEvent(event);
   });
 
   backgroundToConnectionsMap[JSON.stringify(connection)] = port;
+  const cleanUpConnectionListener =
+    backgroundEventTarget.addConnectionListeners((message: IMessagePayload) =>
+      port.postMessage(message)
+    );
 
   port.onDisconnect.addListener(() => {
     logMessage(
       `disconnecting from background ${connection.name}-${connection.tabId}`,
       { data: { connection } }
     );
+    cleanUpConnectionListener();
     if (connection.name === DEVTOOL) {
       sendMessageViaEventTarget(backgroundEventTarget, {
         action: DEVTOOLS_ACTIONS.DISCONNECTED,
@@ -66,10 +71,6 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
 
 function setupConnectionListeners() {
   const actionsToReducers = {
-    [CONTENT_SCRIPT]: sendMessageToOtherConnection,
-    [WEB_PAGE]: sendMessageToOtherConnection,
-    [DEVTOOL]: sendMessageToOtherConnection,
-    [PANEL_PAGE]: sendMessageToOtherConnection,
     [BACKGROUND]: dispatchEventEventWithinBackgroundService,
   };
 
@@ -89,6 +90,7 @@ const sendMessageToOtherConnection = (message: IMessagePayload) => {
     },
     log: {
       backgroundToConnections: Object.keys(backgroundToConnectionsMap),
+      portName: port?.name,
     },
   });
   if (port) {
