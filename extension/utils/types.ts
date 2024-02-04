@@ -4,10 +4,11 @@ import {
   CONTENT_SCRIPT_ACTIONS,
   WEBPAGE_ACTIONS,
   DEVTOOLS_ACTIONS,
+  Context,
 } from "./constants";
 
 export interface IConnection {
-  name: string;
+  name: Context;
   tabId: number;
 }
 

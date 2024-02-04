@@ -1,14 +1,11 @@
 import {
-  DEVTOOL,
-  PANEL_PAGE,
-  WEB_PAGE,
   WEBPAGE_ACTIONS,
   DEVTOOLS_ACTIONS,
   PANEL_PAGE_ACTIONS,
-  CONTENT_SCRIPT,
   createLogger,
   CustomEventTarget,
   IMessagePayload,
+  Context,
 } from "../utils";
 import {
   devtoolScriptLoadedAction,
@@ -39,7 +36,7 @@ export const setupWebPageActions = (context: IWebpageContext) => {
     [PANEL_PAGE_ACTIONS.CLEAR_STORE]: getClearStoreCB(context),
     [PANEL_PAGE_ACTIONS.RESET_STORE]: getResetStoreCB(context),
     [PANEL_PAGE_ACTIONS.COPY_WHOLE_CACHE]: getCopyWholeCacheCB(context),
-    [WEB_PAGE]: getHandleWebpageAction(context),
+    [Context.WEB_PAGE]: getHandleWebpageAction(context),
   };
 
   for (const prop in actionsToReducers) {

@@ -1,14 +1,11 @@
 import browser from "webextension-polyfill";
 import {
   IMessagePayload,
-  CONTENT_SCRIPT,
-  WEB_PAGE,
   IContentScriptContext,
   CONTENT_SCRIPT_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
-  PANEL_PAGE,
-  DEVTOOL,
+  Context,
 } from "../utils";
 import { IContentScriptInitialContext } from "./content-script.interface";
 
@@ -26,10 +23,10 @@ export const getTabId = (context: IContentScriptInitialContext) => {
     store.tabId = tabId;
 
     sendMessageViaEventTarget(contentScript, {
-      destinationName: WEB_PAGE,
+      destinationName: Context.WEB_PAGE,
       action: CONTENT_SCRIPT_ACTIONS.TAB_ID_VALUE,
       tabId,
-      callerName: CONTENT_SCRIPT,
+      callerName: Context.CONTENT_SCRIPT,
     });
   };
 };
@@ -73,14 +70,8 @@ export const getContentScriptUnloadReducer = (
   return () => {
     sendMessageViaEventTarget(contentScript, {
       action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD,
-      callerName: CONTENT_SCRIPT,
-      destinationName: PANEL_PAGE,
-      tabId: tabId || 1,
-    });
-    sendMessageViaEventTarget(contentScript, {
-      action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_UNLOAD,
-      callerName: CONTENT_SCRIPT,
-      destinationName: DEVTOOL,
+      callerName: Context.CONTENT_SCRIPT,
+      destinationName: Context.PANEL_PAGE,
       tabId: tabId || 1,
     });
   };

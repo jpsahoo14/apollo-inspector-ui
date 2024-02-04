@@ -1,18 +1,15 @@
 import browser from "webextension-polyfill";
 import {
   CustomEventTarget,
-  BACKGROUND,
-  DEVTOOL,
   IMessagePayload,
   getConnectionObject,
-  WEB_PAGE,
-  CONTENT_SCRIPT,
   getForwardingPort,
-  PANEL_PAGE,
   DEVTOOLS_ACTIONS,
   BACKGROUND_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
+  Context,
+  getLastSender,
 } from "../utils";
 
 const backgroundToConnectionsMap: {
@@ -25,7 +22,7 @@ browser.runtime.onMessage.addListener(
   }
 );
 
-const backgroundEventTarget = new CustomEventTarget("background");
+const backgroundEventTarget = new CustomEventTarget(Context.BACKGROUND);
 const cleanUps: (() => void)[] = [];
 const addToCleanup = (cleanUp: () => void) => {
   cleanUps.push(cleanUp);
@@ -47,9 +44,26 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
 
   backgroundToConnectionsMap[JSON.stringify(connection)] = port;
   const cleanUpConnectionListener =
-    backgroundEventTarget.addConnectionListeners((message: IMessagePayload) =>
-      port.postMessage(message)
-    );
+    backgroundEventTarget.addConnectionListeners((message: IMessagePayload) => {
+      if (
+        getLastSender(message.requestInfo.path) !==
+        getConnectionObject(port).name
+      ) {
+        logMessage(`sending message `, {
+          message,
+          data: {
+            port,
+            backgroundToConnectionsMap,
+            name: message.destination.name,
+          },
+          log: {
+            backgroundToConnections: Object.keys(backgroundToConnectionsMap),
+            portName: port?.name,
+          },
+        });
+        port.postMessage(message);
+      }
+    });
 
   port.onDisconnect.addListener(() => {
     logMessage(
@@ -57,11 +71,11 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
       { data: { connection } }
     );
     cleanUpConnectionListener();
-    if (connection.name === DEVTOOL) {
+    if (connection.name === Context.DEVTOOL) {
       sendMessageViaEventTarget(backgroundEventTarget, {
         action: DEVTOOLS_ACTIONS.DISCONNECTED,
-        callerName: BACKGROUND,
-        destinationName: WEB_PAGE,
+        callerName: Context.BACKGROUND,
+        destinationName: Context.WEB_PAGE,
         tabId: connection.tabId,
       });
     }
@@ -71,7 +85,7 @@ browser.runtime.onConnect.addListener((port: browser.Runtime.Port) => {
 
 function setupConnectionListeners() {
   const actionsToReducers = {
-    [BACKGROUND]: dispatchEventEventWithinBackgroundService,
+    [Context.BACKGROUND]: dispatchEventEventWithinBackgroundService,
   };
 
   for (const prop in actionsToReducers) {
@@ -100,7 +114,7 @@ const sendMessageToOtherConnection = (message: IMessagePayload) => {
       destinationName: message.requestInfo.sender,
       action: BACKGROUND_ACTIONS.PORT_NOT_FOUND,
       tabId: message.destination.tabId,
-      callerName: BACKGROUND,
+      callerName: Context.BACKGROUND,
       data: message,
     });
   }
@@ -117,6 +131,6 @@ const dispatchEventEventWithinBackgroundService = (
   backgroundEventTarget.dispatchEvent(event);
 };
 
-const logMessage = createLogger(BACKGROUND);
+const logMessage = createLogger(Context.BACKGROUND);
 
 setupConnectionListeners();

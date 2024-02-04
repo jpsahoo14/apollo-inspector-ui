@@ -2,11 +2,11 @@ import browser from "webextension-polyfill";
 import {
   CustomEventTarget,
   IMessagePayload,
-  DEVTOOL,
-  WEB_PAGE,
   DEVTOOLS_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
+  Context,
+  getLastSender,
 } from "../utils";
 import { setupDevtoolActions } from "./setup-devtools-actions";
 import { IDevtoolState } from "./devtools.interface";
@@ -19,13 +19,13 @@ const devtoolState: IDevtoolState = {
   cleanUps: [],
 };
 
-const devtoolsEventTarget = new CustomEventTarget("devtools");
+const devtoolsEventTarget = new CustomEventTarget(Context.DEVTOOL);
 
 const connectToBackgroundServiceWorker = () => {
   const onDisconnectCleanUps: (() => void)[] = [];
 
   const backgroundConnection: browser.Runtime.Port = browser.runtime.connect({
-    name: JSON.stringify({ name: DEVTOOL, tabId }),
+    name: JSON.stringify({ name: Context.DEVTOOL, tabId }),
   });
 
   backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
@@ -37,9 +37,11 @@ const connectToBackgroundServiceWorker = () => {
   });
 
   onDisconnectCleanUps.push(
-    devtoolsEventTarget.addConnectionListeners((message: IMessagePayload) =>
-      backgroundConnection.postMessage(message)
-    )
+    devtoolsEventTarget.addConnectionListeners((message: IMessagePayload) => {
+      if (getLastSender(message.requestInfo.path) !== Context.BACKGROUND) {
+        backgroundConnection.postMessage(message);
+      }
+    })
   );
   onDisconnectCleanUps.push(
     setupDevtoolActions({
@@ -62,10 +64,10 @@ connectToBackgroundServiceWorker();
 
 function sendDevtoolsScripLoadedEvent() {
   sendMessageViaEventTarget(devtoolsEventTarget, {
-    destinationName: WEB_PAGE,
+    destinationName: Context.WEB_PAGE,
     action: DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED,
     tabId,
-    callerName: DEVTOOL,
+    callerName: Context.DEVTOOL,
   });
 }
 

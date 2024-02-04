@@ -23,7 +23,10 @@ export const useStyles = makeStyles({
   buttonContainer: {
     display: "flex",
   },
-  recordingButton: {
+  stopRecordingButton: {
     color: tokens.colorPaletteRedBackground3,
+    "&:hover": {
+      color: tokens.colorPaletteRedBackground3,
+    },
   },
 });

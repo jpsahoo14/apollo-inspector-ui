@@ -1,6 +1,7 @@
 import { Queue } from "@datastructures-js/queue";
 import { createLogger } from "./logger";
 import { EventTarget } from "event-target-shim";
+import { Context } from "./constants";
 
 type callback = (message: IMessagePayload) => void;
 export class CustomEventTarget {
@@ -8,12 +9,12 @@ export class CustomEventTarget {
   private maxSize = 500;
   private queue: Queue<string>;
   private set: Set<string>;
-  private name: string;
+  private name: Context;
   private eventNames: string[];
   private connectionsListenersMap: Map<number, callback>;
   private connectionsListenerIndex = 0;
 
-  constructor(name: string) {
+  constructor(name: Context) {
     this.eventTarget = new EventTarget();
     this.queue = new Queue<string>();
     this.set = new Set<string>();
@@ -66,6 +67,7 @@ export class CustomEventTarget {
       const key = this.getSetKey(event);
       if (!this.set.has(key)) {
         this.addToQueue(event);
+        event.detail.requestInfo.path.push(this.name);
         this.dispatchEventInternally(event);
         this.dispatchEventToConnections(event);
       } else {
@@ -91,7 +93,10 @@ export class CustomEventTarget {
   }
 
   private shouldHandle(event: CustomEvent<IMessagePayload>) {
-    if (event.detail.destination?.name) {
+    if (
+      event.detail.destination?.action &&
+      event.detail.requestInfo?.requestId
+    ) {
       return true;
     }
 
@@ -118,7 +123,8 @@ export class CustomEventTarget {
 export interface IMessagePayload {
   requestInfo: {
     requestId: string;
-    sender: string;
+    sender: Context;
+    path: Context[];
   };
   destination: {
     /**

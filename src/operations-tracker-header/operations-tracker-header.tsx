@@ -283,7 +283,7 @@ const renderInfoAndStartStopButton = (
       <Button
         className={
           recordingState === RecordingState.RecordingStarted
-            ? classes.recordingButton
+            ? classes.stopRecordingButton
             : ""
         }
         onClick={

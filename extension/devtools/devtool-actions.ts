@@ -1,13 +1,12 @@
 import browser from "webextension-polyfill";
 import {
   CustomEventTarget,
-  DEVTOOL,
   DEVTOOLS_ACTIONS,
   IMessagePayload,
   WEBPAGE_ACTIONS,
-  WEB_PAGE,
   createLogger,
   sendMessageViaEventTarget,
+  Context,
 } from "../utils";
 import { IDevtoolContext } from "./devtools.interface";
 import { DevtoolsPanels } from "webextension-polyfill/namespaces/devtools_panels";
@@ -60,7 +59,7 @@ export const createDevtoolsPanel = (context: IDevtoolContext) => {
 };
 
 export const getContentScriptLoadedMethod = (context: IDevtoolContext) => {
-  const { devtoolState, backgroundConnection, devtools, tabId } = context;
+  const { devtoolState, devtools } = context;
   return (message) => {
     devtoolState.cleanUps.forEach((cleanUp) => cleanUp());
     devtoolState.cleanUps = [];
@@ -73,8 +72,8 @@ export const getContentScriptLoadedMethod = (context: IDevtoolContext) => {
     const intervalNumber = setInterval(() => {
       sendMessageViaEventTarget(devtools, {
         action: WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS,
-        callerName: DEVTOOL,
-        destinationName: WEB_PAGE,
+        callerName: Context.DEVTOOL,
+        destinationName: Context.WEB_PAGE,
         tabId: devtoolState.tabId,
         data: {
           cleanUpLength: devtoolState.cleanUps.length,
@@ -102,8 +101,8 @@ export const getContentScriptLoadedMethod = (context: IDevtoolContext) => {
           clearInterval(intervalNumber);
           sendMessageViaEventTarget(devtools, {
             action: DEVTOOLS_ACTIONS.CREATE_DEVTOOLS_PANEL,
-            callerName: DEVTOOL,
-            destinationName: DEVTOOL,
+            callerName: Context.DEVTOOL,
+            destinationName: Context.DEVTOOL,
             tabId: devtoolState.tabId,
           });
         }

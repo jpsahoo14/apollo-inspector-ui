@@ -3,8 +3,8 @@ import browser from "webextension-polyfill";
 import {
   CustomEventTarget,
   IMessagePayload,
-  PANEL_PAGE,
   createLogger,
+  Context,
 } from "../../utils";
 import { setupPanelActions } from "../setup-panel-actions";
 
@@ -135,7 +135,7 @@ const connectToBackgroundServiceWorker = (
   const onDisconnectCleanUps: (() => void)[] = [];
 
   const connectionToBackground = browser.runtime.connect({
-    name: JSON.stringify({ name: PANEL_PAGE, tabId: tabIdRef.current }),
+    name: JSON.stringify({ name: Context.PANEL_PAGE, tabId: tabIdRef.current }),
   });
   connectionToBackground.onMessage.addListener((message: IMessagePayload) => {
     logMessage(`message received at panel-container`, { message });

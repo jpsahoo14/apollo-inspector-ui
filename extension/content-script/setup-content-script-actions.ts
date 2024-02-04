@@ -1,23 +1,19 @@
 import browser from "webextension-polyfill";
 import {
-  DEVTOOL,
   IMessagePayload,
-  CONTENT_SCRIPT,
-  WEB_PAGE,
   CONTENT_SCRIPT_ACTIONS,
   IContentScriptContext,
   CustomEventTarget,
-  PANEL_PAGE,
   WEBPAGE_ACTIONS,
   createLogger,
   sendMessageViaEventTarget,
-  BACKGROUND,
+  Context,
+  getLastSender,
 } from "../utils";
 import {
   getTabId,
   getDevtoolAction,
   getContentScriptAction,
-  getWebpageAction,
   getContentScriptUnloadReducer,
 } from "./content-script-actions";
 import { IContentScriptInitialContext } from "./content-script.interface";
@@ -25,10 +21,7 @@ import { IContentScriptInitialContext } from "./content-script.interface";
 export const setupContentScriptsActions = (context: IContentScriptContext) => {
   const { contentScript, addToCleanUp } = context;
   const cleanUps: (() => void)[] = [];
-  const actionToReducers = {
-    [DEVTOOL]: getDevtoolAction(context),
-    [PANEL_PAGE]: getDevtoolAction(context),
-  };
+  const actionToReducers = {};
 
   for (const prop in actionToReducers) {
     const modifiedProp = prop as CONTENT_SCRIPT_ACTIONS;
@@ -53,7 +46,7 @@ export const setupInitialContentScriptAction = (
     [CONTENT_SCRIPT_ACTIONS.GET_TAB_ID]: getTabId(context),
     [WEBPAGE_ACTIONS.WEB_PAGE_INIT_COMPLETE]:
       runContentScriptInitialization(context),
-    [CONTENT_SCRIPT]: getContentScriptAction(context),
+    [Context.CONTENT_SCRIPT]: getContentScriptAction(context),
   };
 
   for (const prop in actionToReducers) {
@@ -70,7 +63,9 @@ export const setupInitialContentScriptAction = (
   addToCleanUp(
     contentScript.addConnectionListeners((message: IMessagePayload) => {
       logMessage(`sending message to webpage`, { message });
-      window.postMessage(message, "*");
+      if (getLastSender(message.requestInfo.path) !== Context.WEB_PAGE) {
+        window.postMessage(message, "*");
+      }
     })
   );
 
@@ -87,22 +82,8 @@ const runContentScriptInitialization = (
 
     sendMessageViaEventTarget(contentScript, {
       action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE,
-      callerName: CONTENT_SCRIPT,
-      destinationName: WEB_PAGE,
-      tabId: tabId as number,
-    });
-
-    sendMessageViaEventTarget(contentScript, {
-      action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE,
-      callerName: CONTENT_SCRIPT,
-      destinationName: PANEL_PAGE,
-      tabId: tabId as number,
-    });
-
-    sendMessageViaEventTarget(contentScript, {
-      action: CONTENT_SCRIPT_ACTIONS.CONTENT_SCRIPT_INIT_COMPLETE,
-      callerName: CONTENT_SCRIPT,
-      destinationName: DEVTOOL,
+      callerName: Context.CONTENT_SCRIPT,
+      destinationName: Context.WEB_PAGE,
       tabId: tabId as number,
     });
   };
@@ -154,7 +135,7 @@ const connectToBackgroundServiceWorker = (
   const onDisconnectCleanUps: (() => void)[] = [];
   const connectionToBackgroundService: browser.Runtime.Port =
     browser.runtime.connect({
-      name: `${JSON.stringify({ name: CONTENT_SCRIPT, tabId })}`,
+      name: `${JSON.stringify({ name: Context.CONTENT_SCRIPT, tabId })}`,
     });
 
   connectionToBackgroundService.onMessage.addListener(
@@ -168,9 +149,11 @@ const connectToBackgroundServiceWorker = (
   );
 
   onDisconnectCleanUps.push(
-    contentScript.addConnectionListeners((message: IMessagePayload) =>
-      connectionToBackgroundService.postMessage(message)
-    )
+    contentScript.addConnectionListeners((message: IMessagePayload) => {
+      if (getLastSender(message.requestInfo.path) !== Context.BACKGROUND) {
+        connectionToBackgroundService.postMessage(message);
+      }
+    })
   );
 
   addToCleanUp(() => {
