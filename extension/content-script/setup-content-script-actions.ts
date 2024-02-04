@@ -151,6 +151,7 @@ const connectToBackgroundServiceWorker = (
   onDisconnectCleanUps.push(
     contentScript.addConnectionListeners((message: IMessagePayload) => {
       if (getLastSender(message.requestInfo.path) !== Context.BACKGROUND) {
+        logMessage(` sending event to background `, { message });
         connectionToBackgroundService.postMessage(message);
       }
     })

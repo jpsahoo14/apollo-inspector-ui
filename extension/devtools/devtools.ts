@@ -39,6 +39,7 @@ const connectToBackgroundServiceWorker = () => {
   onDisconnectCleanUps.push(
     devtoolsEventTarget.addConnectionListeners((message: IMessagePayload) => {
       if (getLastSender(message.requestInfo.path) !== Context.BACKGROUND) {
+        logMessage(` sending event to background `, { message });
         backgroundConnection.postMessage(message);
       }
     })
