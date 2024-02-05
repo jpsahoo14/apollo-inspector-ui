@@ -27,7 +27,9 @@ export const VerboseOperationsContainer = (
   } = props;
 
   const classes = useStyles();
-
+  const verboseClassName = operationsState.selectedOperation
+    ? classes.selectedOperationView
+    : classes.notselectedOperationView;
   return (
     <div className={classes.root}>
       <div className={classes.allOperationsView}>
@@ -39,7 +41,7 @@ export const VerboseOperationsContainer = (
           dispatchOperationsState={dispatchOperationsState}
         />
       </div>
-      <div className={classes.selectedOperationView}>
+      <div className={verboseClassName}>
         <VerboseOperationView
           key={"VerboseOperationView"}
           operation={operationsState.selectedOperation}

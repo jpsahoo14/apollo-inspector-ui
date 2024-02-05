@@ -1,43 +1,49 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   operationView: {
     display: "flex",
     flexDirection: "column",
     flexGrow: 2,
-    color: "black",
     minWidth: "15rem",
     height: "100%",
     minHeight: 0,
+    boxShadow: `-1.5rem 0 1.2rem -1.2rem ${tokens.colorNeutralShadowAmbientLighter}`,
+    ...shorthands.borderLeft(
+      ".1rem",
+      "solid",
+      tokens.colorSubtleBackgroundHover
+    ),
   },
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white",
+    ...getPanelCommonCss(),
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    backgroundColor: "white",
+    ...getPanelCommonCss(),
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    ...getPanelCommonCss(),
   },
-  fetchPolicyAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
-  errorAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
-  warningAccPanel: { marginLeft: "1rem", backgroundColor: "white" },
+  accPanel: {
+    marginLeft: "1rem",
+    ...getPanelCommonCss(),
+  },
   resultPanel: {
     whiteSpace: "pre-wrap",
-    backgroundColor: "white",
+    ...getPanelCommonCss(),
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    ...getPanelCommonCss(),
   },
   operationDetails: {
     minHeight: 0,
@@ -51,14 +57,14 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
-  subHeading: {
+  header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    height: "32.5px",
-    backgroundColor: "aliceblue",
     minHeight: 0,
     minWidth: 0,
+    backgroundColor: tokens.colorBrandBackground2Hover,
+    ...shorthands.padding("0.5rem"),
   },
   heading: {
     display: "flex",
@@ -66,6 +72,8 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    flexDirection: "column",
+    WebkitAlignItems: "start",
   },
   accordionWrapper: {
     display: "flex",
@@ -82,41 +90,49 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   operationType: {
-    color: "black",
-    fontSize: "10px",
+    fontSize: ".8rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,
   },
   operationNameText: {
     fontWeight: "bold",
-    paddingLeft: "10px",
-    paddingRight: "10px",
     height: "100%",
-    minHeight: 0,
     minWidth: 0,
+    wordBreak: "break-all",
   },
   button: {
-    minWidth: "20px",
+    minWidth: "2rem",
     backgroundColor: "transparent",
     height: "100%",
-    color: "black",
     minHeight: 0,
-    ...shorthands.border("0px", "solid", "transparent"),
+    ...shorthands.border("0rem"),
   },
-  buttons: {
-   alignItems: "left"
-  }
+  headerButtons: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "left",
+    ...shorthands.margin("0.5rem"),
+    minWidth: 0,
+    minHeight: 0,
+    ...shorthands.margin("0.5rem"),
+  },
 });
+
+function getPanelCommonCss() {
+  return {
+    ...shorthands.borderRadius("1rem"),
+    ...shorthands.padding("0.5rem"),
+    backgroundColor: tokens.colorBrandBackground2Hover,
+  };
+}
 
 export type stylesKeys =
   | "operationView"
   | "operationNameAccPanel"
   | "operationVariablesAccPanel"
   | "durationAccPanel"
-  | "fetchPolicyAccPanel"
-  | "errorAccPanel"
-  | "warningAccPanel"
+  | "accPanel"
   | "affectedQueriesAccPanel"
   | "operationDetails"
   | "operationName"

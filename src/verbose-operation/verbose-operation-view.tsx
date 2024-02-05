@@ -68,24 +68,28 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
 
   return (
     <div className={classes.operationView} key="verboseOperationView">
-      <div className={classes.subHeading} key="verboseHeader">
+      <div className={classes.header} key="verboseHeader">
         <div className={classes.heading} key="operationType1">
           <div className={classes.operationNameText}> {operationName} </div>
           <div className={classes.operationType}> {operationType} </div>
         </div>
-        <div className={classes.buttons}>
-          <Button
-            key={`copy-btn`}
-            onClick={copyOperation}
-            className={classes.button}
-            icon={<Copy16Regular />}
-          ></Button>
-          <Button
-            key={`dismiss-btn`}
-            onClick={closePreview}
-            className={classes.button}
-            icon={<Dismiss16Filled />}
-          ></Button>
+        <div className={classes.headerButtons}>
+          <Tooltip content={"Copy operation details"} relationship="label">
+            <Button
+              key={`copy-btn`}
+              onClick={copyOperation}
+              className={classes.button}
+              icon={<Copy16Regular />}
+            ></Button>
+          </Tooltip>
+          <Tooltip content={"Close operation view"} relationship="label">
+            <Button
+              key={`dismiss-btn`}
+              onClick={closePreview}
+              className={classes.button}
+              icon={<Dismiss16Filled />}
+            ></Button>
+          </Tooltip>
         </div>
       </div>
       <div
@@ -205,7 +209,7 @@ const getClientIdPanel = (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.fetchPolicyAccPanel}> {clientId}</div>
+      <div className={classes.accPanel}> {clientId}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -223,7 +227,7 @@ const getFetchPolicyPanel = (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.fetchPolicyAccPanel}> {fetchPolicy}</div>
+      <div className={classes.accPanel}> {fetchPolicy}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -333,7 +337,7 @@ const getErrorPanel = (error: unknown, classes: Record<stylesKeys, string>) => (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.errorAccPanel}> {JSON.stringify(error)}</div>
+      <div className={classes.accPanel}> {JSON.stringify(error)}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -354,7 +358,7 @@ const getWarningPanel = (
       </AccordionHeader>
     </Tooltip>
     <AccordionPanel>
-      <div className={classes.warningAccPanel}> {JSON.stringify(warning)}</div>
+      <div className={classes.accPanel}> {JSON.stringify(warning)}</div>
     </AccordionPanel>
   </AccordionItem>
 );

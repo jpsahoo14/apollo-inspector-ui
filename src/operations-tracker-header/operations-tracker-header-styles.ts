@@ -1,23 +1,19 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    ...shorthands.padding("10px", "15px"),
+    ...shorthands.padding(".5rem", "1rem"),
   },
   infoButton: {
     minWidth: "auto",
-    marginRight: "5px",
-    ...shorthands.padding(0, "5px"),
+    ...shorthands.padding(0, ".5rem"),
     ...shorthands.border("none"),
-    "&:hover": {
-      color: "#97CBFF",
-    },
   },
   description: {
-    ...shorthands.padding("0px", "15px"),
+    ...shorthands.padding("0rem", "1rem"),
   },
   openDescription: {
     visibility: "visible",
@@ -27,9 +23,10 @@ export const useStyles = makeStyles({
   buttonContainer: {
     display: "flex",
   },
-  recordingButton: {
-    color: "red",
-    ...shorthands.borderColor("red"),
-    ":hover": { color: "red", ...shorthands.borderColor("red") },
+  stopRecordingButton: {
+    color: tokens.colorPaletteRedBackground3,
+    "&:hover": {
+      color: tokens.colorPaletteRedBackground3,
+    },
   },
 });

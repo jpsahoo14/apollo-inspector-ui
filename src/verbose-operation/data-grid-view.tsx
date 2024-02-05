@@ -7,17 +7,17 @@ import {
   DataGridCell,
   DataGridHeaderCell,
 } from "@fluentui-contrib/react-data-grid-react-window";
-import { IVerboseOperation } from "apollo-inspector";
+import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
 import { LineHorizontal3Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
-import { Button } from "@fluentui/react-components";
+import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
-export const DataGridView = (props: IDataGridView) => {
+export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
   const {
     gridHeight,
@@ -31,13 +31,16 @@ export const DataGridView = (props: IDataGridView) => {
     columns,
     columnSizing,
     updateVerboseOperations,
-    scrollbarWidth,
     onClick,
   } = useDataGridView(props);
 
   return (
     <div className={classes.wholeBody}>
-      {renderFilterAndColumnOptionsButton(classes, handleToggleFilters)}
+      {renderFilterAndColumnOptionsButton(
+        classes,
+        handleToggleFilters,
+        operationsState
+      )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
           showFilters,
@@ -60,16 +63,10 @@ export const DataGridView = (props: IDataGridView) => {
             resizableColumns
             selectionAppearance="brand"
             columnSizingOptions={columnSizing}
-            selectionMode="multiselect"
             onSelectionChange={updateVerboseOperations as any}
             className={classes.grid}
           >
-            <DataGridHeader
-              style={{
-                paddingRight: scrollbarWidth,
-                backgroundColor: "#d4e8fa",
-              }}
-            >
+            <DataGridHeader>
               <DataGridRow>
                 {({ renderHeaderCell }) => (
                   <DataGridHeaderCell className={classes.gridHeaderCell}>
@@ -86,17 +83,18 @@ export const DataGridView = (props: IDataGridView) => {
               {({ item, rowId }, style) => {
                 const isRowSelected =
                   operationsState.selectedOperation?.id === (item as Item).id;
-                const isFailed = (item as Item).status
-                  .toLowerCase()
-                  .includes("failed");
+                const isFailed =
+                  (item as Item).status === OperationStatus.Failed ||
+                  (item as Item).status === OperationStatus.PartialSuccess;
+
                 const rowClassName =
                   isRowSelected && isFailed
-                    ? classes.selectedAndFailedRow
+                    ? mergeClasses(classes.selectedRow, classes.failedRow)
                     : isFailed
                       ? classes.failedRow
                       : isRowSelected
                         ? classes.selectedRow
-                        : classes.gridRow;
+                        : null;
 
                 return (
                   <DataGridRow<Item>
@@ -108,7 +106,7 @@ export const DataGridView = (props: IDataGridView) => {
                       const cb = () => onClick(item);
                       return (
                         <DataGridCell
-                          // className={classes.gridrowcell}
+                          className={classes.gridrowcell}
                           onClick={cb}
                         >
                           {renderCell(item as Item)}
@@ -124,17 +122,22 @@ export const DataGridView = (props: IDataGridView) => {
       </div>
     </div>
   );
-};
+});
 
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
-  handleToggleFilters: () => void
+  handleToggleFilters: () => void,
+  operationsState: IOperationsReducerState
 ) => (
   <div className={classes.headers}>
-    <Button icon={<LineHorizontal3Regular />} onClick={handleToggleFilters}>
+    <Button
+      icon={<LineHorizontal3Regular />}
+      onClick={handleToggleFilters}
+      className={classes.filtersButton}
+    >
       Filters
     </Button>
-    <ColumnOptions />
+    {!operationsState.selectedOperation && <ColumnOptions />}
   </div>
 );
 
@@ -154,3 +157,5 @@ const renderFilterView = (
       />
     </div>
   );
+
+DataGridView.displayName = "DataGridView";

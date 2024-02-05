@@ -8,11 +8,11 @@ export const useStyles = makeStyles({
     minHeight: 0,
     height: "100%",
     width: "100%",
+    ...shorthands.padding("0.5rem"),
   },
   innerContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#fff",
     height: "100%",
     ...shorthands.overflow("hidden"),
     flexGrow: 1,
@@ -25,8 +25,8 @@ export const useStyles = makeStyles({
   },
   label: {
     display: "inline-block",
-    ...shorthands.padding("5px", "10px"),
-    ...shorthands.borderRadius("12px"),
+    ...shorthands.padding(".5rem", "1.0rem"),
+    ...shorthands.borderRadius("1.2rem"),
     ...shorthands.borderStyle("none"),
   },
   centerDiv: {

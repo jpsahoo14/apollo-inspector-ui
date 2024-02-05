@@ -1,4 +1,4 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
   wholeBody: {
@@ -14,6 +14,7 @@ export const useStyles = makeStyles({
     flexDirection: "row",
     minHeight: 0,
     minWidth: 0,
+    paddingBottom: "0.5rem",
   },
   gridBody: {
     position: "relative",
@@ -22,51 +23,33 @@ export const useStyles = makeStyles({
     cursor: "pointer",
     width: "100%",
     height: "100%",
-    // "::-webkit-scrollbar": {
-    //   display: "none",
-    // },
-  },
-  gridRow: {
-    ":hover": {
-      backgroundColor: "aliceblue",
-    },
   },
   gridHeaderCell: {
-    backgroundColor: "#d4e8fa",
+    backgroundColor: tokens.colorBrandBackground2Hover,
+    minWidth: "10px !important",
+    textOverflow: "ellipsis",
   },
-  gridrowcell: {},
+  gridrowcell: {
+    minWidth: "10px !important",
+  },
   gridView: {
     flexGrow: 2,
     display: "flex",
-    "&:hover": {
-      backgroundColor: "unset !important",
-      color: "unset !important",
-    },
     height: "100%",
     minHeight: 0,
     minWidth: 0,
   },
-  selectedAndFailedRow: {
-    color: "darkred",
-    backgroundColor: "aliceblue",
+  selectedRow: {
     fontWeight: "bold",
+    backgroundColor: tokens.colorBrandBackground2Hover,
     "&:hover": {
-      backgroundColor: "aliceblue",
-      color: "darkred",
+      backgroundColor: tokens.colorBrandBackground2Hover,
     },
   },
   failedRow: {
+    color: tokens.colorPaletteRedBackground3,
     "&:hover": {
-      backgroundColor: "unset",
-      color: "red",
-    },
-    color: "red",
-  },
-  selectedRow: {
-    backgroundColor: "aliceblue",
-    fontWeight: "bold",
-    "&:hover": {
-      backgroundColor: "aliceblue",
+      color: tokens.colorPaletteRedBackground3,
     },
   },
   operationText: {
@@ -79,6 +62,7 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     flexGrow: 1,
+    ...getGridPaddingMargin(),
   },
   gridWrapper: {
     flexGrow: 1,
@@ -86,6 +70,7 @@ export const useStyles = makeStyles({
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    ...getGridPaddingMargin(),
   },
   grid: {
     height: "100%",
@@ -95,28 +80,35 @@ export const useStyles = makeStyles({
   filterViewWrapper: {
     flexGrow: 1,
     display: "flex",
-    maxWidth: "300px",
+    maxWidth: "30rem",
     height: "100%",
     minHeight: 0,
     minWidth: "fit-content",
+    boxShadow: `${tokens.colorNeutralShadowAmbientLighter} 0.2rem 0 2.6px`,
+  },
+  filtersButton: {
+    marginRight: ".5rem",
   },
 });
 
+function getGridPaddingMargin() {
+  return { paddingLeft: "0.2rem", marginRight: "0.2rem" };
+}
+
 export type IClasses = Record<
   | "grid"
-  | "gridRow"
   | "wholeBody"
   | "headers"
   | "gridBody"
   | "gridHeaderCell"
   | "gridrowcell"
   | "gridView"
-  | "selectedAndFailedRow"
   | "failedRow"
   | "selectedRow"
   | "operationText"
   | "selectedOperationGridWrapper"
   | "gridWrapper"
-  | "filterViewWrapper",
+  | "filterViewWrapper"
+  | "filtersButton",
   string
 >;

@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 import { IDataView } from "apollo-inspector";
 import { CopyType, ICopyData, RecordingState } from "../types";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 export interface IOperationsTrackerHeaderProps {
   setSearchText: (text: string) => void;
@@ -39,14 +40,14 @@ export const OperationsTrackerHeader = React.memo(
       <>
         <div className={classes.header}>
           <div className={classes.buttonContainer}>
-            {renderInfoButton(
+            {renderInfoAndStartStopButton(
               { openDescription, recordingState },
               { classes, setOpenDescription, startRecording, stopRecording }
             )}
             <CopyButton operationsState={operationsState} onCopy={onCopy} />
             {recordingState === RecordingState.Initial ? null : (
               <Button
-                style={{ marginLeft: "0.5rem" }}
+                style={{ margin: "0 0.5rem" }}
                 onClick={clearApolloOperations}
               >
                 Clear All
@@ -76,25 +77,33 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     setError,
     setRecordingState,
     setLoader,
-    store,
     apolloOperationsData,
-  } = useStore(trackerStore, (store) => ({
-    setRecordingState: store.setRecordingState,
-    setApolloOperationsData: store.setApolloOperationsData,
-    setLoader: store.setLoader,
-    setError: store.setError,
-    store,
-    apolloOperationsData: store.apolloOperationsData,
-  }));
+  } = useStore(
+    trackerStore,
+    useShallow((store) => ({
+      setRecordingState: store.setRecordingState,
+      setApolloOperationsData: store.setApolloOperationsData,
+      setLoader: store.setLoader,
+      setError: store.setError,
+      store,
+      apolloOperationsData: store.apolloOperationsData,
+    }))
+  );
 
-  const { selectedApolloClientIds } = useStore(trackerStore, (store) => ({
-    selectedApolloClientIds: store.selectedApolloClientIds,
-    apolloClients: store.apolloClients,
-  }));
-  const [stopTracking, setStopTracking] = useStore(trackerStore, (store) => [
-    store.stopApolloInspectorTracking,
-    store.setStopApolloInspectorTracking,
-  ]);
+  const { selectedApolloClientIds } = useStore(
+    trackerStore,
+    useShallow((store) => ({
+      selectedApolloClientIds: store.selectedApolloClientIds,
+      apolloClients: store.apolloClients,
+    }))
+  );
+  const [stopTracking, setStopTracking] = useStore(
+    trackerStore,
+    useShallow((store) => [
+      store.stopApolloInspectorTracking,
+      store.setStopApolloInspectorTracking,
+    ])
+  );
 
   const startRecording = React.useCallback(() => {
     if (selectedApolloClientIds.length === 0) {
@@ -176,21 +185,24 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
 const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
   const { setSearchText, operationsState, onCopy } = props;
   const store = React.useContext(TrackerStoreContext);
-  const [openDescription, setOpenDescription] = useStore(store, (store) => [
-    store.openDescription,
-    store.setOpenDescription,
-  ]);
+  const [openDescription, setOpenDescription] = useStore(
+    store,
+    useShallow((store) => [store.openDescription, store.setOpenDescription])
+  );
   const {
     recordingState,
     apollOperationsData,
     setApolloOperationsData,
     setRecordingState,
-  } = useStore(store, (store) => ({
-    recordingState: store.recordingState,
-    apollOperationsData: store.apolloOperationsData,
-    setApolloOperationsData: store.setApolloOperationsData,
-    setRecordingState: store.setRecordingState,
-  }));
+  } = useStore(
+    store,
+    useShallow((store) => ({
+      recordingState: store.recordingState,
+      apollOperationsData: store.apolloOperationsData,
+      setApolloOperationsData: store.setApolloOperationsData,
+      setRecordingState: store.setRecordingState,
+    }))
+  );
 
   const { startRecording, stopRecording } = useToggleRecording(props);
 
@@ -247,7 +259,7 @@ interface IRenderInfoButtonServices {
   stopRecording: () => void;
 }
 
-const renderInfoButton = (
+const renderInfoAndStartStopButton = (
   { openDescription, recordingState }: IRenderInfoButtonParams,
   {
     classes,
@@ -271,7 +283,7 @@ const renderInfoButton = (
       <Button
         className={
           recordingState === RecordingState.RecordingStarted
-            ? classes.recordingButton
+            ? classes.stopRecordingButton
             : ""
         }
         onClick={

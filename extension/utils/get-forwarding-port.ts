@@ -1,13 +1,7 @@
 import browser from "webextension-polyfill";
 import { IMessagePayload } from "./custom-event-target";
 import { IConnection } from "./types";
-import {
-  BACKGROUND,
-  CONTENT_SCRIPT,
-  DEVTOOL,
-  PANEL_PAGE,
-  WEB_PAGE,
-} from "./constants";
+import { Context } from "./constants";
 
 export const getForwardingPort = (
   message: IMessagePayload,
@@ -24,23 +18,23 @@ export const getForwardingPort = (
 const getConectionObject = (message: IMessagePayload): IConnection => {
   const tabId = message.destination.tabId;
   switch (message.destination.name) {
-    case BACKGROUND: {
-      return { name: BACKGROUND, tabId };
+    case Context.BACKGROUND: {
+      return { name: Context.BACKGROUND, tabId };
     }
 
-    case CONTENT_SCRIPT:
-    case WEB_PAGE: {
-      return { name: CONTENT_SCRIPT, tabId };
+    case Context.CONTENT_SCRIPT:
+    case Context.WEB_PAGE: {
+      return { name: Context.CONTENT_SCRIPT, tabId };
     }
 
-    case DEVTOOL: {
-      return { name: DEVTOOL, tabId };
+    case Context.DEVTOOL: {
+      return { name: Context.DEVTOOL, tabId };
     }
 
-    case PANEL_PAGE: {
-      return { name: PANEL_PAGE, tabId };
+    case Context.PANEL_PAGE: {
+      return { name: Context.PANEL_PAGE, tabId };
     }
   }
 
-  return { name: WEB_PAGE, tabId };
+  return { name: Context.WEB_PAGE, tabId };
 };

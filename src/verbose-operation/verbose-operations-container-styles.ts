@@ -14,14 +14,18 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     flexGrow: 1,
+    flexBasis: "30%",
   },
   selectedOperationView: {
     display: "flex",
-    marginTop: "32px",
-    backgroundColor: "aliceblue",
+    marginTop: "2rem",
     height: "100%",
     minHeight: 0,
     minWidth: 0,
+    flexBasis: "50%",
+  },
+  notselectedOperationView: {
+    display: "none",
   },
   operations: {
     display: "flex",
@@ -49,16 +53,13 @@ export const useStyles = makeStyles({
     paddingLeft: "1rem",
   },
   copyAllOpBtn: {
-    minHeight: "32px",
-    marginRight: "1rem",
+    minHeight: "3.2rem",
+    marginRight: ".1rem",
   },
   operationName: {
     textOverflow: "ellipsis",
     overflowX: "hidden",
     overflowY: "hidden",
     whiteSpace: "nowrap",
-  },
-  filterLabelMsg: {
-    color: "red",
   },
 });

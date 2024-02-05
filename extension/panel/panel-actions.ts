@@ -1,12 +1,19 @@
 import copy from "copy-to-clipboard";
-import { IMessagePayload, createLogger } from "../utils";
+import {
+  Context,
+  IMessagePayload,
+  createLogger,
+  getLastSender,
+} from "../utils";
 import { IPanelContext } from "./panel.interface";
 
 export const sendMessageFromPanelPage = (context: IPanelContext) => {
   const { backgroundConnection } = context;
   return (message: IMessagePayload) => {
     logMessage(`sending message from panel-action`, { message });
-    backgroundConnection.postMessage(message);
+    if (getLastSender(message.requestInfo.path) !== Context.BACKGROUND) {
+      backgroundConnection.postMessage(message);
+    }
   };
 };
 
@@ -34,8 +41,6 @@ export const getHandleWebPageUnload = (context: IPanelContext) => {
   return (message: IMessagePayload) => {
     logMessage(`handle webpage unload`, { message });
     resetStore();
-    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
-    cleanUpsRef.current = [];
   };
 };
 

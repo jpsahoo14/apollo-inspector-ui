@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IVerboseOperation } from "apollo-inspector";
+import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { ICountReducerAction } from "../operations-tracker-body";
 import {
   IOperationsAction,
@@ -49,7 +49,7 @@ export type Item = {
   isActive: boolean;
   duration: Duration;
   timing: Timing;
-  status: string;
+  status: OperationStatus;
   fetchPolicy: string;
   result: Result[];
   id: number;

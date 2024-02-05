@@ -4,18 +4,17 @@ import { Spinner } from "@fluentui/react-components";
 import {
   CustomEventTarget,
   IMessagePayload,
-  PANEL_PAGE,
   PANEL_PAGE_ACTIONS,
   WEBPAGE_ACTIONS,
-  WEB_PAGE,
   createLogger,
   sendMessageViaEventTarget,
+  Context,
 } from "../utils";
-import { setupPanelActions } from "./setup-panel-actions";
 import { Observable } from "rxjs";
 import { IDataView } from "apollo-inspector";
 import { CopyType, ICopyData } from "../../src/types";
 import copy from "copy-to-clipboard";
+import { usePanelInitialization } from "./hooks";
 
 const OperationsTrackerContainer = lazy(() => import("../../index"));
 
@@ -29,7 +28,7 @@ export const PanelContainer = () => {
   const cleanUpsRef = React.useRef<(() => void)[]>([]);
   const [backgroundConnection, setBackgroundConnection] =
     React.useState<browser.Runtime.Port | null>(null);
-  const panelRef = React.useRef(new CustomEventTarget(PANEL_PAGE));
+  const panelRef = React.useRef(new CustomEventTarget(Context.PANEL_PAGE));
 
   logMessage(`rendering Panel container`, {
     log: {
@@ -72,7 +71,7 @@ export const PanelContainer = () => {
   if (!initPanelComplete) {
     return (
       <>
-        {"Panel still loading"}
+        {"Devtools still loading"}
         <Spinner />
       </>
     );
@@ -81,7 +80,7 @@ export const PanelContainer = () => {
   if (!clientIds) {
     return (
       <>
-        {"No clients"}
+        {"No Apollo clients found"}
         <Spinner />
       </>
     );
@@ -95,7 +94,7 @@ export const PanelContainer = () => {
     <Suspense
       fallback={
         <>
-          {"Loading OperationsTrackerContainer"}
+          {"Loading"}
           <Spinner />
         </>
       }
@@ -141,8 +140,8 @@ const useOperationTrackerProps = ({
     if (copyType === CopyType.WholeApolloCache) {
       sendMessageViaEventTarget(panelRef.current, {
         action: PANEL_PAGE_ACTIONS.COPY_WHOLE_CACHE,
-        callerName: PANEL_PAGE,
-        destinationName: WEB_PAGE,
+        callerName: Context.PANEL_PAGE,
+        destinationName: Context.WEB_PAGE,
         tabId: tabIdRef.current,
         data,
       });
@@ -164,8 +163,8 @@ const useApolloClientStoreCB = (
   const onClearStore = React.useCallback((clientId: string) => {
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.CLEAR_STORE,
-      callerName: PANEL_PAGE,
-      destinationName: WEB_PAGE,
+      callerName: Context.PANEL_PAGE,
+      destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
       data: {
         clientId,
@@ -175,8 +174,8 @@ const useApolloClientStoreCB = (
   const onResetStore = React.useCallback((clientId: string) => {
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.RESET_STORE,
-      callerName: PANEL_PAGE,
-      destinationName: WEB_PAGE,
+      callerName: Context.PANEL_PAGE,
+      destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
       data: {
         clientId,
@@ -200,10 +199,10 @@ const useGetApolloClientIds = (
       const fetchUntil = 10000;
       const intervalNumber = setInterval(() => {
         sendMessageViaEventTarget(panelRef.current, {
-          destinationName: WEB_PAGE,
+          destinationName: Context.WEB_PAGE,
           action: WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS,
           tabId: tabIdRef.current,
-          callerName: PANEL_PAGE,
+          callerName: Context.PANEL_PAGE,
         });
       }, 100);
 
@@ -245,84 +244,6 @@ const useGetApolloClientIds = (
   ]);
 };
 
-interface IUseSetBackgroundConnection {
-  setBackgroundConnection: React.Dispatch<
-    React.SetStateAction<browser.Runtime.Port | null>
-  >;
-  panelRef: React.MutableRefObject<CustomEventTarget>;
-  tabIdRef: React.MutableRefObject<number>;
-  setInitPanelComplete: React.Dispatch<React.SetStateAction<boolean>>;
-  setClientIds: React.Dispatch<React.SetStateAction<string[] | null>>;
-  subscription: { unsubscribe: () => void } | null;
-  setSubscription: React.Dispatch<
-    React.SetStateAction<{ unsubscribe: () => void } | null>
-  >;
-  cleanUpsRef: React.MutableRefObject<(() => void)[]>;
-}
-
-const usePanelInitialization = ({
-  panelRef,
-  setBackgroundConnection,
-  setClientIds,
-  setInitPanelComplete,
-  tabIdRef,
-  setSubscription,
-  cleanUpsRef,
-}: IUseSetBackgroundConnection) => {
-  const resetStore = React.useCallback(() => {
-    logMessage(`resetStore called`, { log: undefined });
-    setInitPanelComplete(false);
-    setClientIds(null);
-    setSubscription((sub) => {
-      sub?.unsubscribe();
-      return null;
-    });
-    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
-    cleanUpsRef.current = [];
-  }, [setInitPanelComplete, setClientIds, setSubscription]);
-
-  const initPanel = React.useCallback(() => {
-    logMessage(`initPanel called`, { log: undefined });
-    cleanUpsRef.current.forEach((cleanUp) => cleanUp());
-    cleanUpsRef.current = [];
-    setInitPanelComplete(true);
-  }, [setInitPanelComplete]);
-
-  React.useEffect(() => {
-    const backgroundConnection = browser.runtime.connect({
-      name: JSON.stringify({ name: PANEL_PAGE, tabId: tabIdRef.current }),
-    });
-    backgroundConnection.onMessage.addListener((message: IMessagePayload) => {
-      logMessage(`message received at panel-container`, { message });
-      const event = new CustomEvent(message.destination.name, {
-        detail: message,
-      });
-      panelRef.current.dispatchEvent(event);
-    });
-    setBackgroundConnection(backgroundConnection);
-
-    setupPanelActions({
-      backgroundConnection,
-      panel: panelRef.current,
-      setClientIds,
-      tabId: tabIdRef.current,
-      setInitPanelComplete,
-      initPanel,
-      resetStore,
-      cleanUpsRef,
-    });
-    initPanel();
-
-    return () => {
-      logMessage(`disconnecting`, {
-        data: { backgroundConnection: !!backgroundConnection },
-      });
-      backgroundConnection?.disconnect();
-    };
-  }, []);
-};
-
-const logMessage = createLogger(`panel-container`);
 const useOnRecordStartAndOnRecordStop = (
   subscription: { unsubscribe: () => void } | null,
   panelRef: React.MutableRefObject<CustomEventTarget>,
@@ -347,9 +268,9 @@ const useOnRecordStartAndOnRecordStop = (
         setSubscription({ unsubscribe });
         sendMessageViaEventTarget(panelRef.current, {
           action: PANEL_PAGE_ACTIONS.START_RECORDING,
-          destinationName: WEB_PAGE,
+          destinationName: Context.WEB_PAGE,
           tabId: tabIdRef.current,
-          callerName: PANEL_PAGE,
+          callerName: Context.PANEL_PAGE,
           data: {
             apolloClientIds: clientIds,
           },
@@ -366,10 +287,12 @@ const useOnRecordStartAndOnRecordStop = (
     });
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
-      destinationName: WEB_PAGE,
+      destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
-      callerName: PANEL_PAGE,
+      callerName: Context.PANEL_PAGE,
     });
   }, [panelRef, setSubscription, tabIdRef]);
   return { onRecordStart, onRecordStop };
 };
+
+const logMessage = createLogger(`panel-container`);

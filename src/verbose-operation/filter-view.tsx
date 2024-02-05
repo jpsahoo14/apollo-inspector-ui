@@ -159,7 +159,7 @@ const useOperationTypesCheckBox = ({
       .map((value) => {
         const checkboxValue = (value as unknown as Array<string>)[0];
         return (
-          <>
+          <React.Fragment key={`type-${checkboxValue}`}>
             <Checkbox
               onChange={onOperationTypeChange}
               value={checkboxValue}
@@ -189,8 +189,6 @@ const useOperationTypesCheckBox = ({
                     );
                   })
                   .map(([key, value]) => {
-                    console.log({ value, key, Query: "query" });
-
                     return (
                       <Checkbox
                         key={key}
@@ -203,7 +201,7 @@ const useOperationTypesCheckBox = ({
                   })}
               </div>
             )}
-          </>
+          </React.Fragment>
         );
       });
   }, [onOperationTypeChange, onSubTypeChange, operationTypesFilter]);

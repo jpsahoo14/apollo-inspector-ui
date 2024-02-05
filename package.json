@@ -35,12 +35,13 @@
     "@fluentui-contrib/react-data-grid-react-window": "^1.1.2",
     "apollo-inspector": "1.17.6",
     "copy-to-clipboard": "^3.3.3",
+    "event-target-shim": "^6.0.2",
     "graphql": "16.8.1",
     "immer": "^10.0.1",
     "lodash-es": "^4.17.21",
     "rxjs": "^7.8.1",
     "webextension-polyfill": "^0.10.0",
-    "zustand": "^4.3.7"
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@apollo/client": "3.6.5",
