@@ -39,7 +39,7 @@ export const AffectedQueriesRenderer = (
           <div className={classes.leftPaneHeader}>
         <Text weight="bold" size={300}><b>Re-rendered Queries</b></Text>
         <Tooltip
-              content="Info tooltip for affected queries. some random text- abncdjbj jnkdnkncknk nkcnknkwck nknkcwnskncs ncknknkcwsknck cknknkwcknc wcknknknev kjnkjvnknw nknwkmlmcknvh nknwwnkvjnv nkjnknkvnwknw nknkvnwknk wnkjnkvwnknvwk."
+              content="Affected Queries tab helps you see which watch queries were re-rendered and why. It shows insights into the queries and the operations causing those updates."
               visible={isInfoTooltipVisible} relationship={"label"} positioning={'after'}>
         <Button
           title="Information"
