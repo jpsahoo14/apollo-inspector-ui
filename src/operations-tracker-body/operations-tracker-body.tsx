@@ -229,10 +229,16 @@ const getTabHeaderName = (
   state: ICountReducerState,
   data: IDataView
 ) => {
+  const lengthOfObject = data.affectedQueriesOperations
+  ? Object.keys(data.affectedQueriesOperations).length
+  : 0;
   switch (item.key) {
     case TabHeaders.VerboseOperationView: {
       return `${item.name} ${`(${getCount(item.key, state)} of ${data.operations
         ?.length})`}`;
+    }
+    case TabHeaders.AffectedQueriesView: {
+      return `${item.name} ${`(${lengthOfObject})`}`;
     }
     default: {
       return `${item.name} `;
