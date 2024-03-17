@@ -7,11 +7,11 @@ const plugins = [
   new CopyPlugin({
     patterns: [
       {
-        from: "./extension/panel/panel.html",
+        from: "./extension/src/panel/panel.html",
         to: path.resolve(__dirname, "../build/extension"),
       },
       {
-        from: "./extension/devtools/devtools.html",
+        from: "./extension/src/devtools/devtools.html",
         to: path.resolve(__dirname, "../build/extension"),
       },
       {
@@ -33,11 +33,11 @@ export default (env: any): webpack.Configuration => {
     ...devOptions,
     mode: env.NODE_ENV,
     entry: {
-      ["content-script"]: "./extension/content-script/content-script.ts",
-      background: "./extension/background/background.ts",
-      devtools: "./extension/devtools/devtools.ts",
-      panel: "./extension/panel/panel.tsx",
-      webpage: "./extension/web-page/web-page-script.ts",
+      ["content-script"]: "./extension/src/content-script/content-script.ts",
+      background: "./extension/src/background/background.ts",
+      devtools: "./extension/src/devtools/devtools.ts",
+      panel: "./extension/src/panel/panel.tsx",
+      webpage: "./extension/src/web-page/web-page-script.ts",
     },
     output: {
       path: path.join(__dirname, "../build/extension"),

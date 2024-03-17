@@ -12,11 +12,11 @@ import {
 } from "../utils";
 import { Observable } from "rxjs";
 import { IDataView } from "apollo-inspector";
-import { CopyType, ICopyData } from "../../src/types";
+import { CopyType, ICopyData } from "../../../src/types";
 import copy from "copy-to-clipboard";
 import { usePanelInitialization } from "./hooks";
 
-const OperationsTrackerContainer = lazy(() => import("../../index"));
+const OperationsTrackerContainer = lazy(() => import("../../../index"));
 
 export const PanelContainer = () => {
   const [clientIds, setClientIds] = React.useState<string[] | null>(null);
@@ -273,6 +273,16 @@ const useOnRecordStartAndOnRecordStop = (
           callerName: Context.PANEL_PAGE,
           data: {
             apolloClientIds: clientIds,
+          },
+        });
+
+        sendMessageViaEventTarget(panelRef.current, {
+          action: WEBPAGE_ACTIONS.GET_ACTIVE_WATCH_QUERIES,
+          destinationName: Context.WEB_PAGE,
+          tabId: tabIdRef.current,
+          callerName: Context.PANEL_PAGE,
+          data: {
+            clientId: clientIds[0],
           },
         });
       });
