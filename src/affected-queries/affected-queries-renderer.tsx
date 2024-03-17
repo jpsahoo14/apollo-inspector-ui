@@ -24,11 +24,14 @@ export const AffectedQueriesRenderer = (
   props: IAffectedQueriesRendererProps
 ) => {
   const { listOfItems, gridItems, selectedListItem, onTabSelect } = props;
-  const [isInfoTooltipVisible, setInfoTooltipVisible] = React.useState(false);
   const classes = useStyles();
   const tabItems = listOfItems.map((element: any) => {
     return (
-      <Tab key={element.name} value={element.name} className={selectedListItem === element.name ? classes.selectedTab : ''} >
+      <Tab
+        key={element.name}
+        value={element.name}
+        className={selectedListItem === element.name ? classes.selectedTab : ""}
+      >
         {element.value}
       </Tab>
     );
@@ -36,32 +39,34 @@ export const AffectedQueriesRenderer = (
   return (
     <div className={classes.root}>
       <div className={classes.leftPane}>
-          <div className={classes.leftPaneHeader}>
-        <Text weight="bold" size={300}><b>Re-rendered Queries</b></Text>
-        <Tooltip
-              content="Affected Queries tab helps you see which watch queries were re-rendered and why. It shows insights into the queries and the operations causing those updates."
-              visible={isInfoTooltipVisible} relationship={"label"} positioning={'after'}>
-        <Button
-          title="Information"
-          tabIndex={0}
-          className={classes.infoButton}
-          onClick={() => {
-            setInfoTooltipVisible(!isInfoTooltipVisible)}}>
-          <Info20Regular />
-        </Button>
-        </Tooltip>
+        <div className={classes.leftPaneHeader}>
+          <Text weight="bold" size={300}>
+            <b>Re-rendered Queries</b>
+          </Text>
+          <Tooltip
+            content="Affected Queries tab helps you see which watch queries were re-rendered and why. It shows insights into the queries and the operations causing those updates."
+            relationship={"label"}
+            positioning={"after"}
+          >
+            <Button className={classes.infoButton}>
+              <Info20Regular />
+            </Button>
+          </Tooltip>
         </div>
-      <TabList
-        selectedValue={selectedListItem}
-        onTabSelect={onTabSelect}
-        vertical={true}
-      >
-        {tabItems}
-      </TabList>
+        <TabList
+          selectedValue={selectedListItem}
+          onTabSelect={onTabSelect}
+          vertical={true}
+        >
+          {tabItems}
+        </TabList>
       </div>
       <div className={classes.rightPane}>
         <div className={classes.rightPaneHeader}>
-          <Text size={300}><b>{selectedListItem}</b> is re-rendered due to following operations in the table</Text>
+          <Text size={300}>
+            <b>{selectedListItem}</b> is re-rendered due to following operations
+            in the table
+          </Text>
         </div>
         <AffectedQueriesGridRenderers items={gridItems} />
       </div>
