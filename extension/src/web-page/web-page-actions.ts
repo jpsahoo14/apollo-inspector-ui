@@ -9,11 +9,15 @@ import {
   sendMessageViaEventTarget,
   Context,
   getLastSender,
+  getPrivateAccess,
+  IWatchQueryInfo,
 } from "../utils";
+import type { Cache } from "@apollo/client/cache";
 import { IWebpageContext } from "./web-page.interface";
-import { ApolloInspector, IDataView } from "apollo-inspector";
+import { ApolloInspector, IApolloClient, IDataView } from "apollo-inspector";
 import { getApolloClientsObj } from "./web-page-utils";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ObservableQuery } from "@apollo/client";
+import { DocumentNode, VariableDefinitionNode } from "graphql";
 
 export const devtoolScriptLoadedAction = (context: IWebpageContext) => {
   const { webpage, tabId } = context;
@@ -61,6 +65,24 @@ export const getCopyWholeCacheCB = (context: IWebpageContext) => {
       destinationName: Context.PANEL_PAGE,
       tabId,
       data,
+    });
+  };
+};
+
+export const getActiveWatchQueriesForAClient = (context: IWebpageContext) => {
+  const { webpage, tabId } = context;
+
+  return (message: IMessagePayload) => {
+    const { clientId } = message.data;
+    const apolloClient = getApolloClientByClientId(clientId) as any;
+
+    const activeQueries = getActiveQueries(apolloClient);
+
+    sendMessageViaEventTarget(webpage, {
+      action: WEBPAGE_ACTIONS.ACTIVE_WATCH_QUERIES_DATA,
+      callerName: Context.WEB_PAGE,
+      tabId,
+      data: activeQueries,
     });
   };
 };
@@ -241,11 +263,20 @@ export const getWebpageUnloadReducer = (context: IWebpageContext) => {
 
 const logMessage = createLogger(`mainThread`);
 
-function getRandomArbitrary(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
+const getActiveQueries = (apolloClient: any) => {
+  if (apolloClient?.queryManager?.getObservableQueries) {
+    const observableQueries = apolloClient.queryManager.getObservableQueries();
+    return getQueriesFromObservableQueries(observableQueries);
+  } else {
+    const queries = apolloClient?.queryManager["queries"];
+    return getQueries(queries);
+  }
+};
 
-function generateRandomClients(values: string[]) {
+const getRandomArbitrary = (min: number, max: number) =>
+  Math.random() * (max - min) + min;
+
+const generateRandomClients = (values: string[]) => {
   const min = 3;
   const number = getRandomArbitrary(min, 11);
   for (let i = min; i < number; i++) {
@@ -253,4 +284,49 @@ function generateRandomClients(values: string[]) {
   }
 
   return values;
-}
+};
+
+const getQueriesFromObservableQueries = (
+  observableQueries: Map<string, ObservableQuery>
+): IWatchQueryInfo[] => {
+  const queries: IWatchQueryInfo[] = [];
+  if (observableQueries) {
+    observableQueries.forEach((oc) => {
+      const observableQuery = getPrivateAccess(oc);
+      const { document, variables } = observableQuery.queryInfo;
+      const diff = observableQuery.queryInfo.getDiff();
+      if (!document) return;
+
+      queries.push({
+        document,
+        variables,
+        data: diff.result,
+      });
+    });
+  }
+  return queries;
+};
+
+const getQueries = (
+  queryMap: Map<
+    string,
+    {
+      document: DocumentNode;
+      variables: VariableDefinitionNode;
+      diff: Cache.DiffResult<any>;
+    }
+  >
+): IWatchQueryInfo[] => {
+  if (queryMap) {
+    const queries = [...queryMap.values()].map(
+      ({ document, variables, diff }) => ({
+        document,
+        variables,
+        data: diff?.result,
+      })
+    );
+
+    return queries;
+  }
+  return [];
+};
