@@ -6,6 +6,7 @@ import {
   DEVTOOLS_ACTIONS,
   Context,
 } from "./constants";
+import { DocumentNode, VariableDefinitionNode } from "graphql";
 
 export interface IConnection {
   name: Context;
@@ -24,3 +25,15 @@ export type IPayloadFromActions = {
   [DEVTOOLS_ACTIONS.DEVTOOLS_SCRIPT_LOADED]: string;
   [WEBPAGE_ACTIONS.GET_APOLLO_CLIENTS_IDS]: number;
 };
+
+export type IWatchQueryInfo = {
+  document: DocumentNode;
+  variables?: VariableDefinitionNode;
+  data?: QueryData;
+};
+
+export type QueryData = JSONObject;
+
+export type JSONPrimitive = string | number | null | boolean;
+export type JSONObject = { [key: string]: JSONValue };
+export type JSONValue = JSONPrimitive | JSONValue[] | JSONObject;

@@ -21,6 +21,8 @@ export const enum WEBPAGE_ACTIONS {
   WEB_PAGE_UNLOAD = "web-page-unload",
   WEB_PAGE_RELOADED = "web-page-reloaded",
   WHOLE_APOLLO_CACHE_DATA = "whole-apollo-cache-data",
+  ACTIVE_WATCH_QUERIES_DATA = "active-watch-queries-data",
+  GET_ACTIVE_WATCH_QUERIES = "get-active-watch-queries",
 }
 
 export const enum CONTENT_SCRIPT_ACTIONS {

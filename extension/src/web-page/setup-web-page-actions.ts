@@ -18,6 +18,7 @@ import {
   getClearStoreCB,
   getResetStoreCB,
   getCopyWholeCacheCB,
+  getActiveWatchQueriesForAClient,
 } from "./web-page-actions";
 import { IWebpageContext } from "./web-page.interface";
 
@@ -37,6 +38,8 @@ export const setupWebPageActions = (context: IWebpageContext) => {
     [PANEL_PAGE_ACTIONS.RESET_STORE]: getResetStoreCB(context),
     [PANEL_PAGE_ACTIONS.COPY_WHOLE_CACHE]: getCopyWholeCacheCB(context),
     [Context.WEB_PAGE]: getHandleWebpageAction(context),
+    [WEBPAGE_ACTIONS.GET_ACTIVE_WATCH_QUERIES]:
+      getActiveWatchQueriesForAClient(context),
   };
 
   for (const prop in actionsToReducers) {

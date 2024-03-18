@@ -130,7 +130,7 @@ export interface IMessagePayload {
     /**
      * @deprecated Use the action property.
      */
-    name: string;
+    name?: string;
     tabId: number;
     action: string;
   };

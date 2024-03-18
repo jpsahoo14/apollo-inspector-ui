@@ -1,5 +1,5 @@
 import { CustomEventTarget, IMessagePayload } from "./custom-event-target";
-import { generateRequestInfo } from "./generate-request-id";
+import { generateRequestInfo } from "./generate-request-info";
 import { Context } from "./constants";
 
 interface ISendPostMessageParams {
@@ -22,7 +22,7 @@ export const sendPostMessage = (
 
 interface ISendMessageParams {
   action: string;
-  destinationName: string;
+  destinationName?: string;
   tabId: number;
   callerName: Context;
   data?: any;
