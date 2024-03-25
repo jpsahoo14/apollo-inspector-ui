@@ -7,7 +7,7 @@ This UI is using [apollo-inspector](https://www.npmjs.com/package/apollo-inspect
 
 ## What kind of issues can be debugged using the tool
 
-- Helps figuring out `unwanted operations` being fired in render phase
+- Helps figuring out `unwanted operations` being executed in render phase
 - Help in figuring out the reasons for `multiple re-renders` of the same watch query​
 - Help figuring out issues with `conflicting queries​`
 - Shows field name in case `missing field error`
@@ -30,7 +30,7 @@ This UI is using [apollo-inspector](https://www.npmjs.com/package/apollo-inspect
   - Operation type filter (Query/Mutation/Subscription)
   - Results from filter (Cache/Network)
   - Operation Status (Succeeded/Failed)
-- It also shows which all operations are responsible for re-rendering of an query in `Affected Queries` view
+- It also shows which all operations are responsible for re-rendering of a watch query in `Affected Queries` tab. Affected queries are the watch queries which re-rendered due to update in the apollo cache store.
 - It allows you copy operations data in JSON format.
 
 ## How to use
@@ -54,6 +54,13 @@ This UI is using [apollo-inspector](https://www.npmjs.com/package/apollo-inspect
 - Filter by from where the result is being fetched (Cache/Network)
 - Filter by operation status (Succeded/Failed)
 
+## Affected Queries view
+
+This view shows what operations led to re-render of a given query.
+On the left side is the list of queries which have been re-rendered and on the right side, it shows what all operation caused it.
+
+![plot](./docs/affected-queries-view.png)
+
 ## Copy options
 
 ![plot](./docs/operations-tracker-copy.png)
@@ -65,21 +72,6 @@ It copies all the operations which have been recorded
 ### Copy Filtered Operations
 
 It copies only the current view of the operations
-
-### Copy Checked Operations
-
-It copies only those operations, whose check boxes are checked
-
-### Copy currently Opened Operation
-
-It copies the operation, which is currently opened in the detailed view
-
-## Affected Queries view
-
-This view shows what operations led to re-render of a given query.
-On the left side is the list of queries which have been re-rendered and on the right side, it shows what all operation caused it.
-
-![plot](./docs/affected-queries-view.png)
 
 # Demo
 
