@@ -1,6 +1,6 @@
 {
   "name": "apollo-inspector-ui",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "source": "index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
@@ -12,8 +12,8 @@
   },
   "scripts": {
     "build:extension:dev": "rimraf build && webpack --config extension/webpack.config.ts --env NODE_ENV=development --progress --watch",
-    "build:extension": "rimraf build && webpack --config extension/webpack.config.ts --env NODE_ENV=production --progress ",
-    "build:package": "rimraf dist && parcel build && node scripts/build.js",
+    "build:extension": "rimraf .parcel-cache && rimraf build && webpack --config extension/webpack.config.ts --env NODE_ENV=production --progress ",
+    "build:package": "rimraf .parcel-cache && rimraf dist && parcel build && node scripts/build.js",
     "build:site": "tsc && vite build",
     "dev": "vite",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
@@ -21,7 +21,7 @@
     "parcel:test:nocache:start": "rimraf .parcel-cache && parcel src/__test__/index.html",
     "parcel:test:start": "parcel src/__test__/index.html",
     "preview": "vite preview",
-    "publish": "yarn build:package && npm publish",
+    "publish:package": "yarn build:package && npm publish",
     "test:build": "webpack --config src/__test__/test-app/webpack/webpack.config.js --env env=prod",
     "test:start": "webpack serve --config webpack/webpack.config.js --env env=dev"
   },
@@ -53,8 +53,8 @@
     "@fluentui/react-components": "^9.18.9",
     "@fluentui/react-data-grid-react-window": "^9.0.0-beta.40",
     "@fluentui/react-icons": "^2.0.196",
-    "@parcel/packager-ts": "2.9.3",
-    "@parcel/transformer-typescript-types": "2.9.3",
+    "@parcel/packager-ts": "2.10.3",
+    "@parcel/transformer-typescript-types": "2.10.3",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@rollup/plugin-typescript": "^11.1.4",
