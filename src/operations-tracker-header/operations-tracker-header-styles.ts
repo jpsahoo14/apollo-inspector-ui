@@ -24,9 +24,9 @@ export const useStyles = makeStyles({
     display: "flex",
   },
   stopRecordingButton: {
-    color: tokens.colorPaletteRedBackground3,
+    color: tokens.colorPaletteRedBorder1,
     "&:hover": {
-      color: tokens.colorPaletteRedBackground3,
+      color: tokens.colorPaletteRedBorder1,
     },
   },
 });

@@ -6,7 +6,7 @@ export const useStyles = makeStyles({
     display: "flex",
     minWidth: 0,
     minHeight: 0,
-    height: "100%",
+    height: "calc(100% - 1rem)",
     width: "100%",
     ...shorthands.padding("0.5rem"),
   },
