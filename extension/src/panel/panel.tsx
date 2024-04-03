@@ -6,11 +6,9 @@ import {
   webDarkTheme,
 } from "@fluentui/react-components";
 import { PanelContainer } from "./panel-container";
-// import { TrackerStoreContext } from "../../src/store";
-// import { useStore } from "zustand";
 
 const ApolloUIComponent = () => {
-  const isLightTheme = true;
+  const isLightTheme = false;
 
   return (
     <FluentProvider
