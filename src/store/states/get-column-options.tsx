@@ -6,8 +6,8 @@ export const getColumnOptions = (set: ISet): IColumnOptions => {
   const [selectedColumnOptions, setSelectedColumnOptions] = createState(
     [
       ColumnName.ID,
-      ColumnName.Type,
       ColumnName.Name,
+      ColumnName.Type,
       ColumnName.Status,
       ColumnName.FetchPolicy,
       ColumnName.StartAt,

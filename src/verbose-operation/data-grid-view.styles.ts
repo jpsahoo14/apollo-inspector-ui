@@ -28,9 +28,14 @@ export const useStyles = makeStyles({
     backgroundColor: tokens.colorBrandBackground2Hover,
     minWidth: "10px !important",
     textOverflow: "ellipsis",
+    ...shorthands.padding("0.15rem", "0.25rem"),
   },
   gridrowcell: {
     minWidth: "10px !important",
+    ...shorthands.padding("0.15rem", "0.25rem"),
+  },
+  gridRowOdd: {
+    backgroundColor: tokens.colorSubtleBackgroundPressed,
   },
   gridView: {
     flexGrow: 2,
