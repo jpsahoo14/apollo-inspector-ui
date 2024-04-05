@@ -87,18 +87,16 @@ export const DataGridView = React.memo((props: IDataGridView) => {
                   (item as Item).status === OperationStatus.Failed ||
                   (item as Item).status === OperationStatus.PartialSuccess;
 
-                let rowClassName =
+                const rowClassName =
                   isRowSelected && isFailed
                     ? mergeClasses(classes.selectedRow, classes.failedRow)
                     : isFailed
                       ? classes.failedRow
                       : isRowSelected
                         ? classes.selectedRow
-                        : null;
-                rowClassName =
-                  Number(rowId) % 2 !== 0
-                    ? mergeClasses(rowClassName, classes.gridRowOdd)
-                    : rowClassName;
+                        : Number(rowId) % 2 !== 0
+                          ? classes.gridRowOdd
+                          : undefined;
 
                 return (
                   <DataGridRow<Item>
