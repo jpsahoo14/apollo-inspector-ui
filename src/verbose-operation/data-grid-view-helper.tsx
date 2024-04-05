@@ -44,8 +44,8 @@ export const getColumns = (
   if (anyOperationSelected) {
     return getSelectedColumns([
       ColumnName.ID,
-      ColumnName.Type,
       ColumnName.Name,
+      ColumnName.Type,
     ]);
   } else {
     return getSelectedColumns(selectedColumnOptions);
