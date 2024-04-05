@@ -190,7 +190,7 @@ const convertOperationsToBeCopied = (
         operationType: op.operationType,
         result: op.result,
         status: op.status,
-        timing: op.timing,
+        duration: op.duration,
         variables: op.variables,
         warning: op.warning,
       };
