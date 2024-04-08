@@ -39,7 +39,9 @@
     "graphql": "16.8.1",
     "immer": "^10.0.1",
     "lodash-es": "^4.17.21",
+    "react-json-view": "^1.21.3",
     "rxjs": "^7.8.1",
+    "view-json-react": "^1.1.1",
     "webextension-polyfill": "^0.10.0",
     "zustand": "^4.5.0"
   },
