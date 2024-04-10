@@ -29,7 +29,6 @@ import {
 import { Dismiss16Filled, Copy16Regular } from "@fluentui/react-icons";
 import copy from "copy-to-clipboard";
 import { JsonViewer } from "view-json-react";
-import ReactJson from "react-json-view";
 
 const spaceForStringify = 2;
 
@@ -282,20 +281,12 @@ const getResultPanel = (
           }`}</Text>
         </AccordionHeader>
         <AccordionPanel>
-          {/* <div className={classes.resultPanel}>{`${JSON.stringify(
-            res.result,
-            null,
-            spaceForStringify
-          )}`}</div> */}
           <div className={classes.resultPanel}>
             <JsonViewer
               data={res.result}
               expandLevel={1}
               style={{ color: "#61dafb" }}
             />
-          </div>
-          <div className={classes.resultPanel}>
-            <ReactJson src={res.result as object} theme="monokai" />
           </div>
         </AccordionPanel>
       </AccordionItem>

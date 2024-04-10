@@ -123,7 +123,8 @@ function getPanelCommonCss() {
   return {
     ...shorthands.borderRadius("1rem"),
     ...shorthands.padding("0.5rem"),
-    backgroundColor: tokens.colorBrandBackground2Hover,
+    backgroundColor: tokens.colorNeutralForeground1Static,
+    ...shorthands.border(".1rem", "solid", tokens.colorSubtleBackgroundHover),
   };
 }
 
