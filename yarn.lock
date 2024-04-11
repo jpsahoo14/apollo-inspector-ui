@@ -6858,6 +6858,11 @@ value-or-promise@^1.0.12:
   resolved "https://registry.yarnpkg.com/value-or-promise/-/value-or-promise-1.0.12.tgz#0e5abfeec70148c78460a849f6b003ea7986f15c"
   integrity sha512-Z6Uz+TYwEqE7ZN50gwn+1LCVo9ZVrpxRPOhOLnncYkY1ZzOYtrX8Fwf/rFktZ8R5mJms6EZf5TqNOMeZmnPq9Q==
 
+view-json-react@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/view-json-react/-/view-json-react-1.1.1.tgz#246a472b8ff94cbec8c1b6028061e70ad44a6759"
+  integrity sha512-anozY2/cuIHU7RwJdDFZnBqm7/ulhsKtO/leHt8tQHSNtynl2etisamNNMMXGjH+L6xx+v9mlL8h1vzOzlHWhg==
+
 vite@^4.2.0:
   version "4.5.1"
   resolved "https://registry.yarnpkg.com/vite/-/vite-4.5.1.tgz#3370986e1ed5dbabbf35a6c2e1fb1e18555b968a"
