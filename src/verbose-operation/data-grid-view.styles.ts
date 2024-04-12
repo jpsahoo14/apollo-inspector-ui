@@ -32,6 +32,9 @@ export const useStyles = makeStyles({
   gridrowcell: {
     minWidth: "10px !important",
   },
+  gridRowOdd: {
+    backgroundColor: tokens.colorSubtleBackgroundPressed,
+  },
   gridView: {
     flexGrow: 2,
     display: "flex",

@@ -1,41 +1,36 @@
-Apollo Inspector is a chrome extension designed for the open-source GraphQL client, Apollo Client.
+# Apollo Inspector
 
-This tool is particularly useful for debugging various issues related to GraphQL operations in Apollo Client.
+Apollo Inspector is a Chrome extension designed to facilitate debugging of GraphQL operations within the open-source GraphQL client, Apollo Client.
+
+## Purpose
+
+The tool is indispensable for diagnosing a multitude of issues that may arise during GraphQL operations within Apollo Client. It provides insights into various aspects of operations, aiding in efficient debugging and optimization efforts.
 
 ## What kind of issues can be debugged using the tool
 
-1. Helps figuring out `unwanted operations` being fired in render phase
-2. Help in figuring out the reasons for `multiple re-renders` of the same watch query​
-3. Help figuring out issues with `conflicting queries​`
-4. Shows field name in case `missing field error`
-5. Detailed time info lets you figure out if queries are being fired in `Waterfall model` or not.
-6. Helps figuring out if `data is taking too much time` to get written to cache.
-7. Shows why an operation failed
+1. Identification of unwanted operations triggered during the render phase.
+2. Diagnosis of reasons behind multiple re-renders of the same watch query.
+3. Resolution of issues stemming from conflicting queries.
+4. Presentation of field names in case of missing field errors.
+5. Detailed time information to assess query execution patterns, including adherence to the Waterfall model.
+6. Detection of delays in data being written to the cache.
+7. Insight into the causes of operation failures.
 
-## Built in features
+## Key Features
 
-1. Tracks all operations Query, Mutation, subscription, client.readQuery, client.writeQuery, cache.readQuery, cache.writeQuery, client.readFragment, client.writeFragment, cache.readFragment, cache.writeFragment.
-2. For each operations, below info is available
-  - Operation Name
-  - Operation Type
-  - Failure or Succeded
-  - Fetch policy
-  - Total execution time
-  - Operation queued at time
-  - Size in KB of the result of the Operation
-3. There are filters present using which, one can filter operations list
-  - Operation type filter (Query/Mutation/Subscription)
-  - Results from filter (Cache/Network)
-  - Operation Status (Succeeded/Failed)
-4. It also shows which all operations are responsible for re-rendering of an query in `Affected Queries` view
-5. It allows you copy operations data in JSON format.
+1. Comprehensive Tracking: Tracks all types of operations including Query, Mutation, Subscription, and more.
+2. Detailed Information: Provides essential details for each operation, such as name, type, execution status, fetch policy, execution time, queuing time, and result size.
+3. Filtering Options: Filters available for efficient operation list management based on type, results source, and status.
+4. Affected Queries View: Clear visualization of operations responsible for re-rendering queries.
+5. JSON Data Copy: Ability to copy operation data in JSON format.
+6. Cache: Copy or evict apollo client cache.
 
-## How to use
+## Usage Instructions
 
-To enable the Apollo Inspector extension to work, follow these instructions:
+To enable the Apollo Inspector extension:
+
 1. Single Apollo Client Instance: If your web app has a single instance of Apollo Client, attach it to the `__APOLLO_CLIENT__` variable on the window object.
 
-2. Multiple Apollo Client Instances: If your web app has multiple instances of Apollo Client, create an array (ClientObject[]) containing all these instances and attach it to the `__APOLLO_CLIENTS__` variable on the window object.
+2. Multiple Apollo Client Instances: If your web app has multiple instances of Apollo Client, create an array (ClientObject[]) containing all instances and attach it to the `__APOLLO_CLIENTS__` variable on the window object.
 
-
-For comprehensive guidance on how to use the extension: https://github.com/jpsahoo14/apollo-inspector-ui/blob/main/extension/readme.md
+For comprehensive guidance on how to use the extension, refer to the [official documentation](https://github.com/jpsahoo14/apollo-inspector-ui/blob/main/extension/readme.md).

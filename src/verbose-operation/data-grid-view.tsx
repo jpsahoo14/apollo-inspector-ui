@@ -117,7 +117,9 @@ export const DataGridView = React.memo((props: IDataGridView) => {
                       ? classes.failedRow
                       : isRowSelected
                         ? classes.selectedRow
-                        : null;
+                        : Number(rowId) % 2 !== 0
+                          ? classes.gridRowOdd
+                          : undefined;
 
                 return (
                   <DataGridRow<Item>

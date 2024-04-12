@@ -35,8 +35,32 @@ export enum CopyType {
 }
 
 export interface ICopyData {
-  operations?: IVerboseOperation[];
+  operations?: IGraphqlOperationValue[];
   clientId?: string | null;
+}
+
+export type IGraphqlOperationValue = {
+  affectedQueries: (string | undefined)[];
+  affectedQueriesDueToOptimisticResponse: (string | undefined)[] | undefined;
+  srNo: Pick<IVerboseOperation, "id">["id"];
+} & Pick<
+  IVerboseOperation,
+  | "clientId"
+  | "error"
+  | "fetchPolicy"
+  | "operationName"
+  | "operationString"
+  | "operationType"
+  | "result"
+  | "status"
+  | "timing"
+  | "variables"
+  | "warning"
+>;
+export interface IGraphqlOperationValue1 {
+  affectedQueries: (string | undefined)[];
+  affectedQueriesDueToOptimisticResponse: (string | undefined)[] | undefined;
+  srNo: Pick<IVerboseOperation, "id">["id"];
 }
 
 export type ApolloKeyFields = Record<string, string[]>;
