@@ -3,6 +3,10 @@
 Records all operations being executed via Apollo client in a given time and shows info about each operation.
 This UI is using [apollo-inspector](https://www.npmjs.com/package/apollo-inspector?activeTab=readme) library<br>
 
+This tool can be used from a [chrome](https://chromewebstore.google.com/search/Apollo%20Inspector) or [edge](https://microsoftedge.microsoft.com/addons/detail/apollo-inspector/mddlojejelgjmomllbekfemeccafinok) or [firefox](https://addons.mozilla.org/en-US/firefox/addon/apollo-inspector/) Apollo Inspector extension.
+
+For instruction on how to use it as extension please follow [this documentation.](./extension/readme.md)
+
 ![plot](./docs/operation-tracker-result.png)
 
 ## What kind of issues can be debugged using the tool
