@@ -36,9 +36,7 @@ export const useStyles = makeStyles({
     backgroundColor: tokens.colorSubtleBackgroundPressed,
   },
   searchBar:{
-    width: "5rem",
-    paddingRight: "1rem",
-    display: "inline"
+    paddingRight: "0.5rem",
   },
   gridView: {
     flexGrow: 2,
@@ -118,5 +116,6 @@ export type IClasses = Record<
   | "gridWrapper"
   | "filterViewWrapper"
   | "filtersButton",
+  | "searchBar",
   string
 >;
