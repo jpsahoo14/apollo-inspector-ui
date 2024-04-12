@@ -1,5 +1,5 @@
 export * from "./src/operations-tracker-container";
 export * from "./src/types";
 
-import { OperationsTrackerContainer } from "./src/operations-tracker-container";
-export default OperationsTrackerContainer;
+import { OperationsTrackerContainer as OperationsTracker } from "./src/operations-tracker-container";
+export default OperationsTracker;
