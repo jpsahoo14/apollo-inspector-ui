@@ -2,8 +2,6 @@ import React, { useCallback } from "react";
 import { Button } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
-import { Search } from "../search/search";
-import { debounce } from "lodash-es";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { TrackerStoreContext, ISetState, IErrorType } from "../store";
@@ -14,7 +12,6 @@ import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 export interface IOperationsTrackerHeaderProps {
-  setSearchText: (text: string) => void;
   operationsState: IOperationsReducerState;
   onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
   onRecordStop: () => void;
@@ -29,7 +26,6 @@ export const OperationsTrackerHeader = React.memo(
       setOpenDescription,
       startRecording,
       stopRecording,
-      debouncedFilter,
       clearApolloOperations,
       recordingState,
       operationsState,
@@ -53,9 +49,6 @@ export const OperationsTrackerHeader = React.memo(
                 Clear All
               </Button>
             )}
-          </div>
-          <div>
-            <Search onSearchChange={debouncedFilter} />
           </div>
         </div>
         {openDescription && (
@@ -183,7 +176,7 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
 };
 
 const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
-  const { setSearchText, operationsState, onCopy } = props;
+  const { operationsState, onCopy } = props;
   const store = React.useContext(TrackerStoreContext);
   const [openDescription, setOpenDescription] = useStore(
     store,
@@ -224,20 +217,11 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
 
   const showClear = !!apollOperationsData?.operations;
 
-  const debouncedFilter = React.useCallback(
-    debounce((e: React.SyntheticEvent) => {
-      const input = e.target as HTMLInputElement;
-      setSearchText(input.value);
-    }, 200),
-    [setSearchText]
-  );
-
   return {
     openDescription,
     setOpenDescription,
     startRecording,
     stopRecording,
-    debouncedFilter,
     showClear,
     clearApolloOperations,
     recordingState,

@@ -11,14 +11,28 @@ import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
-import { LineHorizontal3Regular } from "@fluentui/react-icons";
+import { DataFunnel20Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
 import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
+import { Search } from "../search/search";
+import { debounce } from "lodash-es";
+import {
+  OperationReducerActionEnum,
+} from "../operations-tracker-container-helper";
 
 export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
+  const setSearchText = React.useCallback(
+    (text: string) => {
+      props.dispatchOperationsState({
+        type: OperationReducerActionEnum.UpdateSearchText,
+        value: text,
+      });
+    },
+    [props.dispatchOperationsState]
+  );
   const {
     gridHeight,
     handleToggleFilters,
@@ -34,6 +48,14 @@ export const DataGridView = React.memo((props: IDataGridView) => {
     onClick,
   } = useDataGridView(props);
 
+  const debouncedFilter = React.useCallback(
+    debounce((e: React.SyntheticEvent) => {
+      const input = e.target as HTMLInputElement;
+      setSearchText(input.value);
+    }, 200),
+    [setSearchText]
+  );
+
   return (
     <div className={classes.wholeBody}>
       {renderFilterAndColumnOptionsButton(
@@ -41,6 +63,7 @@ export const DataGridView = React.memo((props: IDataGridView) => {
         handleToggleFilters,
         operationsState
       )}
+      <Search onSearchChange={debouncedFilter} />
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
           showFilters,
@@ -131,7 +154,7 @@ const renderFilterAndColumnOptionsButton = (
 ) => (
   <div className={classes.headers}>
     <Button
-      icon={<LineHorizontal3Regular />}
+      icon={<DataFunnel20Regular />}
       onClick={handleToggleFilters}
       className={classes.filtersButton}
     >

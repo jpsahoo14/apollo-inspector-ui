@@ -47,7 +47,6 @@ export const OperationsTrackerContainerInner = (
     openDescription,
     operationsState,
     dispatchOperationsState,
-    setSearchText,
   } = useOperationsTrackerContainer(props);
 
   const mainSlot = useMainSlot(
@@ -69,7 +68,6 @@ export const OperationsTrackerContainerInner = (
           )}
         >
           <OperationsTrackerHeader
-            setSearchText={setSearchText}
             operationsState={operationsState}
             onRecordStart={onRecordStart}
             onRecordStop={onRecordStop}
@@ -184,21 +182,12 @@ const useOperationsTrackerContainer = (props: IOperationsTrackerContainer) => {
 
   useSetSelectedApolloClient(props);
 
-  const setSearchText = React.useCallback(
-    (text: string) => {
-      dispatchOperationsState({
-        type: OperationReducerActionEnum.UpdateSearchText,
-        value: text,
-      });
-    },
-    [dispatchOperationsState]
-  );
+
 
   return {
     openDescription,
     operationsState,
     dispatchOperationsState,
-    setSearchText,
   };
 };
 
