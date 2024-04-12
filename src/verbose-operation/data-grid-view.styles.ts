@@ -35,6 +35,11 @@ export const useStyles = makeStyles({
   gridRowOdd: {
     backgroundColor: tokens.colorSubtleBackgroundPressed,
   },
+  searchBar:{
+    width: "5rem",
+    paddingRight: "1rem",
+    display: "inline"
+  },
   gridView: {
     flexGrow: 2,
     display: "flex",

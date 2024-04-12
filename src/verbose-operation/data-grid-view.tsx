@@ -11,13 +11,13 @@ import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
-import { DataFunnel20Regular } from "@fluentui/react-icons";
+import { Filter20Filled } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
 import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { Search } from "../search/search";
-import { debounce } from "lodash-es";
+import { debounce, DebouncedFunc } from "lodash-es";
 import {
   OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
@@ -61,9 +61,9 @@ export const DataGridView = React.memo((props: IDataGridView) => {
       {renderFilterAndColumnOptionsButton(
         classes,
         handleToggleFilters,
-        operationsState
+        operationsState,
+        debouncedFilter
       )}
-      <Search onSearchChange={debouncedFilter} />
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
           showFilters,
@@ -152,11 +152,16 @@ export const DataGridView = React.memo((props: IDataGridView) => {
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
   handleToggleFilters: () => void,
-  operationsState: IOperationsReducerState
+  operationsState: IOperationsReducerState,
+  debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>
 ) => (
+
   <div className={classes.headers}>
+    <div className={classes.searchBar}>
+      <Search onSearchChange={debouncedFilter} />
+    </div>
     <Button
-      icon={<DataFunnel20Regular />}
+      icon={<Filter20Filled />}
       onClick={handleToggleFilters}
       className={classes.filtersButton}
     >

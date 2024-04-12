@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Button } from "@fluentui/react-components";
+import { Button, Link } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { CopyButton } from "./operations-copy-button";
@@ -53,8 +53,11 @@ export const OperationsTrackerHeader = React.memo(
         </div>
         {openDescription && (
           <div className={classes.description}>
-            It monitors changes in cache, fired mutations and
-            activated/deactivated queries.
+            <span>
+                It monitors changes in cache, fired mutations and
+                 activated/deactivated queries.
+            </span>
+            <Link href="https://github.com/jpsahoo14/apollo-inspector-ui" inline rel="noopener noreferrer"> Read Me </Link>
           </div>
         )}
       </>
