@@ -57,7 +57,7 @@ export const OperationsTrackerHeader = React.memo(
                 It monitors changes in cache, fired mutations and
                  activated/deactivated queries.
             </span>
-            <Link href="https://github.com/jpsahoo14/apollo-inspector-ui" inline rel="noopener noreferrer"> Read Me </Link>
+            <Link href="https://github.com/jpsahoo14/apollo-inspector-ui/blob/main/extension/readme.md" inline rel="noopener noreferrer"> Read Me </Link>
           </div>
         )}
       </>
