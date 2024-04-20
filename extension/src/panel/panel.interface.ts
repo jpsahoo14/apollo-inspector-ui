@@ -1,6 +1,8 @@
 import React from "react";
 import browser from "webextension-polyfill";
 import { CustomEventTarget } from "../utils";
+import { IVerboseOperation } from "apollo-inspector";
+
 export interface IPanelContext {
   tabId: number;
   backgroundConnection: browser.Runtime.Port;
@@ -10,4 +12,9 @@ export interface IPanelContext {
   resetStore: () => void;
   initPanel: () => void;
   cleanUpsRef: React.MutableRefObject<(() => void)[]>;
+}
+
+export interface IDataViewMap {
+  operationsMap: Map<number, IVerboseOperation>;
+  verboseOperationsMap: Map<number, IVerboseOperation>;
 }
