@@ -125,7 +125,6 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
     const observable = onRecordStart(selectedApolloClientIds);
     const subscription = observable.subscribe({
       next: (data: IDataView) => {
-        // const newData = cloneDeep(data);
         setApolloOperationsData(data);
         setLoader({ loading: false, message: "" });
       },

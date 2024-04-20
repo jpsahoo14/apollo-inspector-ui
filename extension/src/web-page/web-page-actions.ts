@@ -14,7 +14,7 @@ import {
 } from "../utils";
 import type { Cache } from "@apollo/client/cache";
 import { IWebpageContext } from "./web-page.interface";
-import { ApolloInspector, IApolloClient, IDataView } from "apollo-inspector";
+import { ApolloInspector, IDataView } from "apollo-inspector";
 import { getApolloClientsObj } from "./web-page-utils";
 import { ApolloClient, InMemoryCache, ObservableQuery } from "@apollo/client";
 import { DocumentNode, VariableDefinitionNode } from "graphql";
@@ -224,13 +224,18 @@ export const getStartRecordingAction = (context: IWebpageContext) => {
 
     const subscription = observable.subscribe({
       next: (data: IDataView) => {
-        sendMessageViaEventTarget(webpage, {
-          destinationName: Context.PANEL_PAGE,
-          action: WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
-          tabId,
-          callerName: Context.WEB_PAGE,
-          data,
-        });
+        if (
+          data.operations?.length !== 0 ||
+          data.verboseOperations?.length !== 0
+        ) {
+          sendMessageViaEventTarget(webpage, {
+            destinationName: Context.PANEL_PAGE,
+            action: WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
+            tabId,
+            callerName: Context.WEB_PAGE,
+            data,
+          });
+        }
       },
       error: () => {},
       complete: () => {},
