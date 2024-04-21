@@ -22,6 +22,10 @@ export const useStyles = makeStyles({
     maxWidth: "100%",
     justifyContent: "space-between",
   },
+  divider: {
+    width: "1rem",
+    maxWidth: "1rem",
+  },
   leftPane: {
     display: "flex",
     flexDirection: "column",
@@ -49,16 +53,21 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     height: "100%",
-    width: "100%",
   },
   rightPaneHeader: {
     display: "flex",
     ...shorthands.padding(".5rem", "0.5rem"),
+    backgroundColor: tokens.colorSubtleBackgroundHover,
+    minHeight: "2rem",
+    ...shorthands.padding("1rem"),
   },
   selectedTab: {
     backgroundColor: tokens.colorBrandBackground2Hover,
     "&:hover": {
       backgroundColor: tokens.colorBrandBackground2Hover,
     },
+  },
+  tabListItem: {
+    height: "2.5rem",
   },
 });

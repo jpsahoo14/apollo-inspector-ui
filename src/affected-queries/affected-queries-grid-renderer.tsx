@@ -15,7 +15,7 @@ import {
   DataGridHeader,
   DataGridCell,
   DataGridHeaderCell,
-} from "@fluentui/react-data-grid-react-window";
+} from "@fluentui-contrib/react-data-grid-react-window";
 import { useStyles } from "./affected-queries-grid-renderer-styles";
 import { debounce } from "lodash-es";
 
@@ -62,24 +62,36 @@ export const AffectedQueriesGridRenderers = (
         resizableColumns
         columnSizingOptions={{
           operationName: { minWidth: 330, defaultWidth: 350 },
-          id: { minWidth: 20, defaultWidth: 20 },
+          id: { minWidth: 30, defaultWidth: 50 },
         }}
       >
         <DataGridHeader style={{ paddingRight: scrollbarWidth }}>
           <DataGridRow>
-            {({ renderHeaderCell }) => (
-              <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
-            )}
+            {({ renderHeaderCell }) => {
+              return (
+                <DataGridHeaderCell className={classes.headerCellBackground}>
+                  {renderHeaderCell()}
+                </DataGridHeaderCell>
+              );
+            }}
           </DataGridRow>
         </DataGridHeader>
         <DataGridBody<IDueToOperation> itemSize={40} height={gridHeight}>
-          {({ item, rowId }, style) => (
-            <DataGridRow<IDueToOperation> key={rowId} style={style}>
-              {({ renderCell }) => (
-                <DataGridCell>{renderCell(item)}</DataGridCell>
-              )}
-            </DataGridRow>
-          )}
+          {({ item, rowId }, style) => {
+            const gridRowClassName =
+              Number(rowId) % 2 !== 0 ? classes.gridRowOdd : undefined;
+            return (
+              <DataGridRow<IDueToOperation>
+                key={rowId}
+                style={style}
+                className={gridRowClassName}
+              >
+                {({ renderCell }) => (
+                  <DataGridCell>{renderCell(item)}</DataGridCell>
+                )}
+              </DataGridRow>
+            );
+          }}
         </DataGridBody>
       </DataGrid>
     </div>
