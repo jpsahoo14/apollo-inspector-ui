@@ -82,12 +82,14 @@ export const FilterView = React.memo((props: IFilterView) => {
   const onResultChange = useOnResultChange(
     resultFromFilter,
     setResultFromFilter,
-    setFilters
+    setFilters,
+    filters
   );
   const onStatusChange = useOnStatusChange(
     statusFilter,
     setStatusFilter,
-    setFilters
+    setFilters,
+    filters
   );
 
   const statues = Object.entries(OperationStatus)
@@ -100,6 +102,7 @@ export const FilterView = React.memo((props: IFilterView) => {
           value={checkboxValue}
           label={checkboxValue}
           key={`status-${checkboxValue}`}
+          defaultChecked={filters.statuses.includes(checkboxValue)}
         />
       );
     });
@@ -112,6 +115,7 @@ export const FilterView = React.memo((props: IFilterView) => {
         value={checkboxValue}
         label={checkboxValue}
         key={`result-${checkboxValue}`}
+        defaultChecked={filters.results.includes(checkboxValue)}
       />
     );
   });
@@ -128,18 +132,21 @@ export const FilterView = React.memo((props: IFilterView) => {
 const useOperationTypesCheckBox = ({
   operationTypesFilter,
   setOperationTypesFilter,
+  filters,
   setFilters,
 }: IUseOperationTypesCheckBoxParams) => {
   const onOperationTypeChange = useOnOperationTypeFilterChange(
     operationTypesFilter,
     setOperationTypesFilter,
-    setFilters
+    setFilters,
+    filters
   );
 
   const onSubTypeChange = useOnSubTypeChange({
     operationTypesFilter,
     setFilters,
     setOperationTypesFilter,
+    filters,
   });
 
   const operationTypes = React.useMemo(() => {
@@ -166,6 +173,7 @@ const useOperationTypesCheckBox = ({
               label={checkboxValue}
               checked={!!operationTypesFilter?.includes(checkboxValue)}
               key={`type-${checkboxValue}`}
+              defaultChecked={filters?.types?.includes(checkboxValue)}
             />
             {checkboxValue.includes("Query") && (
               <div
@@ -195,6 +203,7 @@ const useOperationTypesCheckBox = ({
                         label={value}
                         value={value}
                         checked={!!operationTypesFilter?.includes(value)}
+                        defaultChecked={filters?.types?.includes(value)}
                         onChange={onSubTypeChange}
                       />
                     );
@@ -213,19 +222,21 @@ interface IUseOnSubTypeChange {
   operationTypesFilter: string[];
   setFilters: (input: React.SetStateAction<IFilterSet>) => void;
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>;
+  filters?: IFilterSet;
 }
 
 const useOnSubTypeChange = ({
   operationTypesFilter,
   setFilters,
   setOperationTypesFilter,
+  filters,
 }: IUseOnSubTypeChange) =>
   React.useCallback(
     (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = operationTypesFilter.concat([]);
+      let arr = operationTypesFilter.concat(filters?.types || []);
 
       if (checked) {
         !arr.includes(value) && arr.push(value);
@@ -250,14 +261,15 @@ const useOnSubTypeChange = ({
 const useOnStatusChange = (
   statusFilter: string[],
   setStatusFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (input: React.SetStateAction<IFilterSet>) => void
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void,
+  filters: IFilterSet
 ) =>
   React.useCallback(
     (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = statusFilter.concat([]);
+      let arr = Array.from(new Set([...statusFilter, ...filters.statuses])); //statusFilter.concat(filters.statuses || []);
       if (checked) {
         arr.push(value);
       } else {
@@ -278,14 +290,16 @@ const useOnStatusChange = (
 const useOnResultChange = (
   resultFromFilter: string[],
   setResultFromFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (input: React.SetStateAction<IFilterSet>) => void
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void,
+  filters: IFilterSet
 ) =>
   React.useCallback(
     (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = resultFromFilter.concat([]);
+      let arr = Array.from(new Set([...resultFromFilter, ...filters.results])); //resultFromFilter.concat(filters.results || []);
+      console.log({ resultFromFilter, filters, arr });
       if (checked) {
         arr.push(value);
       } else {
@@ -298,21 +312,26 @@ const useOnResultChange = (
           results: arr,
         };
       });
+      console.log({ arr, filters });
     },
-    [resultFromFilter, setResultFromFilter]
+    [resultFromFilter, setResultFromFilter, filters]
   );
 
 const useOnOperationTypeFilterChange = (
   operationTypesFilter: string[],
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>,
-  setFilters: (input: React.SetStateAction<IFilterSet>) => void
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void,
+  filters: IFilterSet
 ) =>
   React.useCallback(
     (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let typesFilter = operationTypesFilter.concat([]);
+      console.log({ operationTypesFilter, filters });
+      let typesFilter = Array.from(
+        new Set([...operationTypesFilter, ...filters.types])
+      ); //operationTypesFilter.concat(filters.types || []);
       if (checked) {
         !typesFilter.includes(value) && typesFilter.push(value);
         if (value === OperationType.Query) {
@@ -346,6 +365,7 @@ const useOnOperationTypeFilterChange = (
         }
       }
       setOperationTypesFilter(typesFilter);
+      console.log({ typesFilter });
 
       setFilters((prevState: IFilterSet) => {
         return {
@@ -353,6 +373,7 @@ const useOnOperationTypeFilterChange = (
           types: typesFilter,
         };
       });
+      console.log({ filters });
     },
     [operationTypesFilter, setOperationTypesFilter, setFilters]
   );
