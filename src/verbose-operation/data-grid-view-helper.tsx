@@ -21,7 +21,7 @@ import {
   BookOpenRegular,
   BookLetterRegular,
 } from "@fluentui/react-icons";
-import { sampleColumnOptions } from "./column-options-view";
+import { SAMPLE_COLUMN_OPTIONS } from "./column-options-view";
 import {
   ColumnName,
   CustomColumnWidthOptions,
@@ -31,7 +31,7 @@ import {
 export const columnSizingOptions = (selectedColumnOptions: string[]) => {
   const columnSizing: { [key: ColumnName]: CustomColumnWidthOptions } = {};
   selectedColumnOptions?.map(function (element) {
-    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
+    const val = SAMPLE_COLUMN_OPTIONS.filter((obj) => obj.key === element)[0];
     columnSizing[val.key] = val.size;
   });
   return columnSizing;
@@ -149,7 +149,7 @@ export const compareString = (a: string | undefined, b: string | undefined) => {
 const getSelectedColumns = (selectedColumnOptions: string[]) => {
   const tableColumn: TableColumnDefinition<Item>[] = [];
   selectedColumnOptions?.map(function (element) {
-    const val = sampleColumnOptions.filter((obj) => obj.key === element)[0];
+    const val = SAMPLE_COLUMN_OPTIONS.filter((obj) => obj.key === element)[0];
     !tableColumn.some((obj) => obj.columnId === val.key) &&
       tableColumn.push(
         createTableColumn<Item>({

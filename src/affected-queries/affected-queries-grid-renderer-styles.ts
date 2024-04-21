@@ -6,7 +6,8 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    ...shorthands.margin("2rem"),
+    minWidth: 0,
+    ...shorthands.flex(1),
   },
   gridRowOdd: {
     backgroundColor: tokens.colorSubtleBackgroundPressed,

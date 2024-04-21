@@ -22,10 +22,6 @@ import {
   sizeInBytes,
 } from "../utils/apollo-operations-tracker-utils";
 import { DocumentNode } from "graphql";
-import {
-  IOperationsAction as IOperationsReducerActions,
-  OperationReducerActionEnum,
-} from "../operations-tracker-container-helper";
 import { Dismiss16Filled, Copy16Regular } from "@fluentui/react-icons";
 import copy from "copy-to-clipboard";
 import { JsonViewer } from "view-json-react";
@@ -34,11 +30,11 @@ const spaceForStringify = 2;
 
 interface IVerboseOperationViewProps {
   operation: IVerboseOperation | undefined | null;
-  dispatchOperationsState: React.Dispatch<IOperationsReducerActions>;
+  closeVerboseOperationView: () => void;
 }
 
 export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
-  const { operation, dispatchOperationsState } = props;
+  const { operation, closeVerboseOperationView } = props;
 
   const classes = useStyles();
 
@@ -51,11 +47,8 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
   }, [operation, classes]);
 
   const closePreview = React.useCallback(() => {
-    dispatchOperationsState({
-      type: OperationReducerActionEnum.UpdateSelectedOperation,
-      value: undefined,
-    });
-  }, [dispatchOperationsState]);
+    closeVerboseOperationView();
+  }, [closeVerboseOperationView]);
 
   const copyOperation = React.useCallback(() => {
     const copyOperationData = JSON.stringify(operation);

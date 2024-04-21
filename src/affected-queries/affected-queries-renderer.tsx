@@ -9,14 +9,18 @@ import {
   Tooltip,
   Title1,
   mergeClasses,
-  Subtitle2Stronger,
   Subtitle2,
   Divider,
+  Subtitle2Stronger,
 } from "@fluentui/react-components";
 import { AffectedQueriesGridRenderers } from "./affected-queries-grid-renderer";
-import { IDueToOperation } from "apollo-inspector";
-import { useStyles } from "./affected-queries-renderer-styles";
+import { IDueToOperation, IVerboseOperation } from "apollo-inspector";
+import { useStyles, IClasses } from "./affected-queries-renderer-styles";
 import { Info20Regular } from "@fluentui/react-icons";
+import { VerboseOperationView } from "../verbose-operation/verbose-operation-view";
+import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
+import { TrackerStoreContext } from "../store";
 
 export interface IAffectedQueriesRendererProps {
   listOfItems: any[];
@@ -28,16 +32,23 @@ export interface IAffectedQueriesRendererProps {
 export const AffectedQueriesRenderer = (
   props: IAffectedQueriesRendererProps
 ) => {
-  const { listOfItems, gridItems, selectedListItem, onTabSelect } = props;
+  const { listOfItems } = props;
   const classes = useStyles();
 
   if (listOfItems.length === 0) {
     return (
-      <>
-        <Title1>Nothing to show here</Title1>
-      </>
+      <div className={classes.emptyPage}>
+        <Title1>No re-rendered queries</Title1>
+      </div>
     );
   }
+
+  return <AffectedQueriesInternal {...props} />;
+};
+
+const AffectedQueriesInternal = (props: IAffectedQueriesRendererProps) => {
+  const { listOfItems, gridItems, selectedListItem, onTabSelect } = props;
+  const classes = useStyles();
 
   const tabItems = listOfItems.map((element: any) => {
     const tabItemClasses = mergeClasses(
@@ -64,47 +75,80 @@ export const AffectedQueriesRenderer = (
 };
 
 const renderRightPane = (
-  classes: Record<
-    | "root"
-    | "selectedTab"
-    | "infoButton"
-    | "leftPaneHeader"
-    | "leftPane"
-    | "rightPane"
-    | "rightPaneHeader"
-    | "tabListItem",
-    string
-  >,
+  classes: Record<IClasses, string>,
   selectedListItem: string,
   gridItems: IDueToOperation[] | undefined
-) => (
-  <div className={classes.rightPane}>
-    <div className={classes.rightPaneHeader}>
-      <Subtitle2Stronger>
-        {`${selectedListItem}                            `}
-        <Subtitle2>
-          {" query is re-rendered due to following operations in the table"}
-        </Subtitle2>
-      </Subtitle2Stronger>
+) => {
+  const onSelectGridCell = useOnSelectGridCell();
+  const store = React.useContext(TrackerStoreContext);
+  const { selectedOperationInAffectedQueriesView } = useStore(
+    store,
+    useShallow((store) => ({
+      selectedOperationInAffectedQueriesView:
+        store.selectedOperationInAffectedQueriesView,
+    }))
+  );
+  const affectedQueriesGridRenderersClasses =
+    getAffectedQueriesGridRenderersClasses(
+      selectedOperationInAffectedQueriesView,
+      classes
+    );
+  return (
+    <div className={classes.rightPane}>
+      <div className={classes.rightPaneHeader}>
+        <Subtitle2Stronger>
+          {`${selectedListItem}                            `}
+          <Subtitle2>
+            {" query is re-rendered due to following operations in the table"}
+          </Subtitle2>
+        </Subtitle2Stronger>
+      </div>
+      <div className={affectedQueriesGridRenderersClasses}>
+        <AffectedQueriesGridRenderers
+          items={gridItems}
+          onSelectGridCell={onSelectGridCell}
+        />
+        {renderVerboseOperationView(classes)}
+      </div>
     </div>
-    <AffectedQueriesGridRenderers items={gridItems} />
-  </div>
-);
+  );
+};
+
+const renderVerboseOperationView = (classes: Record<IClasses, string>) => {
+  const store = React.useContext(TrackerStoreContext);
+  const {
+    selectedOperationInAffectedQueriesView,
+    setSelectedOperationInAffectedQueriesView,
+  } = useStore(
+    store,
+    useShallow((store) => ({
+      selectedOperationInAffectedQueriesView:
+        store.selectedOperationInAffectedQueriesView,
+      setSelectedOperationInAffectedQueriesView:
+        store.setSelectedOperationInAffectedQueriesView,
+    }))
+  );
+
+  const closeVerboseOperationView = React.useCallback(() => {
+    setSelectedOperationInAffectedQueriesView(null);
+  }, [setSelectedOperationInAffectedQueriesView]);
+
+  if (!selectedOperationInAffectedQueriesView) {
+    return null;
+  }
+
+  return (
+    <div className={classes.verboseOperationViewWrapper}>
+      <VerboseOperationView
+        operation={selectedOperationInAffectedQueriesView}
+        closeVerboseOperationView={closeVerboseOperationView}
+      />
+    </div>
+  );
+};
 
 const renderLeftPane = (
-  classes: Record<
-    | "root"
-    | "leftPaneHeader"
-    | "leftPane"
-    | "infoButton"
-    | "rightPane"
-    | "rightPaneHeader"
-    | "selectedTab"
-    | "tabListItem"
-    | "divider"
-    | "leftPaneWrapper",
-    string
-  >,
+  classes: Record<IClasses, string>,
   selectedListItem: string,
   onTabSelect: (event: SelectTabEvent, data: SelectTabData) => void,
   tabItems: React.JSX.Element[]
@@ -133,3 +177,38 @@ const renderLeftPane = (
     </TabList>
   </div>
 );
+
+const useOnSelectGridCell = () => {
+  const store = React.useContext(TrackerStoreContext);
+  const { apolloOperationsData, setSelectedOperationInAffectedQueriesView } =
+    useStore(
+      store,
+      useShallow((store) => ({
+        apolloOperationsData: store.apolloOperationsData,
+        setSelectedOperationInAffectedQueriesView:
+          store.setSelectedOperationInAffectedQueriesView,
+      }))
+    );
+
+  const onSelectGridCell = React.useCallback(
+    (item: IDueToOperation) => {
+      const operation = apolloOperationsData?.operations?.find(
+        (op) => op.id === item.id
+      );
+      setSelectedOperationInAffectedQueriesView(operation);
+    },
+    [apolloOperationsData, setSelectedOperationInAffectedQueriesView]
+  );
+  return onSelectGridCell;
+};
+
+const getAffectedQueriesGridRenderersClasses = (
+  selectedOperationInAffectedQueriesView: IVerboseOperation | null | undefined,
+  classes: Record<IClasses, string>
+) =>
+  selectedOperationInAffectedQueriesView
+    ? classes.affectedQueriesGridWrapper
+    : mergeClasses(
+        classes.affectedQueriesGridWrapper,
+        classes.expandToAvailableSpace
+      );

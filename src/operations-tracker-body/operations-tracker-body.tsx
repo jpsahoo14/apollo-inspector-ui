@@ -42,11 +42,11 @@ interface ITabHeader {
   key: TabHeaders;
   name: string;
 }
-const tabHeaders: ITabHeader[] = [
+const Tab_Headers: ITabHeader[] = [
   { key: TabHeaders.AllOperationsView, name: "All operations" },
   { key: TabHeaders.OperationsView, name: "Only Cache operations" },
   { key: TabHeaders.VerboseOperationView, name: "Operations" },
-  { key: TabHeaders.AffectedQueriesView, name: "Affected Queries" },
+  { key: TabHeaders.AffectedQueriesView, name: "Re-rendered Queries" },
   { key: TabHeaders.ConfigPage, name: "Configuration" },
 ];
 
@@ -73,7 +73,7 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
 
   const classes = useStyles();
   const updatedTabItems = React.useMemo(() => {
-    const newTabHeaders = tabHeaders.filter(
+    const newTabHeaders = Tab_Headers.filter(
       (tabHeader) =>
         tabHeader.key === TabHeaders.VerboseOperationView ||
         tabHeader.key === TabHeaders.AffectedQueriesView ||
@@ -230,8 +230,8 @@ const getTabHeaderName = (
   data: IDataView
 ) => {
   const lengthOfObject = data.affectedQueriesOperations
-  ? Object.keys(data.affectedQueriesOperations).length
-  : 0;
+    ? Object.keys(data.affectedQueriesOperations).length
+    : 0;
   switch (item.key) {
     case TabHeaders.VerboseOperationView: {
       return `${item.name} ${`(${getCount(item.key, state)} of ${data.operations

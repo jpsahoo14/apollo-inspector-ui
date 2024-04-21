@@ -26,6 +26,21 @@ export const useStyles = makeStyles({
     width: "1rem",
     maxWidth: "1rem",
   },
+  expandToAvailableSpace: {
+    ...shorthands.flex(1),
+  },
+  verboseOperationViewWrapper: {
+    display: "flex",
+    minHeight: "0",
+    minWidth: 0,
+    flexBasis: "50%",
+  },
+  emptyPage: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  },
   leftPane: {
     display: "flex",
     flexDirection: "column",
@@ -53,7 +68,16 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     height: "100%",
+    ...shorthands.flex(1),
   },
+  affectedQueriesGridWrapper: {
+    display: "flex",
+    minHeight: 0,
+    minWidth: 0,
+    ...shorthands.margin("1rem"),
+    height: "100%",
+  },
+
   rightPaneHeader: {
     display: "flex",
     ...shorthands.padding(".5rem", "0.5rem"),
@@ -71,3 +95,17 @@ export const useStyles = makeStyles({
     height: "2.5rem",
   },
 });
+
+export type IClasses =
+  | "root"
+  | "selectedTab"
+  | "infoButton"
+  | "leftPaneHeader"
+  | "leftPane"
+  | "rightPane"
+  | "rightPaneHeader"
+  | "affectedQueriesGridWrapper"
+  | "tabListItem"
+  | "verboseOperationViewWrapper"
+  | "expandToAvailableSpace"
+  | "emptyPage";

@@ -18,16 +18,18 @@ import {
 } from "@fluentui-contrib/react-data-grid-react-window";
 import { useStyles } from "./affected-queries-grid-renderer-styles";
 import { debounce } from "lodash-es";
+import { ColumnName } from "../verbose-operation/data-grid.interface";
 
 const ItemSize = 40;
 export interface IAffectedQueriesGridRenderers {
   items: IDueToOperation[] | undefined;
+  onSelectGridCell: (item: IDueToOperation) => void;
 }
 
 export const AffectedQueriesGridRenderers = (
   props: IAffectedQueriesGridRenderers
 ) => {
-  const { items } = props;
+  const { items, onSelectGridCell } = props;
   if (!items) {
     return null;
   }
@@ -61,8 +63,8 @@ export const AffectedQueriesGridRenderers = (
         focusMode="cell"
         resizableColumns
         columnSizingOptions={{
-          operationName: { minWidth: 330, defaultWidth: 350 },
-          id: { minWidth: 30, defaultWidth: 50 },
+          [ColumnName.Name]: { minWidth: 10, defaultWidth: 300 },
+          [ColumnName.ID]: { minWidth: 10, defaultWidth: 50 },
         }}
       >
         <DataGridHeader style={{ paddingRight: scrollbarWidth }}>
@@ -86,9 +88,12 @@ export const AffectedQueriesGridRenderers = (
                 style={style}
                 className={gridRowClassName}
               >
-                {({ renderCell }) => (
-                  <DataGridCell>{renderCell(item)}</DataGridCell>
-                )}
+                {({ renderCell }) => {
+                  const cb = () => onSelectGridCell(item);
+                  return (
+                    <DataGridCell onClick={cb}>{renderCell(item)}</DataGridCell>
+                  );
+                }}
               </DataGridRow>
             );
           }}
@@ -100,31 +105,19 @@ export const AffectedQueriesGridRenderers = (
 
 const columns: TableColumnDefinition<IDueToOperation>[] = [
   createTableColumn<IDueToOperation>({
-    columnId: "id",
+    columnId: ColumnName.ID,
     compare: (a, b) => {
       return a.id - b.id;
     },
     renderHeaderCell: () => {
-      return <Text weight="bold">{"Id"}</Text>;
+      return <Text weight="bold">{"Sr No."}</Text>;
     },
     renderCell: (item) => {
       return <TableCellLayout>{item.id}</TableCellLayout>;
     },
   }),
   createTableColumn({
-    columnId: "Type",
-    compare: (a, b) => {
-      return a.operationType.localeCompare(b.operationType);
-    },
-    renderHeaderCell: () => {
-      return <Text weight="bold">{"Type"}</Text>;
-    },
-    renderCell: (item) => {
-      return <TableCellLayout>{item.operationType}</TableCellLayout>;
-    },
-  }),
-  createTableColumn({
-    columnId: "operationName",
+    columnId: ColumnName.Name,
     compare: (a, b) => {
       if (a.operationName) {
         return a.operationName?.localeCompare(b.operationName || "");
@@ -137,6 +130,18 @@ const columns: TableColumnDefinition<IDueToOperation>[] = [
     },
     renderCell: (item) => {
       return <TableCellLayout truncate>{item.operationName}</TableCellLayout>;
+    },
+  }),
+  createTableColumn({
+    columnId: ColumnName.Type,
+    compare: (a, b) => {
+      return a.operationType.localeCompare(b.operationType);
+    },
+    renderHeaderCell: () => {
+      return <Text weight="bold">{"Type"}</Text>;
+    },
+    renderCell: (item) => {
+      return <TableCellLayout>{item.operationType}</TableCellLayout>;
     },
   }),
 ];

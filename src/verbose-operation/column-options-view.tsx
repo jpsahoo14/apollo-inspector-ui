@@ -23,7 +23,7 @@ import { IColumnOptions, ColumnName } from "./data-grid.interface";
 import { ToolboxRegular } from "@fluentui/react-icons";
 import { compareString } from "./data-grid-view-helper";
 
-export const sampleColumnOptions: IColumnOptions[] = [
+export const SAMPLE_COLUMN_OPTIONS: IColumnOptions[] = [
   {
     key: ColumnName.ID,
     header: "Sr No.",
@@ -131,7 +131,7 @@ export const ColumnOptions = () => {
     setSelectedColumnOptions
   );
 
-  const columnOptionCheckbox = Object.entries(sampleColumnOptions).map(
+  const columnOptionCheckbox = Object.entries(SAMPLE_COLUMN_OPTIONS).map(
     (value, key) => {
       const checkboxValue = value[1];
       return (
