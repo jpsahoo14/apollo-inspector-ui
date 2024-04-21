@@ -82,11 +82,13 @@ export const FilterView = React.memo((props: IFilterView) => {
   const onResultChange = useOnResultChange(
     resultFromFilter,
     setResultFromFilter,
+    filters,
     setFilters
   );
   const onStatusChange = useOnStatusChange(
     statusFilter,
     setStatusFilter,
+    filters,
     setFilters
   );
 
@@ -100,6 +102,7 @@ export const FilterView = React.memo((props: IFilterView) => {
           value={checkboxValue}
           label={checkboxValue}
           key={`status-${checkboxValue}`}
+          defaultChecked={filters?.statuses.includes(checkboxValue)}
         />
       );
     });
@@ -112,8 +115,16 @@ export const FilterView = React.memo((props: IFilterView) => {
         value={checkboxValue}
         label={checkboxValue}
         key={`result-${checkboxValue}`}
+        defaultChecked={filters?.results.includes(checkboxValue)}
       />
     );
+  });
+
+  console.log({
+    filters,
+    operationTypesFilter,
+    resultFromFilter,
+    statusFilter,
   });
 
   return (
@@ -250,6 +261,7 @@ const useOnSubTypeChange = ({
 const useOnStatusChange = (
   statusFilter: string[],
   setStatusFilter: React.Dispatch<React.SetStateAction<string[]>>,
+  filters: IFilterSet,
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
@@ -257,8 +269,8 @@ const useOnStatusChange = (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = statusFilter.concat([]);
-      if (checked) {
+      let arr = Array.from(new Set([...statusFilter, ...filters.statuses]));
+      if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
       } else {
         arr = arr.filter((x) => x !== value);
@@ -272,12 +284,13 @@ const useOnStatusChange = (
         };
       });
     },
-    [statusFilter, setStatusFilter]
+    [statusFilter, setStatusFilter, filters, setFilters]
   );
 
 const useOnResultChange = (
   resultFromFilter: string[],
   setResultFromFilter: React.Dispatch<React.SetStateAction<string[]>>,
+  filters: IFilterSet,
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
@@ -285,8 +298,8 @@ const useOnResultChange = (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = resultFromFilter.concat([]);
-      if (checked) {
+      let arr = Array.from(new Set([...resultFromFilter, ...filters.results]));
+      if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
       } else {
         arr = arr.filter((x) => x !== value);
@@ -299,7 +312,7 @@ const useOnResultChange = (
         };
       });
     },
-    [resultFromFilter, setResultFromFilter]
+    [resultFromFilter, setResultFromFilter, filters, setFilters]
   );
 
 const useOnOperationTypeFilterChange = (

@@ -34,6 +34,7 @@ export const DataGridView = React.memo((props: IDataGridView) => {
     onClick,
   } = useDataGridView(props);
 
+  console.log({ operationsState, filters });
   return (
     <div className={classes.wholeBody}>
       {renderFilterAndColumnOptionsButton(
