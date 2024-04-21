@@ -108,6 +108,22 @@ export const useStyles = makeStyles({
     minHeight: 0,
     ...shorthands.border("0rem"),
   },
+  copyButtonIcon: {
+    width: "1.5rem",
+    height: "1.5rem",
+    "& svg": {
+      width: "1.5rem",
+      height: "1.5rem",
+    },
+  },
+  dismissButtonIcon: {
+    width: "1.5rem",
+    height: "1.5rem",
+    "& svg": {
+      width: "1.25rem",
+      height: "1.25rem",
+    },
+  },
   headerButtons: {
     display: "flex",
     flexDirection: "row",
