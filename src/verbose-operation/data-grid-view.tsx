@@ -13,7 +13,7 @@ import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
 import { LineHorizontal3Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
-import { Button, mergeClasses } from "@fluentui/react-components";
+import { Button, mergeClasses, Text } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 
@@ -55,6 +55,10 @@ export const DataGridView = React.memo((props: IDataGridView) => {
             ? { className: classes.selectedOperationGridWrapper }
             : { className: classes.gridWrapper })}
         >
+          {operationsState.searchText !== null &&
+            operationsState.filteredOperations?.length !=
+              props.operations?.length &&
+            renderFilterInfo(classes)}
           <DataGrid
             items={filteredItems as any}
             columns={columns}
@@ -141,6 +145,10 @@ const renderFilterAndColumnOptionsButton = (
     </Button>
     {!operationsState.selectedOperation && <ColumnOptions />}
   </div>
+);
+
+const renderFilterInfo = (classes: IClasses) => (
+  <Text className={classes.filterInfo}>You are viewing a filtered view.</Text>
 );
 
 const renderFilterView = (
