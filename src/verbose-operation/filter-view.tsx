@@ -178,7 +178,12 @@ const useOperationTypesCheckBox = ({
               onChange={onOperationTypeChange}
               value={checkboxValue}
               label={checkboxValue}
-              // checked={!!operationTypesFilter?.includes(checkboxValue)}
+              // checked={
+              //   !!filters?.types.includes(checkboxValue) ||
+              //   (checkboxValue === OperationType.Query &&
+              //     (!!filters?.types.includes(checkboxValue) ||
+              //       !!operationTypesFilter?.includes(checkboxValue)))
+              // }
               key={`type-${checkboxValue}`}
               defaultChecked={filters?.types.includes(checkboxValue)}
             />
@@ -209,7 +214,10 @@ const useOperationTypesCheckBox = ({
                         key={key}
                         label={value}
                         value={value}
-                        //checked={!!operationTypesFilter?.includes(value)}
+                        checked={
+                          !!filters?.types.includes(value) ||
+                          !!operationTypesFilter?.includes(value)
+                        }
                         onChange={onSubTypeChange}
                         defaultChecked={filters?.types.includes(value)}
                       />
@@ -220,7 +228,7 @@ const useOperationTypesCheckBox = ({
           </React.Fragment>
         );
       });
-  }, [onOperationTypeChange, onSubTypeChange, operationTypesFilter]);
+  }, [onOperationTypeChange, onSubTypeChange, operationTypesFilter, filters]);
 
   return operationTypes;
 };
@@ -249,11 +257,8 @@ const useOnSubTypeChange = ({
 
       if (checked && !arr.includes(value)) {
         arr.push(value);
-        arr.length == 9 && !arr.includes("Query") && arr.push("Query");
       } else {
         arr = arr.filter((x) => x !== value);
-        if (arr.length == 1 && arr.includes("Query"))
-          arr = arr.filter((y) => y !== "Query");
       }
       setOperationTypesFilter(arr);
 
@@ -338,26 +343,23 @@ const useOnOperationTypeFilterChange = (
       let typesFilter = Array.from(
         new Set([...operationTypesFilter, ...(filters?.types || [])])
       );
-      if (checked) {
-        !typesFilter.includes(value) && typesFilter.push(value);
+      console.log({ operationTypesFilter, filters, typesFilter });
+      if (checked && !typesFilter.includes(value)) {
+        typesFilter.push(value);
         if (value === OperationType.Query) {
           querySubTypes.forEach((type) => {
-            typesFilter.push(type);
+            !typesFilter.includes(type) && typesFilter.push(type);
           });
 
           fragmentSubTypes.forEach((type) => {
-            typesFilter.push(type);
+            !typesFilter.includes(type) && typesFilter.push(type);
           });
-          typesFilter.push(OperationType.Query);
         }
       } else {
         typesFilter = typesFilter.filter((x) => x !== value);
 
         if (value == OperationType.Query) {
           typesFilter = typesFilter.filter((x) => {
-            if (x === value) {
-              return x === value;
-            }
             if (querySubTypes.find((type) => type === x)) {
               return false;
             }
@@ -378,8 +380,9 @@ const useOnOperationTypeFilterChange = (
           types: typesFilter,
         };
       });
+      console.log({ typesFilter, filters });
     },
-    [operationTypesFilter, setOperationTypesFilter, setFilters]
+    [operationTypesFilter, setOperationTypesFilter, setFilters, filters]
   );
 
 const renderResultsFromFiter = (
