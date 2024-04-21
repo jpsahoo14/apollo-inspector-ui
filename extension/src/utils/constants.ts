@@ -45,3 +45,5 @@ export const enum PANEL_PAGE_ACTIONS {
 export const enum BACKGROUND_ACTIONS {
   PORT_NOT_FOUND = "PORT_NOT_FOUND",
 }
+
+export const Default_Apollo_Client_Name = "Default Apollo Client";

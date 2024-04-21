@@ -9,6 +9,7 @@ import {
   createLogger,
   sendMessageViaEventTarget,
   Context,
+  Default_Apollo_Client_Name,
 } from "../utils";
 import { Observable } from "rxjs";
 import { IDataView, IVerboseOperation } from "apollo-inspector";
@@ -21,6 +22,7 @@ const OperationsTracker = lazy(() => import("../../../index"));
 
 export const PanelContainer = () => {
   const [clientIds, setClientIds] = React.useState<string[] | null>(null);
+  const [isRecording, setIsRecording] = React.useState<boolean | null>(null);
   const [subscription, setSubscription] = React.useState<{
     unsubscribe: () => void;
   } | null>(null);
@@ -29,7 +31,9 @@ export const PanelContainer = () => {
   const cleanUpsRef = React.useRef<(() => void)[]>([]);
   const [backgroundConnection, setBackgroundConnection] =
     React.useState<browser.Runtime.Port | null>(null);
-  const panelRef = React.useRef(new CustomEventTarget(Context.PANEL_PAGE));
+  const panelEventTargetRef = React.useRef(
+    new CustomEventTarget(Context.PANEL_PAGE)
+  );
 
   logMessage(`rendering Panel container`, {
     log: {
@@ -43,7 +47,7 @@ export const PanelContainer = () => {
   });
   usePanelInitialization({
     tabIdRef,
-    panelRef,
+    panelEventTargetRef: panelEventTargetRef,
     setBackgroundConnection,
     setInitPanelComplete,
     setClientIds,
@@ -55,7 +59,7 @@ export const PanelContainer = () => {
   useGetApolloClientIds(
     backgroundConnection,
     tabIdRef,
-    panelRef,
+    panelEventTargetRef,
     initPanelComplete,
     setClientIds,
     cleanUpsRef
@@ -64,9 +68,10 @@ export const PanelContainer = () => {
   const { onRecordStart, onRecordStop, onCopy, onClearStore, onResetStore } =
     useOperationTrackerProps({
       subscription,
-      panelRef,
+      panelRef: panelEventTargetRef,
       setSubscription,
       tabIdRef,
+      setIsRecording,
     });
 
   if (!initPanelComplete) {
@@ -107,6 +112,10 @@ export const PanelContainer = () => {
         onCopy={onCopy}
         clearStore={onClearStore}
         resetStore={onResetStore}
+        shouldStartRecordingOnMount={
+          clientIds[0] === Default_Apollo_Client_Name &&
+          (isRecording === null || isRecording === true)
+        }
       />
     </Suspense>
   );
@@ -119,12 +128,14 @@ interface IUeOperationTrackerProps {
     React.SetStateAction<{ unsubscribe: () => void } | null>
   >;
   tabIdRef: React.MutableRefObject<number>;
+  setIsRecording: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 const useOperationTrackerProps = ({
   panelRef,
   setSubscription,
   subscription,
   tabIdRef,
+  setIsRecording,
 }: IUeOperationTrackerProps) => {
   const { onClearStore, onResetStore } = useApolloClientStoreCB(
     panelRef,
@@ -134,7 +145,8 @@ const useOperationTrackerProps = ({
     subscription,
     panelRef,
     setSubscription,
-    tabIdRef
+    tabIdRef,
+    setIsRecording
   );
 
   const onCopy = React.useCallback((copyType: CopyType, data: ICopyData) => {
@@ -251,21 +263,24 @@ const useOnRecordStartAndOnRecordStop = (
   setSubscription: React.Dispatch<
     React.SetStateAction<{ unsubscribe: () => void } | null>
   >,
-  tabIdRef: React.MutableRefObject<number>
+  tabIdRef: React.MutableRefObject<number>,
+  setIsRecording: React.Dispatch<React.SetStateAction<boolean | null>>
 ) => {
   const dataViewRef = React.useRef<IDataViewMap | null>(null);
   const onRecordStart = useOnRecordStart(
     setSubscription,
     panelRef,
     tabIdRef,
-    dataViewRef
+    dataViewRef,
+    setIsRecording
   );
 
   const onRecordStop = useOnRecordStop(
     setSubscription,
     panelRef,
     tabIdRef,
-    dataViewRef
+    dataViewRef,
+    setIsRecording
   );
   return { onRecordStart, onRecordStop };
 };
@@ -321,7 +336,8 @@ const useOnRecordStop = (
   >,
   panelRef: React.MutableRefObject<CustomEventTarget>,
   tabIdRef: React.MutableRefObject<number>,
-  dataViewRef: React.MutableRefObject<IDataViewMap | null>
+  dataViewRef: React.MutableRefObject<IDataViewMap | null>,
+  setIsRecording: React.Dispatch<React.SetStateAction<boolean | null>>
 ) =>
   React.useCallback(() => {
     setSubscription((sub) => {
@@ -329,13 +345,14 @@ const useOnRecordStop = (
       return null;
     });
     dataViewRef.current = null;
+    setIsRecording(false);
     sendMessageViaEventTarget(panelRef.current, {
       action: PANEL_PAGE_ACTIONS.STOP_RECORDING,
       destinationName: Context.WEB_PAGE,
       tabId: tabIdRef.current,
       callerName: Context.PANEL_PAGE,
     });
-  }, [panelRef, setSubscription, tabIdRef]);
+  }, [panelRef, setSubscription, tabIdRef, setIsRecording]);
 
 const useOnRecordStart = (
   setSubscription: React.Dispatch<
@@ -343,7 +360,8 @@ const useOnRecordStart = (
   >,
   panelRef: React.MutableRefObject<CustomEventTarget>,
   tabIdRef: React.MutableRefObject<number>,
-  dataViewRef: React.MutableRefObject<IDataViewMap | null>
+  dataViewRef: React.MutableRefObject<IDataViewMap | null>,
+  setIsRecording: React.Dispatch<React.SetStateAction<boolean | null>>
 ) =>
   React.useCallback(
     (clientIds: string[]) => {
@@ -352,6 +370,7 @@ const useOnRecordStart = (
         return sub;
       });
       dataViewRef.current = null;
+      setIsRecording(true);
       return new Observable<IDataView>((observer) => {
         const unsubscribe = panelRef.current.addEventListener(
           WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
@@ -385,7 +404,7 @@ const useOnRecordStart = (
         });
       });
     },
-    [setSubscription, tabIdRef, panelRef]
+    [setSubscription, tabIdRef, panelRef, setIsRecording]
   );
 
 const logMessage = createLogger(`panel-container`);

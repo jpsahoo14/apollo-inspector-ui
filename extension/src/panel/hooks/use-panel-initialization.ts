@@ -12,7 +12,7 @@ interface IUseSetBackgroundConnection {
   setBackgroundConnection: React.Dispatch<
     React.SetStateAction<browser.Runtime.Port | null>
   >;
-  panelRef: React.MutableRefObject<CustomEventTarget>;
+  panelEventTargetRef: React.MutableRefObject<CustomEventTarget>;
   tabIdRef: React.MutableRefObject<number>;
   setInitPanelComplete: React.Dispatch<React.SetStateAction<boolean>>;
   setClientIds: React.Dispatch<React.SetStateAction<string[] | null>>;
@@ -23,7 +23,7 @@ interface IUseSetBackgroundConnection {
   cleanUpsRef: React.MutableRefObject<(() => void)[]>;
 }
 export const usePanelInitialization = ({
-  panelRef,
+  panelEventTargetRef,
   setBackgroundConnection,
   setClientIds,
   setInitPanelComplete,
@@ -42,7 +42,7 @@ export const usePanelInitialization = ({
 
   useConnectToBackgroundServiceWorker(
     tabIdRef,
-    panelRef,
+    panelEventTargetRef,
     setBackgroundConnection,
     setClientIds,
     setInitPanelComplete,

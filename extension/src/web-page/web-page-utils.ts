@@ -1,12 +1,21 @@
 import { IApolloClientObject } from "apollo-inspector";
+import { Default_Apollo_Client_Name } from "../utils";
 
 export const getApolloClientsObj = (): IApolloClientObject[] => {
-  if (window.__APOLLO_CLIENTS__) {
-    const result = window.__APOLLO_CLIENTS__.map((ac) => {
-      return { client: ac.client, clientId: ac.clientId };
-    });
-    return result;
+  if (window.__APOLLO_CLIENTS__ && window.__APOLLO_CLIENTS__.length) {
+    return window.__APOLLO_CLIENTS__;
   }
 
-  return [{ client: window.__APOLLO_CLIENT__, clientId: "default" }];
+  if (window.__APOLLO_CLIENT__) {
+    const values: IApolloClientObject[] = [
+      {
+        clientId: Default_Apollo_Client_Name,
+        client: window.__APOLLO_CLIENT__ as any,
+      },
+    ];
+
+    return values;
+  }
+
+  return [];
 };

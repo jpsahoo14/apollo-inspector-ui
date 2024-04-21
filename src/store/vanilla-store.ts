@@ -19,19 +19,19 @@ import { getColumnOptions } from "./states/get-column-options";
 export const createTrackerStore = () => {
   return createStore<IStore>((set: ISet) => {
     return {
-      ...getApolloOperationsDataStore(set),
-      ...getLoaderStore(set),
-      ...getIsRecordingStore(set),
       ...getApolloClients(set),
-      ...getTheme(set),
-      ...getSelectedApolloClientId(set),
       ...getApolloInspectorStopTracking(set),
-      ...getSearchBannerStore(set),
-      ...getErrorStore(set),
-      ...getSelectedTabStore(set),
-      ...getOpenDescriptionStore(set),
-      ...getFilterSetStore(set),
+      ...getApolloOperationsDataStore(set),
       ...getColumnOptions(set),
+      ...getErrorStore(set),
+      ...getFilterSetStore(set),
+      ...getIsRecordingStore(set),
+      ...getLoaderStore(set),
+      ...getOpenDescriptionStore(set),
+      ...getSearchBannerStore(set),
+      ...getSelectedApolloClientId(set),
+      ...getSelectedTabStore(set),
+      ...getTheme(set),
     };
   });
 };
