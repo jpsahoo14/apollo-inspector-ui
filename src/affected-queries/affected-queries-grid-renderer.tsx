@@ -91,7 +91,12 @@ export const AffectedQueriesGridRenderers = (
                 {({ renderCell }) => {
                   const cb = () => onSelectGridCell(item);
                   return (
-                    <DataGridCell onClick={cb}>{renderCell(item)}</DataGridCell>
+                    <DataGridCell
+                      onClick={cb}
+                      className={classes.gridCellBackground}
+                    >
+                      {renderCell(item)}
+                    </DataGridCell>
                   );
                 }}
               </DataGridRow>

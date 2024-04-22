@@ -14,5 +14,9 @@ export const useStyles = makeStyles({
   },
   headerCellBackground: {
     backgroundColor: tokens.colorBrandBackground2Hover,
+    ...shorthands.borderLeft("0.1rem", "solid", tokens.colorNeutralStroke2),
+  },
+  gridCellBackground: {
+    ...shorthands.borderLeft("0.1rem", "solid", tokens.colorNeutralStroke2),
   },
 });
