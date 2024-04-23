@@ -35,7 +35,7 @@ export const useStyles = makeStyles({
   gridRowOdd: {
     backgroundColor: tokens.colorSubtleBackgroundPressed,
   },
-  searchBar:{
+  searchBar: {
     paddingRight: "0.5rem",
   },
   gridView: {
@@ -115,7 +115,7 @@ export type IClasses = Record<
   | "selectedOperationGridWrapper"
   | "gridWrapper"
   | "filterViewWrapper"
-  | "filtersButton",
+  | "filtersButton"
   | "searchBar",
   string
 >;

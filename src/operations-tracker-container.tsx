@@ -11,7 +11,6 @@ import {
 import { ErrorBoundary } from "./operation-tracker-error-boundary";
 import {
   getInitialState,
-  OperationReducerActionEnum,
   reducers,
 } from "./operations-tracker-container-helper";
 import {
@@ -44,11 +43,8 @@ export const OperationsTrackerContainerInner = (
   const classes = useStyles();
   const { onCopy, onRecordStart, onRecordStop, shouldStartRecordingOnMount } =
     props;
-  const {
-    openDescription,
-    operationsState,
-    dispatchOperationsState,
-  } = useOperationsTrackerContainer(props);
+  const { openDescription, operationsState, dispatchOperationsState } =
+    useOperationsTrackerContainer(props);
 
   const mainSlot = useMainSlot(
     {
@@ -183,8 +179,6 @@ const useOperationsTrackerContainer = (props: IOperationsTrackerContainer) => {
   );
 
   useSetSelectedApolloClient(props);
-
-
 
   return {
     openDescription,
