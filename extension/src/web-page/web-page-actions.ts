@@ -11,12 +11,13 @@ import {
   getLastSender,
   getPrivateAccess,
   IWatchQueryInfo,
+  Default_Apollo_Client_Name,
 } from "../utils";
-import type { Cache } from "@apollo/client/cache";
+import type { Cache, NormalizedCacheObject } from "@apollo/client/cache";
 import { IWebpageContext } from "./web-page.interface";
-import { ApolloInspector, IApolloClient, IDataView } from "apollo-inspector";
+import { ApolloInspector, IDataView } from "apollo-inspector";
 import { getApolloClientsObj } from "./web-page-utils";
-import { ApolloClient, InMemoryCache, ObservableQuery } from "@apollo/client";
+import { ApolloClient, ObservableQuery } from "@apollo/client";
 import { DocumentNode, VariableDefinitionNode } from "graphql";
 
 export const devtoolScriptLoadedAction = (context: IWebpageContext) => {
@@ -58,7 +59,7 @@ export const getCopyWholeCacheCB = (context: IWebpageContext) => {
   return (message: IMessagePayload) => {
     const { clientId } = message.data;
     const ac = getApolloClientByClientId(clientId);
-    const data = ac?.cache.data.data;
+    const data = (ac?.cache as any)?.data.data;
     sendMessageViaEventTarget(webpage, {
       action: WEBPAGE_ACTIONS.WHOLE_APOLLO_CACHE_DATA,
       callerName: Context.WEB_PAGE,
@@ -100,7 +101,7 @@ const getApolloClients = (): string[] => {
   }
 
   if (window.__APOLLO_CLIENT__) {
-    const values = ["default"];
+    const values = [Default_Apollo_Client_Name];
     if (isTestEnabled) {
       return generateRandomClients(values);
     }
@@ -112,29 +113,12 @@ const getApolloClients = (): string[] => {
 
 const getApolloClientByClientId = (
   clientId: string
-): ApolloClient<InMemoryCache> | undefined => {
-  const values = getApolloClientObjects();
+): ApolloClient<NormalizedCacheObject> | undefined => {
+  const values = getApolloClientsObj();
 
   const ac = values.find((value) => value.clientId === clientId);
 
-  return ac?.client;
-};
-
-const getApolloClientObjects = (): {
-  clientId: string;
-  client: any;
-}[] => {
-  if (window.__APOLLO_CLIENTS__ && window.__APOLLO_CLIENTS__.length) {
-    return window.__APOLLO_CLIENTS__;
-  }
-
-  if (window.__APOLLO_CLIENT__) {
-    const values = [{ clientId: "default", client: window.__APOLLO_CLIENT__ }];
-
-    return values;
-  }
-
-  return [];
+  return ac?.client as any;
 };
 
 const sendMessageToContentScript = (
@@ -224,13 +208,18 @@ export const getStartRecordingAction = (context: IWebpageContext) => {
 
     const subscription = observable.subscribe({
       next: (data: IDataView) => {
-        sendMessageViaEventTarget(webpage, {
-          destinationName: Context.PANEL_PAGE,
-          action: WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
-          tabId,
-          callerName: Context.WEB_PAGE,
-          data,
-        });
+        if (
+          data.operations?.length !== 0 ||
+          data.verboseOperations?.length !== 0
+        ) {
+          sendMessageViaEventTarget(webpage, {
+            destinationName: Context.PANEL_PAGE,
+            action: WEBPAGE_ACTIONS.APOLLO_INSPECTOR_DATA,
+            tabId,
+            callerName: Context.WEB_PAGE,
+            data,
+          });
+        }
       },
       error: () => {},
       complete: () => {},

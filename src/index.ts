@@ -1,1 +1,1 @@
-export * from "./operations-tracker-container";
+export { OperationsTrackerContainer as OperationsTracker } from "./operations-tracker-container";

@@ -42,7 +42,8 @@ export const OperationsTrackerContainerInner = (
   props: IOperationsTrackerContainer
 ) => {
   const classes = useStyles();
-  const { onCopy, onRecordStart, onRecordStop } = props;
+  const { onCopy, onRecordStart, onRecordStop, shouldStartRecordingOnMount } =
+    props;
   const {
     openDescription,
     operationsState,
@@ -72,6 +73,7 @@ export const OperationsTrackerContainerInner = (
             onRecordStart={onRecordStart}
             onRecordStop={onRecordStop}
             onCopy={onCopy}
+            shouldStartRecordingOnMount={shouldStartRecordingOnMount}
           />
           {mainSlot}
         </div>

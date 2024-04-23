@@ -27,6 +27,7 @@ export type stylesClasses =
 
 export interface IOperationsTrackerContainer {
   apolloClientIds: string[];
+  shouldStartRecordingOnMount?: boolean;
   onCopy: (copyType: CopyType, data: ICopyData) => void;
   onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
   onRecordStop: () => void;
