@@ -12,6 +12,7 @@ import {
   getSelectedTabStore,
   getOpenDescriptionStore,
   getTheme,
+  getSelectedOperationInAffectedQueriesView,
 } from "./states";
 import { getFilterSetStore } from "./states/get-filterset";
 import { getColumnOptions } from "./states/get-column-options";
@@ -32,6 +33,7 @@ export const createTrackerStore = () => {
       ...getSelectedApolloClientId(set),
       ...getSelectedTabStore(set),
       ...getTheme(set),
+      ...getSelectedOperationInAffectedQueriesView(set),
     };
   });
 };

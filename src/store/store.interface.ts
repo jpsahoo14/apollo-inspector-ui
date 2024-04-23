@@ -1,5 +1,5 @@
-import { IApolloClientObject, IDataView } from "apollo-inspector";
-import { ApolloClientsObject, TabHeaders, RecordingState } from "../types";
+import { IDataView, IVerboseOperation } from "apollo-inspector";
+import { TabHeaders, RecordingState } from "../types";
 
 export interface IStore
   extends IApolloOperationsDataStore,
@@ -14,7 +14,8 @@ export interface IStore
     IFilterSetStore,
     IColumnOptions,
     ITheme,
-    IStopApolloInspectorTracking {}
+    IStopApolloInspectorTracking,
+    ISelectedOperationInAffectedQueriesView {}
 
 export type ISet = (
   partial:
@@ -27,6 +28,13 @@ export type ISet = (
 export interface IApolloOperationsDataStore {
   apolloOperationsData: IDataView | null;
   setApolloOperationsData: ISetState<IDataView | null>;
+}
+
+export interface ISelectedOperationInAffectedQueriesView {
+  selectedOperationInAffectedQueriesView: IVerboseOperation | null | undefined;
+  setSelectedOperationInAffectedQueriesView: ISetState<
+    IVerboseOperation | null | undefined
+  >;
 }
 
 export interface ILoaderStore {

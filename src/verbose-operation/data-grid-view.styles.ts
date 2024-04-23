@@ -28,9 +28,11 @@ export const useStyles = makeStyles({
     backgroundColor: tokens.colorBrandBackground2Hover,
     minWidth: "10px !important",
     textOverflow: "ellipsis",
+    ...shorthands.borderLeft("0.1rem", "solid", tokens.colorNeutralStroke2),
   },
   gridrowcell: {
     minWidth: "10px !important",
+    ...shorthands.borderLeft("0.1rem", "solid", tokens.colorNeutralStroke2),
   },
   gridRowOdd: {
     backgroundColor: tokens.colorSubtleBackgroundPressed,
