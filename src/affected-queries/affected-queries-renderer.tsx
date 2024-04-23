@@ -159,7 +159,7 @@ const renderLeftPane = (
         <b>Re-rendered Queries</b>
       </Text>
       <Tooltip
-        content="Affected Queries tab helps you see which watch queries were re-rendered and why. It shows insights into the queries and the operations causing those updates."
+        content="Re-rendered Queries tab helps you see which watch queries were re-rendered and why. It shows insights into the queries and the operations causing those updates."
         relationship={"label"}
         positioning={"after"}
       >
