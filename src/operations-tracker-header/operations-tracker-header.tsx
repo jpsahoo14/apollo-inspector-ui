@@ -1,9 +1,7 @@
 import React, { useCallback } from "react";
-import { Button } from "@fluentui/react-components";
+import { Button, Link } from "@fluentui/react-components";
 import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
-import { Search } from "../search/search";
-import { debounce } from "lodash-es";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import {
@@ -20,7 +18,6 @@ import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 export interface IOperationsTrackerHeaderProps {
-  setSearchText: (text: string) => void;
   operationsState: IOperationsReducerState;
   onRecordStart: (selectedApolloClientIds: string[]) => Observable<IDataView>;
   onRecordStop: () => void;
@@ -36,7 +33,6 @@ export const OperationsTrackerHeader = React.memo(
       setOpenDescription,
       startRecording,
       stopRecording,
-      debouncedFilter,
       clearApolloOperations,
       recordingState,
       operationsState,
@@ -61,14 +57,21 @@ export const OperationsTrackerHeader = React.memo(
               </Button>
             )}
           </div>
-          <div>
-            <Search onSearchChange={debouncedFilter} />
-          </div>
         </div>
         {openDescription && (
           <div className={classes.description}>
-            It monitors changes in cache, fired mutations and
-            activated/deactivated queries.
+            <span>
+              It monitors changes in cache, fired mutations and
+              activated/deactivated queries.
+            </span>
+            <Link
+              href="https://github.com/jpsahoo14/apollo-inspector-ui/blob/main/extension/readme.md"
+              inline
+              rel="noopener noreferrer"
+            >
+              {" "}
+              Read Me{" "}
+            </Link>
           </div>
         )}
       </>
@@ -135,7 +138,7 @@ const useToggleRecording = (props: IOperationsTrackerHeaderProps) => {
 };
 
 const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
-  const { setSearchText, operationsState, onCopy } = props;
+  const { operationsState, onCopy } = props;
   const store = React.useContext(TrackerStoreContext);
   const [openDescription, setOpenDescription] = useStore(
     store,
@@ -168,8 +171,6 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
 
   const showClear = !!apollOperationsData?.operations;
 
-  const debouncedFilter = useDebouncedFilter(setSearchText);
-
   useStartRecordingOnMount(props, startRecording);
 
   return {
@@ -177,7 +178,6 @@ const useOperationsTrackerheader = (props: IOperationsTrackerHeaderProps) => {
     setOpenDescription,
     startRecording,
     stopRecording,
-    debouncedFilter,
     showClear,
     clearApolloOperations,
     recordingState,

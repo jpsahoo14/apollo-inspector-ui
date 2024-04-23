@@ -11,14 +11,28 @@ import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
-import { LineHorizontal3Regular } from "@fluentui/react-icons";
+import { Filter20Filled } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
 import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
+import { Search } from "../search/search";
+import { debounce, DebouncedFunc } from "lodash-es";
+import {
+  OperationReducerActionEnum,
+} from "../operations-tracker-container-helper";
 
 export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
+  const setSearchText = React.useCallback(
+    (text: string) => {
+      props.dispatchOperationsState({
+        type: OperationReducerActionEnum.UpdateSearchText,
+        value: text,
+      });
+    },
+    [props.dispatchOperationsState]
+  );
   const {
     gridHeight,
     handleToggleFilters,
@@ -34,12 +48,21 @@ export const DataGridView = React.memo((props: IDataGridView) => {
     onClick,
   } = useDataGridView(props);
 
+  const debouncedFilter = React.useCallback(
+    debounce((e: React.SyntheticEvent) => {
+      const input = e.target as HTMLInputElement;
+      setSearchText(input.value);
+    }, 200),
+    [setSearchText]
+  );
+
   return (
     <div className={classes.wholeBody}>
       {renderFilterAndColumnOptionsButton(
         classes,
         handleToggleFilters,
-        operationsState
+        operationsState,
+        debouncedFilter
       )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
@@ -129,11 +152,16 @@ export const DataGridView = React.memo((props: IDataGridView) => {
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
   handleToggleFilters: () => void,
-  operationsState: IOperationsReducerState
+  operationsState: IOperationsReducerState,
+  debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>
 ) => (
+
   <div className={classes.headers}>
+    <div className={classes.searchBar}>
+      <Search onSearchChange={debouncedFilter} />
+    </div>
     <Button
-      icon={<LineHorizontal3Regular />}
+      icon={<Filter20Filled />}
       onClick={handleToggleFilters}
       className={classes.filtersButton}
     >
