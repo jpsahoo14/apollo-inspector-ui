@@ -1,6 +1,6 @@
 {
   "name": "apollo-inspector-ui",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "source": "index.ts",
   "main": "dist/main.js",
   "module": "dist/module.js",
