@@ -22,7 +22,7 @@ import { useShallow } from "zustand/react/shallow";
 const ItemSize = 20;
 
 export const useDataGridView = (props: IDataGridView) => {
-  const { operationsState, dispatchOperationsState } = props;
+  const { operationsState, dispatchOperationsState, onCopy } = props;
 
   const { scrollbarWidth } = useScrollbarWidthInternal();
   const divRef = React.useRef<HTMLDivElement | null>(null);
@@ -49,6 +49,7 @@ export const useDataGridView = (props: IDataGridView) => {
     updateVerboseOperations,
     scrollbarWidth,
     onClick,
+    onCopy
   };
 };
 

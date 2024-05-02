@@ -16,6 +16,7 @@ import { ColumnOptions } from "./column-options-view";
 import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
+import { CopyButton } from "../operations-tracker-header/operations-copy-button";
 
 export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
@@ -32,6 +33,7 @@ export const DataGridView = React.memo((props: IDataGridView) => {
     columnSizing,
     updateVerboseOperations,
     onClick,
+    onCopy
   } = useDataGridView(props);
 
   return (
@@ -39,7 +41,8 @@ export const DataGridView = React.memo((props: IDataGridView) => {
       {renderFilterAndColumnOptionsButton(
         classes,
         handleToggleFilters,
-        operationsState
+        operationsState,
+        onCopy
       )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
@@ -129,7 +132,8 @@ export const DataGridView = React.memo((props: IDataGridView) => {
 const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
   handleToggleFilters: () => void,
-  operationsState: IOperationsReducerState
+  operationsState: IOperationsReducerState,
+  onCopy: any
 ) => (
   <div className={classes.headers}>
     <Button
@@ -139,7 +143,10 @@ const renderFilterAndColumnOptionsButton = (
     >
       Filters
     </Button>
-    {!operationsState.selectedOperation && <ColumnOptions />}
+    <div className={classes.rightSideButtons}>
+      {!operationsState.selectedOperation && <ColumnOptions />}
+      <CopyButton operationsState={operationsState} onCopy={onCopy} />
+    </div>  
   </div>
 );
 

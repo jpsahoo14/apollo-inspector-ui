@@ -4,7 +4,6 @@ import { Info20Regular } from "@fluentui/react-icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { Search } from "../search/search";
 import { debounce } from "lodash-es";
-import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { TrackerStoreContext, ISetState, IErrorType } from "../store";
 import { Observable } from "rxjs";
@@ -44,7 +43,6 @@ export const OperationsTrackerHeader = React.memo(
               { openDescription, recordingState },
               { classes, setOpenDescription, startRecording, stopRecording }
             )}
-            <CopyButton operationsState={operationsState} onCopy={onCopy} />
             {recordingState === RecordingState.Initial ? null : (
               <Button
                 style={{ margin: "0 0.5rem" }}

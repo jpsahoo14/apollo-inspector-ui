@@ -8,10 +8,12 @@ import {
   IOperationsAction,
   IOperationsReducerState,
 } from "../operations-tracker-container-helper";
+import { CopyType, ICopyData } from "../types";
 
 export interface IVerboseOperationsContainerProps {
   operations: IVerboseOperation[] | null;
   operationsState: IOperationsReducerState;
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
   dispatchOperationsCount: React.Dispatch<ICountReducerAction>;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
 }
@@ -22,6 +24,7 @@ export const VerboseOperationsContainer = (
   const {
     operations,
     operationsState,
+    onCopy,
     dispatchOperationsCount,
     dispatchOperationsState,
   } = props;
@@ -37,6 +40,7 @@ export const VerboseOperationsContainer = (
           key={"OperationsDataGridView"}
           operations={operations}
           operationsState={operationsState}
+          onCopy={onCopy}
           dispatchOperationsCount={dispatchOperationsCount}
           dispatchOperationsState={dispatchOperationsState}
         />

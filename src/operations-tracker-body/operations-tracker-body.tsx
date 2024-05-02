@@ -144,6 +144,7 @@ const OperationsViewRenderer = (props: IOperationViewRendererProps) => {
         <VerboseOperationsContainer
           operations={data.operations}
           operationsState={operationsState}
+          onCopy={onCopy}
           dispatchOperationsCount={dispatchOperationsCount}
           dispatchOperationsState={dispatchOperationsState}
         />

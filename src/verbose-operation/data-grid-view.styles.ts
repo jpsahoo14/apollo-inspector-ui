@@ -42,6 +42,11 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
   },
+  rightSideButtons:{
+    float: "right",
+    display: "flex",
+    flexDirection: "row"
+  },
   selectedRow: {
     fontWeight: "bold",
     backgroundColor: tokens.colorBrandBackground2Hover,
@@ -112,6 +117,7 @@ export type IClasses = Record<
   | "selectedOperationGridWrapper"
   | "gridWrapper"
   | "filterViewWrapper"
+  | "rightSideButtons"
   | "filtersButton",
   string
 >;

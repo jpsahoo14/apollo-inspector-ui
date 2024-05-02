@@ -5,6 +5,7 @@ import {
   IOperationsAction,
   IOperationsReducerState,
 } from "../operations-tracker-container-helper";
+import { CopyType, ICopyData } from "../types";
 
 type ColumnWidthState = {
   minWidth: number;
@@ -39,6 +40,7 @@ export const enum ColumnName {
 export interface IDataGridView {
   operations: IVerboseOperation[] | null;
   operationsState: IOperationsReducerState;
+  onCopy: (copyType: CopyType, data: ICopyData) => void;
   dispatchOperationsCount: React.Dispatch<ICountReducerAction>;
   dispatchOperationsState: React.Dispatch<IOperationsAction>;
 }
