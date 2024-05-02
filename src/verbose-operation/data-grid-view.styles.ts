@@ -12,6 +12,7 @@ export const useStyles = makeStyles({
   headers: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     minHeight: 0,
     minWidth: 0,
     paddingBottom: "0.5rem",
