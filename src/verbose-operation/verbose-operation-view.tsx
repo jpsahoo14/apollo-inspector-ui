@@ -28,6 +28,7 @@ import {
 } from "../operations-tracker-container-helper";
 import { Dismiss16Filled, Copy16Regular } from "@fluentui/react-icons";
 import copy from "copy-to-clipboard";
+import { JsonViewer } from "view-json-react";
 
 const spaceForStringify = 2;
 
@@ -281,7 +282,11 @@ const getResultPanel = (
         </AccordionHeader>
         <AccordionPanel>
           <div className={classes.resultPanel}>
-            {`${JSON.stringify(res.result, null, spaceForStringify)}`}
+            <JsonViewer
+              data={res.result}
+              expandLevel={1}
+              style={{ color: "#61dafb" }}
+            />
           </div>
         </AccordionPanel>
       </AccordionItem>
