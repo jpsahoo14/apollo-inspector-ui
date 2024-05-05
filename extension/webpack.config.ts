@@ -18,6 +18,22 @@ const plugins = [
         from: "./extension/manifest.json",
         to: path.resolve(__dirname, "../build/extension"),
       },
+      {
+        from: "./extension/images/brand-icon/icon16.png",
+        to: path.resolve(__dirname, "../build/extension"),
+      },
+      {
+        from: "./extension/images/brand-icon/icon32.png",
+        to: path.resolve(__dirname, "../build/extension"),
+      },
+      {
+        from: "./extension/images/brand-icon/icon48.png",
+        to: path.resolve(__dirname, "../build/extension"),
+      },
+      {
+        from: "./extension/images/brand-icon/icon128.png",
+        to: path.resolve(__dirname, "../build/extension"),
+      },
     ],
   }),
 ];

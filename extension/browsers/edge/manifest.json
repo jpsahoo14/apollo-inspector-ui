@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Apollo Inspector",
   "description": "Adds apollo inspector devtools to Microsoft Edge",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "content_scripts": [
     {
       "js": [
@@ -15,6 +15,12 @@
     }
   ],
   "devtools_page": "devtools.html",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "web_accessible_resources": [
     {
       "resources": [
