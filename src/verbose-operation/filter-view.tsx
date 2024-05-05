@@ -54,12 +54,16 @@ interface IUseOperationTypesCheckBoxParams {
 }
 
 export const FilterView = React.memo((props: IFilterView) => {
+  const { setFilters, filters } = props;
   const [operationTypesFilter, setOperationTypesFilter] = React.useState<
     string[]
-  >([]);
-  const [resultFromFilter, setResultFromFilter] = React.useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const { setFilters, filters } = props;
+  >(filters?.types || []);
+  const [resultFromFilter, setResultFromFilter] = React.useState<string[]>(
+    filters?.results || []
+  );
+  const [statusFilter, setStatusFilter] = React.useState<string[]>(
+    filters?.statuses || []
+  );
   const [queryChecked, setQueryChecked] = React.useState(false);
   const [querySubTypesChecked, setQuerySubTypesChecked] = React.useState<
     OperationType[]
@@ -102,7 +106,7 @@ export const FilterView = React.memo((props: IFilterView) => {
           value={checkboxValue}
           label={checkboxValue}
           key={`status-${checkboxValue}`}
-          defaultChecked={filters?.statuses.includes(checkboxValue)}
+          defaultChecked={!!statusFilter.includes(checkboxValue)}
         />
       );
     });
@@ -115,7 +119,7 @@ export const FilterView = React.memo((props: IFilterView) => {
         value={checkboxValue}
         label={checkboxValue}
         key={`result-${checkboxValue}`}
-        defaultChecked={filters?.results.includes(checkboxValue)}
+        defaultChecked={!!resultFromFilter.includes(checkboxValue)}
       />
     );
   });
@@ -178,14 +182,9 @@ const useOperationTypesCheckBox = ({
               onChange={onOperationTypeChange}
               value={checkboxValue}
               label={checkboxValue}
-              // checked={
-              //   !!filters?.types.includes(checkboxValue) ||
-              //   (checkboxValue === OperationType.Query &&
-              //     (!!filters?.types.includes(checkboxValue) ||
-              //       !!operationTypesFilter?.includes(checkboxValue)))
-              // }
+              checked={!!operationTypesFilter?.includes(checkboxValue)}
               key={`type-${checkboxValue}`}
-              defaultChecked={filters?.types.includes(checkboxValue)}
+              defaultChecked={!!operationTypesFilter.includes(checkboxValue)}
             />
             {checkboxValue.includes("Query") && (
               <div
@@ -214,12 +213,9 @@ const useOperationTypesCheckBox = ({
                         key={key}
                         label={value}
                         value={value}
-                        checked={
-                          !!filters?.types.includes(value) ||
-                          !!operationTypesFilter?.includes(value)
-                        }
+                        checked={!!operationTypesFilter?.includes(value)}
                         onChange={onSubTypeChange}
-                        defaultChecked={filters?.types.includes(value)}
+                        defaultChecked={!!operationTypesFilter.includes(value)}
                       />
                     );
                   })}
@@ -257,7 +253,7 @@ const useOnSubTypeChange = ({
 
       if (checked && !arr.includes(value)) {
         arr.push(value);
-      } else {
+      } else if (!checked) {
         arr = arr.filter((x) => x !== value);
       }
       setOperationTypesFilter(arr);
@@ -268,8 +264,9 @@ const useOnSubTypeChange = ({
           types: arr,
         };
       });
+      console.error({ arr, filters });
     },
-    [operationTypesFilter, setOperationTypesFilter]
+    [operationTypesFilter, setOperationTypesFilter, filters, setFilters]
   );
 
 const useOnStatusChange = (
@@ -286,7 +283,7 @@ const useOnStatusChange = (
       let arr = Array.from(new Set([...statusFilter, ...filters.statuses]));
       if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
-      } else {
+      } else if (!checked) {
         arr = arr.filter((x) => x !== value);
       }
       setStatusFilter(arr);
@@ -315,7 +312,7 @@ const useOnResultChange = (
       let arr = Array.from(new Set([...resultFromFilter, ...filters.results]));
       if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
-      } else {
+      } else if (!checked) {
         arr = arr.filter((x) => x !== value);
       }
       setResultFromFilter(arr);
@@ -355,7 +352,7 @@ const useOnOperationTypeFilterChange = (
             !typesFilter.includes(type) && typesFilter.push(type);
           });
         }
-      } else {
+      } else if (!checked) {
         typesFilter = typesFilter.filter((x) => x !== value);
 
         if (value == OperationType.Query) {
