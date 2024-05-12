@@ -13,14 +13,12 @@ import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
 import { Filter20Filled } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
-import { Button, mergeClasses, Text } from "@fluentui/react-components";
+import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { Search } from "../search/search";
 import { debounce, DebouncedFunc } from "lodash-es";
-import {
-  OperationReducerActionEnum,
-} from "../operations-tracker-container-helper";
+import { OperationReducerActionEnum } from "../operations-tracker-container-helper";
 
 export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
@@ -78,10 +76,6 @@ export const DataGridView = React.memo((props: IDataGridView) => {
             ? { className: classes.selectedOperationGridWrapper }
             : { className: classes.gridWrapper })}
         >
-          {operationsState.searchText !== null &&
-            operationsState.filteredOperations?.length !=
-              props.operations?.length &&
-            renderFilterInfo(classes)}
           <DataGrid
             items={filteredItems as any}
             columns={columns}
@@ -159,7 +153,6 @@ const renderFilterAndColumnOptionsButton = (
   operationsState: IOperationsReducerState,
   debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>
 ) => (
-
   <div className={classes.headers}>
     <div className={classes.searchBar}>
       <Search onSearchChange={debouncedFilter} />
@@ -173,10 +166,6 @@ const renderFilterAndColumnOptionsButton = (
     </Button>
     {!operationsState.selectedOperation && <ColumnOptions />}
   </div>
-);
-
-const renderFilterInfo = (classes: IClasses) => (
-  <Text className={classes.filterInfo}>You are viewing a filtered view.</Text>
 );
 
 const renderFilterView = (

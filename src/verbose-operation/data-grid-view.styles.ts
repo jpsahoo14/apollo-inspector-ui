@@ -65,7 +65,6 @@ export const useStyles = makeStyles({
     display: "block",
   },
   selectedOperationGridWrapper: {
-    flexDirection: "column",
     display: "flex",
     height: "100%",
     minHeight: 0,
@@ -74,7 +73,6 @@ export const useStyles = makeStyles({
     ...getGridPaddingMargin(),
   },
   gridWrapper: {
-    flexDirection: "column",
     flexGrow: 1,
     display: "flex",
     height: "100%",
