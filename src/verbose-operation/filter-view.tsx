@@ -361,8 +361,8 @@ const useOnOperationTypeFilterChange = (
       let typesFilter = Array.from(
         new Set([...operationTypesFilter, ...(filters?.types || [])])
       );
-      if (checked && !typesFilter.includes(value)) {
-        typesFilter.push(value);
+      if (checked) {
+        !typesFilter.includes(value) && typesFilter.push(value);
         if (value === OperationType.Query) {
           querySubTypes.forEach((type) => {
             !typesFilter.includes(type) && typesFilter.push(type);
