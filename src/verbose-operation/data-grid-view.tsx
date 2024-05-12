@@ -18,9 +18,7 @@ import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { Search } from "../search/search";
 import { debounce, DebouncedFunc } from "lodash-es";
-import {
-  OperationReducerActionEnum,
-} from "../operations-tracker-container-helper";
+import { OperationReducerActionEnum } from "../operations-tracker-container-helper";
 
 export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
@@ -155,7 +153,6 @@ const renderFilterAndColumnOptionsButton = (
   operationsState: IOperationsReducerState,
   debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>
 ) => (
-
   <div className={classes.headers}>
     <div className={classes.searchBar}>
       <Search onSearchChange={debouncedFilter} />

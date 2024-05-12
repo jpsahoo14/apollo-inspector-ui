@@ -73,7 +73,10 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
               key={`copy-btn`}
               onClick={copyOperation}
               className={classes.button}
-              icon={<Copy16Regular />}
+              icon={{
+                className: classes.copyButtonIcon,
+                children: <Copy16Regular />,
+              }}
             ></Button>
           </Tooltip>
           <Tooltip content={"Close operation view"} relationship="label">
@@ -81,7 +84,10 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
               key={`dismiss-btn`}
               onClick={closePreview}
               className={classes.button}
-              icon={<Dismiss16Filled />}
+              icon={{
+                className: classes.dismissButtonIcon,
+                children: <Dismiss16Filled />,
+              }}
             ></Button>
           </Tooltip>
         </div>
