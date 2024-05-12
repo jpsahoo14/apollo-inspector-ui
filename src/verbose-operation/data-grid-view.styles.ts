@@ -35,14 +35,6 @@ export const useStyles = makeStyles({
   gridRowOdd: {
     backgroundColor: tokens.colorSubtleBackgroundPressed,
   },
-  filterInfo: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    fontSize: "1rem",
-    color: tokens.colorPaletteMarigoldBackground3,
-    ...shorthands.padding("0.5rem"),
-  },
   gridView: {
     flexGrow: 2,
     display: "flex",
@@ -68,7 +60,6 @@ export const useStyles = makeStyles({
     display: "block",
   },
   selectedOperationGridWrapper: {
-    flexDirection: "column",
     display: "flex",
     height: "100%",
     minHeight: 0,
@@ -77,7 +68,6 @@ export const useStyles = makeStyles({
     ...getGridPaddingMargin(),
   },
   gridWrapper: {
-    flexDirection: "column",
     flexGrow: 1,
     display: "flex",
     height: "100%",
