@@ -182,9 +182,31 @@ const useOperationTypesCheckBox = ({
               onChange={onOperationTypeChange}
               value={checkboxValue}
               label={checkboxValue}
-              checked={!!operationTypesFilter?.includes(checkboxValue)}
+              checked={
+                (checkboxValue !== "Query" &&
+                  !!operationTypesFilter?.includes(checkboxValue)) ||
+                (checkboxValue == "Query" &&
+                  !!operationTypesFilter?.includes(checkboxValue) &&
+                  !!querySubTypes?.every((element) =>
+                    operationTypesFilter.includes(element)
+                  ) &&
+                  !!fragmentSubTypes?.every((element) =>
+                    operationTypesFilter.includes(element)
+                  ))
+              }
               key={`type-${checkboxValue}`}
-              defaultChecked={!!operationTypesFilter.includes(checkboxValue)}
+              defaultChecked={
+                (checkboxValue !== "Query" &&
+                  !!operationTypesFilter?.includes(checkboxValue)) ||
+                (checkboxValue == "Query" &&
+                  !!operationTypesFilter?.includes(checkboxValue) &&
+                  !!querySubTypes?.every((element) =>
+                    operationTypesFilter.includes(element)
+                  ) &&
+                  !!fragmentSubTypes?.every((element) =>
+                    operationTypesFilter.includes(element)
+                  ))
+              }
             />
             {checkboxValue.includes("Query") && (
               <div
@@ -264,7 +286,6 @@ const useOnSubTypeChange = ({
           types: arr,
         };
       });
-      console.error({ arr, filters });
     },
     [operationTypesFilter, setOperationTypesFilter, filters, setFilters]
   );
@@ -340,7 +361,6 @@ const useOnOperationTypeFilterChange = (
       let typesFilter = Array.from(
         new Set([...operationTypesFilter, ...(filters?.types || [])])
       );
-      console.log({ operationTypesFilter, filters, typesFilter });
       if (checked && !typesFilter.includes(value)) {
         typesFilter.push(value);
         if (value === OperationType.Query) {
@@ -377,7 +397,6 @@ const useOnOperationTypeFilterChange = (
           types: typesFilter,
         };
       });
-      console.log({ typesFilter, filters });
     },
     [operationTypesFilter, setOperationTypesFilter, setFilters, filters]
   );
