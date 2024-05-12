@@ -9,3 +9,4 @@ export { getOpenDescriptionStore } from "./get-open-description";
 export { getSelectedApolloClientId } from "./get-selected-apollo-client-id";
 export { getApolloInspectorStopTracking } from "./get-apollo-inspector-stop-tracking";
 export { getTheme } from "./get-theme";
+export { getSelectedOperationInAffectedQueriesView } from "./selected-operation-in-affected-queries-view";

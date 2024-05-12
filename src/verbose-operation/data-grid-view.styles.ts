@@ -28,20 +28,17 @@ export const useStyles = makeStyles({
     backgroundColor: tokens.colorBrandBackground2Hover,
     minWidth: "10px !important",
     textOverflow: "ellipsis",
+    ...shorthands.borderLeft("0.1rem", "solid", tokens.colorNeutralStroke2),
   },
   gridrowcell: {
     minWidth: "10px !important",
+    ...shorthands.borderLeft("0.1rem", "solid", tokens.colorNeutralStroke2),
   },
   gridRowOdd: {
     backgroundColor: tokens.colorSubtleBackgroundPressed,
   },
-  filterInfo: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    fontSize: "1rem",
-    color: tokens.colorPaletteMarigoldBackground3,
-    ...shorthands.padding("0.5rem"),
+  searchBar: {
+    paddingRight: "0.5rem",
   },
   gridView: {
     flexGrow: 2,
@@ -122,6 +119,7 @@ export type IClasses = Record<
   | "selectedOperationGridWrapper"
   | "gridWrapper"
   | "filterViewWrapper"
-  | "filtersButton",
+  | "filtersButton"
+  | "searchBar",
   string
 >;

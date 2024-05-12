@@ -23,6 +23,13 @@ export class CustomEventTarget {
     this.connectionsListenersMap = new Map<number, callback>();
   }
 
+  /**
+   * Adds event listener for a specific type
+   * @param type
+   * @param callback
+   * @param options
+   * @returns
+   */
   public addEventListener<T>(
     type: string,
     callback: (message: T) => void,
@@ -44,6 +51,12 @@ export class CustomEventTarget {
     return () => this.eventTarget.removeEventListener(type, listener, options);
   }
 
+  /**
+   * Adds a connection listener, which forwards the message
+   * to the connection.
+   * @param callback
+   * @returns
+   */
   public addConnectionListeners(callback: callback) {
     const index = this.connectionsListenerIndex;
     this.connectionsListenersMap.set(index, callback);

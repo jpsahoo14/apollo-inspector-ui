@@ -7,6 +7,7 @@ import { ICountReducerAction } from "../operations-tracker-body/operations-track
 import {
   IOperationsAction,
   IOperationsReducerState,
+  OperationReducerActionEnum,
 } from "../operations-tracker-container-helper";
 
 export interface IVerboseOperationsContainerProps {
@@ -30,6 +31,14 @@ export const VerboseOperationsContainer = (
   const verboseClassName = operationsState.selectedOperation
     ? classes.selectedOperationView
     : classes.notselectedOperationView;
+
+  const closeVerboseOperationView = React.useCallback(() => {
+    dispatchOperationsState({
+      type: OperationReducerActionEnum.UpdateSelectedOperation,
+      value: undefined,
+    });
+  }, []);
+
   return (
     <div className={classes.root}>
       <div className={classes.allOperationsView}>
@@ -45,7 +54,7 @@ export const VerboseOperationsContainer = (
         <VerboseOperationView
           key={"VerboseOperationView"}
           operation={operationsState.selectedOperation}
-          dispatchOperationsState={dispatchOperationsState}
+          closeVerboseOperationView={closeVerboseOperationView}
         />
       </div>
     </div>

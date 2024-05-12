@@ -11,7 +11,6 @@ import {
 import { ErrorBoundary } from "./operation-tracker-error-boundary";
 import {
   getInitialState,
-  OperationReducerActionEnum,
   reducers,
 } from "./operations-tracker-container-helper";
 import {
@@ -42,13 +41,10 @@ export const OperationsTrackerContainerInner = (
   props: IOperationsTrackerContainer
 ) => {
   const classes = useStyles();
-  const { onCopy, onRecordStart, onRecordStop } = props;
-  const {
-    openDescription,
-    operationsState,
-    dispatchOperationsState,
-    setSearchText,
-  } = useOperationsTrackerContainer(props);
+  const { onCopy, onRecordStart, onRecordStop, shouldStartRecordingOnMount } =
+    props;
+  const { openDescription, operationsState, dispatchOperationsState } =
+    useOperationsTrackerContainer(props);
 
   const mainSlot = useMainSlot(
     {
@@ -69,11 +65,11 @@ export const OperationsTrackerContainerInner = (
           )}
         >
           <OperationsTrackerHeader
-            setSearchText={setSearchText}
             operationsState={operationsState}
             onRecordStart={onRecordStart}
             onRecordStop={onRecordStop}
             onCopy={onCopy}
+            shouldStartRecordingOnMount={shouldStartRecordingOnMount}
           />
           {mainSlot}
         </div>
@@ -184,21 +180,10 @@ const useOperationsTrackerContainer = (props: IOperationsTrackerContainer) => {
 
   useSetSelectedApolloClient(props);
 
-  const setSearchText = React.useCallback(
-    (text: string) => {
-      dispatchOperationsState({
-        type: OperationReducerActionEnum.UpdateSearchText,
-        value: text,
-      });
-    },
-    [dispatchOperationsState]
-  );
-
   return {
     openDescription,
     operationsState,
     dispatchOperationsState,
-    setSearchText,
   };
 };
 

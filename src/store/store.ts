@@ -12,6 +12,7 @@ import {
   getSelectedTabStore,
   getOpenDescriptionStore,
   getTheme,
+  getSelectedOperationInAffectedQueriesView,
 } from "./states";
 import { getFilterSetStore } from "./states/get-filterset";
 import { getColumnOptions } from "./states/get-column-options";
@@ -31,5 +32,6 @@ export const useTrackerStore = create<IStore>((set: ISet) => {
     ...getOpenDescriptionStore(set),
     ...getFilterSetStore(set),
     ...getColumnOptions(set),
+    ...getSelectedOperationInAffectedQueriesView(set),
   };
 });
