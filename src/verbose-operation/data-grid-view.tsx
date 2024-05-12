@@ -11,6 +11,7 @@ import { IVerboseOperation, OperationStatus } from "apollo-inspector";
 import { useStyles, IClasses } from "./data-grid-view.styles";
 import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
+import { LineHorizontal3Regular } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
 import { Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
