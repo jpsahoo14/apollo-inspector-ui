@@ -96,6 +96,13 @@ export const useStyles = makeStyles({
   },
   filtersButton: {
     marginRight: ".5rem",
+    position: "relative",
+  },
+  badge: {
+    position: "absolute",
+    top: "0.15rem",
+    right: "3.5rem",
+    backgroundColor: tokens.colorStatusDangerBackground3,
   },
 });
 
@@ -118,6 +125,7 @@ export type IClasses = Record<
   | "gridWrapper"
   | "filterViewWrapper"
   | "filtersButton"
-  | "searchBar",
+  | "searchBar"
+  | "badge",
   string
 >;

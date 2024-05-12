@@ -13,14 +13,12 @@ import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
 import { Filter20Filled } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
-import { Button, mergeClasses } from "@fluentui/react-components";
+import { Badge, Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { Search } from "../search/search";
 import { debounce, DebouncedFunc } from "lodash-es";
-import {
-  OperationReducerActionEnum,
-} from "../operations-tracker-container-helper";
+import { OperationReducerActionEnum } from "../operations-tracker-container-helper";
 
 export const DataGridView = React.memo((props: IDataGridView) => {
   const classes = useStyles();
@@ -62,7 +60,8 @@ export const DataGridView = React.memo((props: IDataGridView) => {
         classes,
         handleToggleFilters,
         operationsState,
-        debouncedFilter
+        debouncedFilter,
+        props.operations?.length || 0
       )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
@@ -153,9 +152,9 @@ const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
   handleToggleFilters: () => void,
   operationsState: IOperationsReducerState,
-  debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>
+  debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>,
+  operationsLength: number
 ) => (
-
   <div className={classes.headers}>
     <div className={classes.searchBar}>
       <Search onSearchChange={debouncedFilter} />
@@ -165,7 +164,10 @@ const renderFilterAndColumnOptionsButton = (
       onClick={handleToggleFilters}
       className={classes.filtersButton}
     >
-      Filters
+      Filter
+      {operationsState.filteredOperations?.length != operationsLength && (
+        <Badge size="extra-small" className={classes.badge} />
+      )}
     </Button>
     {!operationsState.selectedOperation && <ColumnOptions />}
   </div>
