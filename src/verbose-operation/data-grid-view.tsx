@@ -61,7 +61,8 @@ export const DataGridView = React.memo((props: IDataGridView) => {
         handleToggleFilters,
         operationsState,
         debouncedFilter,
-        props.operations?.length || 0
+        props.operations?.length || 0,
+        filters
       )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
@@ -153,11 +154,15 @@ const renderFilterAndColumnOptionsButton = (
   handleToggleFilters: () => void,
   operationsState: IOperationsReducerState,
   debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>,
-  operationsLength: number
+  operationsLength: number,
+  filters: IFilterSet
 ) => (
   <div className={classes.headers}>
     <div className={classes.searchBar}>
       <Search onSearchChange={debouncedFilter} />
+      {operationsState.searchText && (
+        <Badge size="extra-small" className={classes.searchBadge} />
+      )}
     </div>
     <Button
       icon={<Filter20Filled />}
@@ -165,7 +170,9 @@ const renderFilterAndColumnOptionsButton = (
       className={classes.filtersButton}
     >
       Filter
-      {operationsState.filteredOperations?.length != operationsLength && (
+      {(filters.results.length !== 0 ||
+        filters.statuses.length !== 0 ||
+        filters.types.length !== 0) && (
         <Badge size="extra-small" className={classes.badge} />
       )}
     </Button>

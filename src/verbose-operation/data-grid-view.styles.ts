@@ -39,6 +39,13 @@ export const useStyles = makeStyles({
   },
   searchBar: {
     paddingRight: "0.5rem",
+    position: "relative",
+  },
+  searchBadge: {
+    position: "absolute",
+    top: "0.15rem",
+    right: "0.7rem",
+    backgroundColor: tokens.colorStatusDangerBackground3,
   },
   gridView: {
     flexGrow: 2,
