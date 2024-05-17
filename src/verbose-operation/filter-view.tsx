@@ -124,13 +124,6 @@ export const FilterView = React.memo((props: IFilterView) => {
     );
   });
 
-  console.log({
-    filters,
-    operationTypesFilter,
-    resultFromFilter,
-    statusFilter,
-  });
-
   return (
     <div className={classes.filterView}>
       {renderOperationTypeFilter(classes, operationTypes)}
@@ -139,6 +132,24 @@ export const FilterView = React.memo((props: IFilterView) => {
     </div>
   );
 });
+
+const isTypeBoxChecked = (
+  checkboxValue: string,
+  operationTypesFilter: string[]
+) => {
+  return (
+    (checkboxValue !== "Query" &&
+      !!operationTypesFilter?.includes(checkboxValue)) ||
+    (checkboxValue == "Query" &&
+      !!operationTypesFilter?.includes(checkboxValue) &&
+      !!querySubTypes?.every((element) =>
+        operationTypesFilter.includes(element)
+      ) &&
+      !!fragmentSubTypes?.every((element) =>
+        operationTypesFilter.includes(element)
+      ))
+  );
+};
 
 const useOperationTypesCheckBox = ({
   operationTypesFilter,
@@ -182,31 +193,12 @@ const useOperationTypesCheckBox = ({
               onChange={onOperationTypeChange}
               value={checkboxValue}
               label={checkboxValue}
-              checked={
-                (checkboxValue !== "Query" &&
-                  !!operationTypesFilter?.includes(checkboxValue)) ||
-                (checkboxValue == "Query" &&
-                  !!operationTypesFilter?.includes(checkboxValue) &&
-                  !!querySubTypes?.every((element) =>
-                    operationTypesFilter.includes(element)
-                  ) &&
-                  !!fragmentSubTypes?.every((element) =>
-                    operationTypesFilter.includes(element)
-                  ))
-              }
+              checked={isTypeBoxChecked(checkboxValue, operationTypesFilter)}
               key={`type-${checkboxValue}`}
-              defaultChecked={
-                (checkboxValue !== "Query" &&
-                  !!operationTypesFilter?.includes(checkboxValue)) ||
-                (checkboxValue == "Query" &&
-                  !!operationTypesFilter?.includes(checkboxValue) &&
-                  !!querySubTypes?.every((element) =>
-                    operationTypesFilter.includes(element)
-                  ) &&
-                  !!fragmentSubTypes?.every((element) =>
-                    operationTypesFilter.includes(element)
-                  ))
-              }
+              defaultChecked={isTypeBoxChecked(
+                checkboxValue,
+                operationTypesFilter
+              )}
             />
             {checkboxValue.includes("Query") && (
               <div
