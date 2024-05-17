@@ -13,7 +13,7 @@ import { FilterView, IFilterSet } from "./filter-view";
 import { Item, IDataGridView } from "./data-grid.interface";
 import { Filter20Filled } from "@fluentui/react-icons";
 import { ColumnOptions } from "./column-options-view";
-import { Button, mergeClasses } from "@fluentui/react-components";
+import { Badge, Button, mergeClasses } from "@fluentui/react-components";
 import { useDataGridView } from "./use-data-grid-view";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { Search } from "../search/search";
@@ -60,7 +60,9 @@ export const DataGridView = React.memo((props: IDataGridView) => {
         classes,
         handleToggleFilters,
         operationsState,
-        debouncedFilter
+        debouncedFilter,
+        props.operations?.length || 0,
+        filters
       )}
       <div className={classes.gridView} ref={divRef}>
         {renderFilterView(
@@ -151,18 +153,28 @@ const renderFilterAndColumnOptionsButton = (
   classes: IClasses,
   handleToggleFilters: () => void,
   operationsState: IOperationsReducerState,
-  debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>
+  debouncedFilter: DebouncedFunc<(e: React.SyntheticEvent) => void>,
+  operationsLength: number,
+  filters: IFilterSet
 ) => (
   <div className={classes.headers}>
     <div className={classes.searchBar}>
       <Search onSearchChange={debouncedFilter} />
+      {operationsState.searchText && (
+        <Badge size="extra-small" className={classes.searchBadge} />
+      )}
     </div>
     <Button
       icon={<Filter20Filled />}
       onClick={handleToggleFilters}
       className={classes.filtersButton}
     >
-      Filters
+      Filter
+      {(filters.results.length !== 0 ||
+        filters.statuses.length !== 0 ||
+        filters.types.length !== 0) && (
+        <Badge size="extra-small" className={classes.badge} />
+      )}
     </Button>
     {!operationsState.selectedOperation && <ColumnOptions />}
   </div>
