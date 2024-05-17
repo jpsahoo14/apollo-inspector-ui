@@ -184,13 +184,13 @@ const useFilterLogic = (props: IDataGridView) => {
     dispatchOperationsState,
   } = props;
 
-  const [filters, setFilters] = React.useState<IFilterSet>({
-    results: [],
-    types: [],
-    statuses: [],
-  });
+  const store = React.useContext(TrackerStoreContext);
+  const [filters, setFilters] = useStore(
+    store,
+    useShallow((store) => [store.filterSet, store.setFilterSet])
+  );
   const [filteredItems, setFilteredItems] = React.useState<IVerboseOperation[]>(
-    operations || []
+    operationsState.filteredOperations || []
   );
 
   React.useEffect(() => {

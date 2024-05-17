@@ -54,12 +54,16 @@ interface IUseOperationTypesCheckBoxParams {
 }
 
 export const FilterView = React.memo((props: IFilterView) => {
+  const { setFilters, filters } = props;
   const [operationTypesFilter, setOperationTypesFilter] = React.useState<
     string[]
-  >([]);
-  const [resultFromFilter, setResultFromFilter] = React.useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const { setFilters, filters } = props;
+  >(filters?.types || []);
+  const [resultFromFilter, setResultFromFilter] = React.useState<string[]>(
+    filters?.results || []
+  );
+  const [statusFilter, setStatusFilter] = React.useState<string[]>(
+    filters?.statuses || []
+  );
   const [queryChecked, setQueryChecked] = React.useState(false);
   const [querySubTypesChecked, setQuerySubTypesChecked] = React.useState<
     OperationType[]
@@ -82,11 +86,13 @@ export const FilterView = React.memo((props: IFilterView) => {
   const onResultChange = useOnResultChange(
     resultFromFilter,
     setResultFromFilter,
+    filters,
     setFilters
   );
   const onStatusChange = useOnStatusChange(
     statusFilter,
     setStatusFilter,
+    filters,
     setFilters
   );
 
@@ -100,6 +106,7 @@ export const FilterView = React.memo((props: IFilterView) => {
           value={checkboxValue}
           label={checkboxValue}
           key={`status-${checkboxValue}`}
+          defaultChecked={!!statusFilter.includes(checkboxValue)}
         />
       );
     });
@@ -112,6 +119,7 @@ export const FilterView = React.memo((props: IFilterView) => {
         value={checkboxValue}
         label={checkboxValue}
         key={`result-${checkboxValue}`}
+        defaultChecked={!!resultFromFilter.includes(checkboxValue)}
       />
     );
   });
@@ -125,21 +133,42 @@ export const FilterView = React.memo((props: IFilterView) => {
   );
 });
 
+const isTypeBoxChecked = (
+  checkboxValue: string,
+  operationTypesFilter: string[]
+) => {
+  return (
+    (checkboxValue !== "Query" &&
+      !!operationTypesFilter?.includes(checkboxValue)) ||
+    (checkboxValue == "Query" &&
+      !!operationTypesFilter?.includes(checkboxValue) &&
+      !!querySubTypes?.every((element) =>
+        operationTypesFilter.includes(element)
+      ) &&
+      !!fragmentSubTypes?.every((element) =>
+        operationTypesFilter.includes(element)
+      ))
+  );
+};
+
 const useOperationTypesCheckBox = ({
   operationTypesFilter,
   setOperationTypesFilter,
+  filters,
   setFilters,
 }: IUseOperationTypesCheckBoxParams) => {
   const onOperationTypeChange = useOnOperationTypeFilterChange(
     operationTypesFilter,
     setOperationTypesFilter,
+    filters,
     setFilters
   );
 
   const onSubTypeChange = useOnSubTypeChange({
     operationTypesFilter,
-    setFilters,
     setOperationTypesFilter,
+    filters,
+    setFilters,
   });
 
   const operationTypes = React.useMemo(() => {
@@ -164,8 +193,12 @@ const useOperationTypesCheckBox = ({
               onChange={onOperationTypeChange}
               value={checkboxValue}
               label={checkboxValue}
-              checked={!!operationTypesFilter?.includes(checkboxValue)}
+              checked={isTypeBoxChecked(checkboxValue, operationTypesFilter)}
               key={`type-${checkboxValue}`}
+              defaultChecked={isTypeBoxChecked(
+                checkboxValue,
+                operationTypesFilter
+              )}
             />
             {checkboxValue.includes("Query") && (
               <div
@@ -196,6 +229,7 @@ const useOperationTypesCheckBox = ({
                         value={value}
                         checked={!!operationTypesFilter?.includes(value)}
                         onChange={onSubTypeChange}
+                        defaultChecked={!!operationTypesFilter.includes(value)}
                       />
                     );
                   })}
@@ -204,36 +238,37 @@ const useOperationTypesCheckBox = ({
           </React.Fragment>
         );
       });
-  }, [onOperationTypeChange, onSubTypeChange, operationTypesFilter]);
+  }, [onOperationTypeChange, onSubTypeChange, operationTypesFilter, filters]);
 
   return operationTypes;
 };
 
 interface IUseOnSubTypeChange {
   operationTypesFilter: string[];
-  setFilters: (input: React.SetStateAction<IFilterSet>) => void;
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>;
+  filters: IFilterSet | null;
+  setFilters: (input: React.SetStateAction<IFilterSet>) => void;
 }
 
 const useOnSubTypeChange = ({
   operationTypesFilter,
-  setFilters,
   setOperationTypesFilter,
+  filters,
+  setFilters,
 }: IUseOnSubTypeChange) =>
   React.useCallback(
     (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = operationTypesFilter.concat([]);
+      let arr = Array.from(
+        new Set([...operationTypesFilter, ...(filters?.types || [])])
+      );
 
-      if (checked) {
-        !arr.includes(value) && arr.push(value);
-        arr.length == 9 && !arr.includes("Query") && arr.push("Query");
-      } else {
+      if (checked && !arr.includes(value)) {
+        arr.push(value);
+      } else if (!checked) {
         arr = arr.filter((x) => x !== value);
-        if (arr.length == 1 && arr.includes("Query"))
-          arr = arr.filter((y) => y !== "Query");
       }
       setOperationTypesFilter(arr);
 
@@ -244,12 +279,13 @@ const useOnSubTypeChange = ({
         };
       });
     },
-    [operationTypesFilter, setOperationTypesFilter]
+    [operationTypesFilter, setOperationTypesFilter, filters, setFilters]
   );
 
 const useOnStatusChange = (
   statusFilter: string[],
   setStatusFilter: React.Dispatch<React.SetStateAction<string[]>>,
+  filters: IFilterSet,
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
@@ -257,10 +293,10 @@ const useOnStatusChange = (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = statusFilter.concat([]);
-      if (checked) {
+      let arr = Array.from(new Set([...statusFilter, ...filters.statuses]));
+      if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
-      } else {
+      } else if (!checked) {
         arr = arr.filter((x) => x !== value);
       }
       setStatusFilter(arr);
@@ -272,12 +308,13 @@ const useOnStatusChange = (
         };
       });
     },
-    [statusFilter, setStatusFilter]
+    [statusFilter, setStatusFilter, filters, setFilters]
   );
 
 const useOnResultChange = (
   resultFromFilter: string[],
   setResultFromFilter: React.Dispatch<React.SetStateAction<string[]>>,
+  filters: IFilterSet,
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
@@ -285,10 +322,10 @@ const useOnResultChange = (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let arr = resultFromFilter.concat([]);
-      if (checked) {
+      let arr = Array.from(new Set([...resultFromFilter, ...filters.results]));
+      if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
-      } else {
+      } else if (!checked) {
         arr = arr.filter((x) => x !== value);
       }
       setResultFromFilter(arr);
@@ -299,12 +336,13 @@ const useOnResultChange = (
         };
       });
     },
-    [resultFromFilter, setResultFromFilter]
+    [resultFromFilter, setResultFromFilter, filters, setFilters]
   );
 
 const useOnOperationTypeFilterChange = (
   operationTypesFilter: string[],
   setOperationTypesFilter: React.Dispatch<React.SetStateAction<string[]>>,
+  filters: IFilterSet | null,
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
@@ -312,27 +350,25 @@ const useOnOperationTypeFilterChange = (
       { target: { value } }: React.ChangeEvent<HTMLInputElement>,
       { checked }: CheckboxOnChangeData
     ) => {
-      let typesFilter = operationTypesFilter.concat([]);
+      let typesFilter = Array.from(
+        new Set([...operationTypesFilter, ...(filters?.types || [])])
+      );
       if (checked) {
         !typesFilter.includes(value) && typesFilter.push(value);
         if (value === OperationType.Query) {
           querySubTypes.forEach((type) => {
-            typesFilter.push(type);
+            !typesFilter.includes(type) && typesFilter.push(type);
           });
 
           fragmentSubTypes.forEach((type) => {
-            typesFilter.push(type);
+            !typesFilter.includes(type) && typesFilter.push(type);
           });
-          typesFilter.push(OperationType.Query);
         }
-      } else {
+      } else if (!checked) {
         typesFilter = typesFilter.filter((x) => x !== value);
 
         if (value == OperationType.Query) {
           typesFilter = typesFilter.filter((x) => {
-            if (x === value) {
-              return x === value;
-            }
             if (querySubTypes.find((type) => type === x)) {
               return false;
             }
@@ -354,7 +390,7 @@ const useOnOperationTypeFilterChange = (
         };
       });
     },
-    [operationTypesFilter, setOperationTypesFilter, setFilters]
+    [operationTypesFilter, setOperationTypesFilter, setFilters, filters]
   );
 
 const renderResultsFromFiter = (
