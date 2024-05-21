@@ -5,6 +5,7 @@ export const addSectionMutation = gql`
     addSection(input: $input) {
       id
       title
+      content
     }
   }
 `;
