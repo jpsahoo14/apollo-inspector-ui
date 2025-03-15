@@ -20,8 +20,14 @@ export const sendMessageFromPanelPage = (context: IPanelContext) => {
 export const getCopyData = (context: IPanelContext) => {
   return (message: IMessagePayload) => {
     const data = message.data;
-    const stringifiedData = JSON.stringify(data);
-    copy(stringifiedData);
+    try {
+      const stringifiedData = JSON.stringify(data);
+      copy(stringifiedData);
+    } catch {
+      logMessage(`Error occured while copying apollo cache data`, {
+        message: undefined,
+      });
+    }
   };
 };
 
