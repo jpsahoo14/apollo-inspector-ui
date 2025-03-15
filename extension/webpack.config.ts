@@ -2,6 +2,7 @@ import path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const plugins = [
   new CopyPlugin({
@@ -36,6 +37,7 @@ const plugins = [
       },
     ],
   }),
+  new BundleAnalyzerPlugin(),
 ];
 
 export default (env: any): webpack.Configuration => {

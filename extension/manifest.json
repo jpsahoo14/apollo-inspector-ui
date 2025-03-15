@@ -1,16 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Apollo Inspector",
-  "description": "Adds apollo inspector devtools to Google Chrome",
-  "version": "0.0.7",
+  "description": "Adds apollo inspector devtools to Microsoft Edge",
+  "version": "0.0.9",
   "content_scripts": [
     {
-      "js": [
-        "content-script.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ],
+      "js": ["content-script.js"],
+      "matches": ["<all_urls>"],
       "run_at": "document_start"
     }
   ],
@@ -23,12 +19,8 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "webpage.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "resources": ["webpage.js"],
+      "matches": ["<all_urls>"]
     }
   ],
   "background": {
