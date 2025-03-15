@@ -59,7 +59,8 @@ export const getCopyWholeCacheCB = (context: IWebpageContext) => {
   return (message: IMessagePayload) => {
     const { clientId } = message.data;
     const ac = getApolloClientByClientId(clientId);
-    const data = (ac?.cache as any)?.data.data;
+    const data = getCacheData(ac);
+
     sendMessageViaEventTarget(webpage, {
       action: WEBPAGE_ACTIONS.WHOLE_APOLLO_CACHE_DATA,
       callerName: Context.WEB_PAGE,
@@ -68,6 +69,23 @@ export const getCopyWholeCacheCB = (context: IWebpageContext) => {
       data,
     });
   };
+};
+
+const getCacheData = (ac: ApolloClient<NormalizedCacheObject> | undefined) => {
+  try {
+    const data = JSON.parse(
+      JSON.stringify((ac?.cache as any)?.data.data),
+      (_, v) => {
+        if (typeof v === "bigint") {
+          return v.toString();
+        }
+
+        return v;
+      }
+    );
+  } catch {
+    return undefined;
+  }
 };
 
 export const getActiveWatchQueriesForAClient = (context: IWebpageContext) => {
