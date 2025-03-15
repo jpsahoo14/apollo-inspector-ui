@@ -83,6 +83,8 @@ const getCacheData = (ac: ApolloClient<NormalizedCacheObject> | undefined) => {
         return v;
       }
     );
+
+    return data;
   } catch {
     return undefined;
   }
