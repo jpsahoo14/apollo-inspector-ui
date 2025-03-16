@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Apollo Inspector",
-  "description": "Adds apollo inspector devtools to Microsoft Edge",
-  "version": "0.0.9",
+  "description": "Adds apollo inspector devtools to Google Chrome",
+  "version": "0.0.8",
   "content_scripts": [
     {
       "js": ["content-script.js"],
