@@ -48,7 +48,6 @@ export const useStyles = makeStyles({
     backgroundColor: tokens.colorStatusDangerBackground3,
   },
   gridView: {
-    flexGrow: 2,
     display: "flex",
     height: "100%",
     minHeight: 0,
@@ -93,7 +92,6 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   filterViewWrapper: {
-    flexGrow: 1,
     display: "flex",
     maxWidth: "30rem",
     height: "100%",

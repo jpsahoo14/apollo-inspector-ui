@@ -9,6 +9,7 @@ import { ApolloProvider } from "@apollo/client";
 import { ApolloInspector } from "apollo-inspector";
 
 const apolloClient = createClient();
+window.__APOLLO_CLIENT__ = apolloClient;
 const apolloClients = [
   { clientId: "mainClient", client: apolloClient },
   { clientId: "userClient", client: apolloClient },
