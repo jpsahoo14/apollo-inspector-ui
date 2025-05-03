@@ -1,18 +1,7 @@
-import {
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
-  SplitButton,
-  MenuButtonProps,
-  Popover,
-  PopoverTrigger,
-  PopoverSurface,
-  OpenPopoverEvents,
-  OnOpenChangeData,
-} from "@fluentui/react-components";
 import * as React from "react";
+import { Button, Dropdown, message, Space } from "antd";
+import type { MenuProps } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
 import { useStyles } from "./operations-copy-button-styles";
 import { TrackerStoreContext } from "../store";
@@ -44,74 +33,74 @@ export const CopyButton = (props: ICopyButtonProps) => {
     copyFiltered,
     copyAll,
     recordingState,
-    openCopyPopover,
   } = useOperationsCopy(props);
+  
   if (recordingState === RecordingState.Initial) {
     return null;
   }
 
-  const copyMenuButton = getCopyMenuBtn(
-    classes,
-    copyAll,
-    operationsState,
-    copyFiltered,
-    copyChecked,
-    copySelected
-  );
+  const menuItems: MenuProps['items'] = [
+    {
+      key: 'all',
+      label: 'Copy All Operations',
+      onClick: () => copyAll(),
+    }
+  ];
+  
+  if ((operationsState.filteredOperations?.length || 0) > 0) {
+    menuItems.push({
+      key: 'filtered',
+      label: 'Copy Filtered Operations',
+      onClick: () => copyFiltered()
+    });
+  }
+  
+  if ((operationsState.checkedOperations?.length || 0) > 0) {
+    menuItems.push({
+      key: 'checked',
+      label: 'Copy Checked Operations',
+      onClick: () => copyChecked()
+    });
+  }
+  
+  if (operationsState.selectedOperation) {
+    menuItems.push({
+      key: 'selected',
+      label: 'Copy currently Opened Operation',
+      onClick: () => copySelected()
+    });
+  }
 
   return (
-    <Popover appearance="brand" open={openCopyPopover}>
-      <PopoverTrigger>{copyMenuButton}</PopoverTrigger>
-      <PopoverSurface>{"Copied!"}</PopoverSurface>
-    </Popover>
+    <div style={classes.button}>
+      <Dropdown menu={{ items: menuItems }}>
+        <Button onClick={copyAll}>
+          <Space>
+            Copy All
+            <DownOutlined />
+          </Space>
+        </Button>
+      </Dropdown>
+    </div>
   );
 };
 
 const useOperationsCopy = (props: ICopyButtonProps) => {
-  const { openCopyPopover, onOpenChangeCopyPopover, setCopyPopover } =
-    useCoySuccessfulPopover();
+  const [messageApi, contextHolder] = message.useMessage();
   const { copySelected, copyChecked, copyFiltered, copyAll, recordingState } =
-    useCopy(props, setCopyPopover);
+    useCopy(props, () => messageApi.success('Copied!'));
   return {
     copySelected,
     copyChecked,
     copyFiltered,
     copyAll,
     recordingState,
-    openCopyPopover,
-    onOpenChangeCopyPopover,
   };
 };
 
-const useCoySuccessfulPopover = () => {
-  const [open, setOpen] = React.useState(false);
-
-  const onOpenChange = React.useCallback(
-    (_e: OpenPopoverEvents, data: OnOpenChangeData) => {
-      setOpen(data.open || false);
-    },
-    []
-  );
-
-  const setCopyPopover = React.useCallback(
-    (open: boolean) => {
-      setOpen(open);
-
-      setTimeout(() => {
-        setOpen(!open);
-      }, 2000);
-    },
-    [setOpen]
-  );
-  return {
-    openCopyPopover: open,
-    onOpenChangeCopyPopover: onOpenChange,
-    setCopyPopover,
-  };
-};
 const useCopy = (
   props: ICopyButtonProps,
-  setCopyPopover: (open: boolean) => void
+  showCopyMessage: () => void
 ) => {
   const { operationsState, onCopy } = props;
   const store = React.useContext(TrackerStoreContext);
@@ -130,8 +119,8 @@ const useCopy = (
           convertOperationsToBeCopied(apolloOperationsData?.operations)
         ) || [],
     });
-    setCopyPopover(true);
-  }, [apolloOperationsData, onCopy]);
+    showCopyMessage();
+  }, [apolloOperationsData, onCopy, showCopyMessage]);
 
   const copyFiltered = React.useCallback(() => {
     onCopy(CopyType.FilteredOperations, {
@@ -140,8 +129,8 @@ const useCopy = (
           convertOperationsToBeCopied(operationsState.filteredOperations)
         ) || [],
     });
-    setCopyPopover(true);
-  }, [operationsState, onCopy]);
+    showCopyMessage();
+  }, [operationsState, onCopy, showCopyMessage]);
 
   const copyChecked = React.useCallback(() => {
     onCopy(CopyType.CheckedOperations, {
@@ -150,8 +139,8 @@ const useCopy = (
           convertOperationsToBeCopied(operationsState.checkedOperations)
         ) || [],
     });
-    setCopyPopover(true);
-  }, [operationsState, onCopy]);
+    showCopyMessage();
+  }, [operationsState, onCopy, showCopyMessage]);
 
   const copySelected = React.useCallback(() => {
     if (operationsState.selectedOperation?.id) {
@@ -161,9 +150,9 @@ const useCopy = (
             convertOperationsToBeCopied([operationsState?.selectedOperation])
           ) || [],
       });
-      setCopyPopover(true);
+      showCopyMessage();
     }
-  }, [operationsState, onCopy]);
+  }, [operationsState, onCopy, showCopyMessage]);
 
   return { copySelected, copyChecked, copyFiltered, copyAll, recordingState };
 };
@@ -199,44 +188,3 @@ const convertOperationsToBeCopied = (
 
   return modified;
 };
-
-const getCopyMenuBtn = (
-  classes: Record<"button", string>,
-  copyAll: () => void,
-  operationsState: IOperationsReducerState,
-  copyFiltered: () => void,
-  copyChecked: () => void,
-  copySelected: () => void
-) => (
-  <div className={classes.button}>
-    <Menu positioning="below-end">
-      <MenuTrigger disableButtonEnhancement>
-        {(triggerProps: MenuButtonProps) => (
-          <SplitButton
-            primaryActionButton={{ onClick: copyAll }}
-            menuButton={triggerProps}
-          >
-            Copy All
-          </SplitButton>
-        )}
-      </MenuTrigger>
-
-      <MenuPopover>
-        <MenuList>
-          <MenuItem onClick={copyAll}>Copy All Operations</MenuItem>
-          {(operationsState.filteredOperations?.length || 0) > 0 ? (
-            <MenuItem onClick={copyFiltered}>Copy Filtered Operations</MenuItem>
-          ) : null}
-          {(operationsState.checkedOperations?.length || 0) > 0 ? (
-            <MenuItem onClick={copyChecked}>Copy Checked Operations</MenuItem>
-          ) : null}
-          {operationsState.selectedOperation ? (
-            <MenuItem onClick={copySelected}>
-              Copy currently Opened Operation
-            </MenuItem>
-          ) : null}
-        </MenuList>
-      </MenuPopover>
-    </Menu>
-  </div>
-);

@@ -1,10 +1,14 @@
-import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { createStyles } from "../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles(({ token }) => ({
   filterView: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.colorNeutralBackground2,
+    backgroundColor: token.colorFillAlter, // Use theme token instead of hardcoded color
     overflowY: "scroll",
     paddingLeft: "1rem",
     paddingRight: "1rem",
@@ -14,11 +18,7 @@ export const useStyles = makeStyles({
     },
     minHeight: 0,
     minWidth: 0,
-    ...shorthands.borderRight(
-      ".1rem",
-      "solid",
-      tokens.colorSubtleBackgroundHover
-    ),
+    borderRight: `.1rem solid ${token.colorBorderSecondary}`, // Use theme token for border
   },
   filters: {
     display: "flex",
@@ -33,7 +33,7 @@ export const useStyles = makeStyles({
   },
   typeText: {
     fontWeight: "bold",
-    ...shorthands.padding(".3rem"),
+    padding: ".3rem",
     fontSize: ".9rem",
   },
   operationType: {
@@ -41,4 +41,4 @@ export const useStyles = makeStyles({
     flexDirection: "column",
     paddingBottom: ".5rem",
   },
-});
+}));

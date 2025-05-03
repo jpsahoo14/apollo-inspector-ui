@@ -1,35 +1,32 @@
 import * as React from "react";
-import { useQuery } from "@apollo/client";
-import { TabList, Tab } from "@fluentui/react-components";
+import { Tabs } from "antd";
 import { useStyles } from "./editor-tabs.styles";
 
-interface IEditorTabs {
-  editorId: number;
-  setEditorId: React.Dispatch<React.SetStateAction<number>>;
+export interface IEditorTabsProps {
+  tabs: {
+    id: string;
+    text: string;
+  }[];
+  selectedTab: string;
+  setSelectedTab: (tabId: string) => void;
 }
-export const EditorTabs = (props: IEditorTabs) => {
-  const { setEditorId, editorId } = props;
-  const styles = useStyles();
 
-  const onTabSelect = React.useCallback(
-    (_, { value }: any) => {
-      setEditorId(parseInt(value));
-    },
-    [setEditorId]
-  );
-
+export const EditorTabs = (props: IEditorTabsProps) => {
+  const { tabs, selectedTab, setSelectedTab } = props;
+  const classes = useStyles();
+  
+  const items = tabs.map(tab => ({
+    key: tab.id,
+    label: tab.text
+  }));
+  
   return (
-    <div className={styles.root}>
-      <TabList
-        onTabSelect={onTabSelect}
-        selectedValue={`${editorId}`}
-        defaultSelectedValue={`${editorId}`}
-      >
-        <Tab value="1">Editor One</Tab>
-        <Tab value="2">Editor Two</Tab>
-        <Tab value="3">Editor Three</Tab>
-        <Tab value="4">Users list</Tab>
-      </TabList>
+    <div className={classes.root}>
+      <Tabs 
+        activeKey={selectedTab} 
+        onChange={setSelectedTab} 
+        items={items}
+      />
     </div>
   );
 };

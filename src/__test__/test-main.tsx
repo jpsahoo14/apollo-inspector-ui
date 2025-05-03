@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { OperationsTrackerContainer } from "../operations-tracker-container";
-import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { ConfigProvider, theme } from "antd";
 import { EditorMainApp } from "./test-app/src/components/editor-main-app/editor-main-app";
 import { createClient } from "./test-app/src/data/apollo-client";
 import { ApolloProvider } from "@apollo/client";
@@ -37,7 +37,7 @@ const onStopRecording = () => {};
 
 const apolloUIComponent = (
   <ApolloProvider client={apolloClient}>
-    <FluentProvider theme={teamsLightTheme}>
+    <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
       <EditorMainApp />
       <OperationsTrackerContainer
         apolloClientIds={apolloClients.map((ac) => ac.clientId)}
@@ -47,7 +47,7 @@ const apolloUIComponent = (
         onRecordStart={onRecordStart}
         onRecordStop={onStopRecording}
       />
-    </FluentProvider>
+    </ConfigProvider>
   </ApolloProvider>
 );
 

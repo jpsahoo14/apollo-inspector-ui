@@ -1,32 +1,27 @@
 import * as React from "react";
-import { IPage } from "../../data/resolvers/initial-data/data.interface";
-import { SectionContainer } from "../section";
-import { Subtitle2Stronger, List, Button } from "@fluentui/react-components";
 import { useStyles } from "./page.styles";
+import { Typography, List, Button } from "antd";
 
-interface IPageProps {
-  page: IPage;
-  actionButton: JSX.Element;
+const { Text } = Typography;
+
+interface PageProps {
+  name: string;
+  isActive: boolean;
+  onClick: () => void;
+  children?: React.ReactNode;
+  actionButton?: React.ReactNode;
+  page?: any;
 }
-export const Page = (props: IPageProps) => {
-  const { page, actionButton } = props;
-  const styles = useStyles();
-  const sectionsComp = React.useMemo(() => {
-    const sections = page.sections.map((sec) => {
-      return <SectionContainer section={sec} key={sec.id} />;
-    });
-    return <div className={styles.root}>{sections}</div>;
-  }, [page.sections]);
 
+export const Page = (props: PageProps) => {
+  const { name, isActive, onClick, children, actionButton, page } = props;
+  const classes = useStyles();
+  const className = `${classes.root} ${isActive ? classes.active : ""}`;
   return (
-    <div>
-      <div className={styles.titleWrapper}>
-        <Subtitle2Stronger
-          className={styles.title}
-        >{`Page Title: ${page.title}`}</Subtitle2Stronger>
-        {actionButton}
-      </div>
-      {sectionsComp}
+    <div className={className} onClick={onClick}>
+      <Text strong>{name}</Text>
+      {actionButton}
+      {children}
     </div>
   );
 };

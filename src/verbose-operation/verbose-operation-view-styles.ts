@@ -1,6 +1,12 @@
-import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { createStyles } from "../utils/style-utils";
+import { theme } from 'antd';
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  const { token } = theme.useToken();
+  return styles(token);
+};
+
+const styles = (token: any) => createStyles({
   operationView: {
     display: "flex",
     flexDirection: "column",
@@ -8,42 +14,38 @@ export const useStyles = makeStyles({
     minWidth: "15rem",
     height: "100%",
     minHeight: 0,
-    boxShadow: `-1.5rem 0 1.2rem -1.2rem ${tokens.colorNeutralShadowAmbientLighter}`,
-    ...shorthands.borderLeft(
-      ".1rem",
-      "solid",
-      tokens.colorSubtleBackgroundHover
-    ),
+    boxShadow: `-1.5rem 0 1.2rem -1.2rem rgba(0, 0, 0, 0.1)`,
+    borderLeft: `.1rem solid ${token.colorBorderSecondary}`,
   },
   operationNameAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    ...getPanelCommonCss(),
+    ...getPanelCommonCss(token),
   },
   operationVariablesAccPanel: {
     whiteSpace: "pre-wrap",
     marginLeft: "1rem",
-    ...getPanelCommonCss(),
+    ...getPanelCommonCss(token),
   },
   durationAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    ...getPanelCommonCss(),
+    ...getPanelCommonCss(token),
   },
   accPanel: {
     marginLeft: "1rem",
-    ...getPanelCommonCss(),
+    ...getPanelCommonCss(token),
   },
   resultPanel: {
     whiteSpace: "pre-wrap",
-    ...getPanelCommonCss(),
+    ...getPanelCommonCss(token),
   },
   affectedQueriesAccPanel: {
     marginLeft: "1rem",
     display: "flex",
     flexDirection: "column",
-    ...getPanelCommonCss(),
+    ...getPanelCommonCss(token),
   },
   operationDetails: {
     minHeight: 0,
@@ -63,8 +65,8 @@ export const useStyles = makeStyles({
     justifyContent: "space-between",
     minHeight: 0,
     minWidth: 0,
-    backgroundColor: tokens.colorBrandBackground2Hover,
-    ...shorthands.padding("0.5rem"),
+    backgroundColor: token.colorBgContainer, // Ant Design primary background color
+    padding: "0.5rem",
   },
   heading: {
     display: "flex",
@@ -106,41 +108,30 @@ export const useStyles = makeStyles({
     backgroundColor: "transparent",
     height: "100%",
     minHeight: 0,
-    ...shorthands.border("0rem"),
+    border: "0rem",
   },
   copyButtonIcon: {
-    width: "1.5rem",
-    height: "1.5rem",
-    "& svg": {
-      width: "1.5rem",
-      height: "1.5rem",
-    },
+    fontSize: "1.5rem",
   },
   dismissButtonIcon: {
-    width: "1.5rem",
-    height: "1.5rem",
-    "& svg": {
-      width: "1.25rem",
-      height: "1.25rem",
-    },
+    fontSize: "1.5rem",
   },
   headerButtons: {
     display: "flex",
     flexDirection: "row",
     alignItems: "left",
-    ...shorthands.margin("0.5rem"),
+    margin: "0.5rem",
     minWidth: 0,
     minHeight: 0,
-    ...shorthands.margin("0.5rem"),
   },
 });
 
-function getPanelCommonCss() {
+function getPanelCommonCss(token: any) {
   return {
-    ...shorthands.borderRadius("1rem"),
-    ...shorthands.padding("0.5rem"),
-    backgroundColor: tokens.colorNeutralForeground1Static,
-    ...shorthands.border(".1rem", "solid", tokens.colorSubtleBackgroundHover),
+    borderRadius: "1rem",
+    padding: "0.5rem",
+    backgroundColor: token.colorBgLayout, // Ant Design background color
+    border: `.1rem solid ${token.colorBorderSecondary}`,  // Ant Design border color
   };
 }
 

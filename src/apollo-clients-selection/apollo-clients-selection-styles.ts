@@ -1,8 +1,12 @@
-import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { createStyles } from "../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles({
   root: {
-    ...shorthands.margin("2rem"),
+    margin: "2rem",
     display: "flex",
     flexDirection: "column",
     height: "100%",
@@ -11,7 +15,7 @@ export const useStyles = makeStyles({
   },
   label: {},
   checkBoxes: {
-    ...shorthands.margin("1rem"),
+    margin: "1rem",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
@@ -20,18 +24,18 @@ export const useStyles = makeStyles({
     minWidth: 0,
   },
   errorLabel: {
-    color: tokens.colorPaletteRedBackground3,
+    color: "#ff4d4f", // Ant Design danger color
   },
   copyButton: {
-    ...shorthands.margin("0.5rem"),
+    margin: "0.5rem",
   },
   checkboxWrapper: {
-    ...shorthands.margin("0.5rem"),
+    margin: "0.5rem",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    ...shorthands.borderWidth("0.1rem"),
-    ...shorthands.borderStyle("groove"),
+    borderWidth: "0.1rem",
+    borderStyle: "groove",
     alignItems: "center",
   },
 });

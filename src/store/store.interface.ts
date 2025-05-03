@@ -117,6 +117,7 @@ export interface IFilterSet {
   results: string[];
   types: string[];
   statuses: string[];
+  operationTypes: string[];
 }
 
 export interface IFilterSetStore {

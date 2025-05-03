@@ -1,33 +1,27 @@
 import * as React from "react";
 import { useApolloClient, useQuery } from "@apollo/client";
-import {
-  TabList,
-  Tab,
-  Spinner,
-  Text,
-  Button,
-} from "@fluentui/react-components";
+import { Tabs, Spin, Typography, Button } from "antd";
 import { useStyles } from "./users-list.styles";
 import {
   users,
   refreshUsers as refreshUsersQuery,
 } from "../../data/operations";
 
+const { Text } = Typography;
+
 export const UsersList = () => {
   const styles = useStyles();
   const client = useApolloClient();
   const { data, loading, error } = useQuery(users);
 
-  const usersComp = React.useMemo(() => {
+  const tabItems = React.useMemo(() => {
     if (data?.users?.users) {
-      return data?.users?.users.map((user) => {
-        return (
-          <Tab value={`${user.id}`} key={`${user.id}`}>{`${user.name}`}</Tab>
-        );
-      });
+      return data.users.users.map(user => ({
+        key: `${user.id}`,
+        label: `${user.name}`
+      }));
     }
-
-    return null;
+    return [];
   }, [data]);
 
   React.useEffect(() => {
@@ -42,7 +36,7 @@ export const UsersList = () => {
   }, [client]);
 
   if (loading) {
-    return <Spinner />;
+    return <Spin />;
   }
 
   if (error) {
@@ -57,9 +51,11 @@ export const UsersList = () => {
     <div>
       <Button onClick={refreshUsers}>Refresh Users</Button>
       <div className={styles.root}>
-        <TabList defaultSelectedValue="tab2" vertical>
-          {usersComp}
-        </TabList>
+        <Tabs 
+          defaultActiveKey={tabItems.length > 0 ? tabItems[0].key : ""} 
+          tabPosition="left"
+          items={tabItems}
+        />
       </div>
     </div>
   );

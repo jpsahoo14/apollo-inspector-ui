@@ -1,6 +1,10 @@
-import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { createStyles } from "../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles({
   root: {
     display: "flex",
     flexDirection: "row",
@@ -12,13 +16,9 @@ export const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    ...shorthands.padding(".5rem", "0.5rem"),
-    backgroundColor: tokens.colorSubtleBackgroundHover,
-    ...shorthands.borderBottom(
-      ".1rem",
-      "solid",
-      tokens.colorNeutralShadowAmbientLighter
-    ),
+    padding: ".5rem 0.5rem",
+    backgroundColor: "#f5f5f5", // Ant Design background color
+    borderBottom: ".1rem solid #e8e8e8", // Ant Design border color
     maxWidth: "100%",
     justifyContent: "space-between",
   },
@@ -27,7 +27,7 @@ export const useStyles = makeStyles({
     maxWidth: "1rem",
   },
   expandToAvailableSpace: {
-    ...shorthands.flex(1),
+    flex: 1,
   },
   verboseOperationViewWrapper: {
     display: "flex",
@@ -48,18 +48,14 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     height: "100%",
-    backgroundColor: tokens.colorNeutralBackground2,
-    ...shorthands.borderRight(
-      ".1rem",
-      "solid",
-      tokens.colorSubtleBackgroundHover
-    ),
+    backgroundColor: "#fafafa", // Ant Design background color
+    borderRight: ".1rem solid #e8e8e8", // Ant Design border color
   },
   infoButton: {
     minWidth: "auto",
     alignItems: "end",
-    ...shorthands.border("none"),
-    backgroundColor: tokens.colorSubtleBackgroundHover,
+    border: "none",
+    backgroundColor: "#f5f5f5", // Ant Design background color
   },
   rightPane: {
     display: "flex",
@@ -68,27 +64,26 @@ export const useStyles = makeStyles({
     minHeight: 0,
     minWidth: 0,
     height: "100%",
-    ...shorthands.flex(1),
+    flex: 1,
   },
   affectedQueriesGridWrapper: {
     display: "flex",
     minHeight: 0,
     minWidth: 0,
-    ...shorthands.margin("1rem"),
+    margin: "1rem",
     height: "100%",
   },
-
   rightPaneHeader: {
     display: "flex",
-    ...shorthands.padding(".5rem", "0.5rem"),
-    backgroundColor: tokens.colorSubtleBackgroundHover,
+    padding: ".5rem 0.5rem",
+    backgroundColor: "#f5f5f5", // Ant Design background color
     minHeight: "2rem",
-    ...shorthands.padding("1rem"),
+    padding: "1rem",
   },
   selectedTab: {
-    backgroundColor: tokens.colorBrandBackground2Hover,
+    backgroundColor: "#e6f7ff", // Ant Design selected color
     "&:hover": {
-      backgroundColor: tokens.colorBrandBackground2Hover,
+      backgroundColor: "#e6f7ff", // Ant Design selected hover color
     },
   },
   tabListItem: {

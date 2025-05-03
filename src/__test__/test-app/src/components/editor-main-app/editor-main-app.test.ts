@@ -1,6 +1,6 @@
-import { makeStyles } from "@fluentui/react-components";
+import { createStyles } from "../../../../../../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = createStyles({
   rootWrapper: {
     display: "flex",
     flexDirection: "column",

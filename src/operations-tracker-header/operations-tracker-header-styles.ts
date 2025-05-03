@@ -1,32 +1,36 @@
-import { makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { createStyles } from "../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles(({ token }) => ({
   header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    ...shorthands.padding(".5rem", "1rem"),
+    padding: ".5rem 1rem",
   },
   infoButton: {
     minWidth: "auto",
-    ...shorthands.padding(0, ".5rem"),
-    ...shorthands.border("none"),
+    padding: "0 .5rem",
+    border: "none",
   },
   description: {
-    ...shorthands.padding("0rem", "1rem"),
+    padding: "0rem 1rem",
   },
   openDescription: {
     visibility: "visible",
     height: "auto",
-    ...shorthands.overflow("hidden", "auto"),
+    overflow: "hidden auto",
   },
   buttonContainer: {
     display: "flex",
   },
   stopRecordingButton: {
-    color: tokens.colorStatusDangerBackground3,
+    color: token.colorError,
     "&:hover": {
-      color: tokens.colorStatusDangerBackground3,
+      color: token.colorErrorHover,
     },
   },
-});
+}));

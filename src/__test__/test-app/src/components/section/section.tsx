@@ -1,12 +1,21 @@
 import * as React from "react";
-import { ISection } from "../../data/resolvers/initial-data/data.interface";
-import { Text } from "@fluentui/react-components";
+import { useStyles } from "./section.styles";
+import { Typography } from "antd";
 
-interface ISectionProps {
-  section: ISection;
+const { Text } = Typography;
+
+export interface ISectionProps {
+  title?: string;
+  children?: React.ReactNode;
 }
-export const Section = (props: ISectionProps) => {
-  const { section } = props;
 
-  return <Text>{section.content}</Text>;
+export const Section = (props: ISectionProps) => {
+  const { title, children } = props;
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      {title && <Text strong>{title}</Text>}
+      {children}
+    </div>
+  );
 };

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Checkbox, CheckboxOnChangeData } from "@fluentui/react-components";
+import { Checkbox } from "antd";
 import { OperationType, ResultsFrom } from "apollo-inspector";
 import { useStyles } from "./filter-view.styles";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
@@ -102,12 +102,13 @@ export const FilterView = React.memo((props: IFilterView) => {
       const checkboxValue = (value as unknown as Array<string>)[0];
       return (
         <Checkbox
-          onChange={onStatusChange}
+          onChange={(e) => onStatusChange(e, e.target.checked)}
           value={checkboxValue}
-          label={checkboxValue}
-          key={`status-${checkboxValue}`}
           defaultChecked={!!statusFilter.includes(checkboxValue)}
-        />
+          key={`status-${checkboxValue}`}
+        >
+          {checkboxValue}
+        </Checkbox>
       );
     });
 
@@ -115,12 +116,13 @@ export const FilterView = React.memo((props: IFilterView) => {
     const checkboxValue = (value as unknown as Array<string>)[0];
     return (
       <Checkbox
-        onChange={onResultChange}
+        onChange={(e) => onResultChange(e, e.target.checked)}
         value={checkboxValue}
-        label={checkboxValue}
-        key={`result-${checkboxValue}`}
         defaultChecked={!!resultFromFilter.includes(checkboxValue)}
-      />
+        key={`result-${checkboxValue}`}
+      >
+        {checkboxValue}
+      </Checkbox>
     );
   });
 
@@ -190,16 +192,17 @@ const useOperationTypesCheckBox = ({
         return (
           <React.Fragment key={`type-${checkboxValue}`}>
             <Checkbox
-              onChange={onOperationTypeChange}
+              onChange={(e) => onOperationTypeChange(e, e.target.checked)}
               value={checkboxValue}
-              label={checkboxValue}
               checked={isTypeBoxChecked(checkboxValue, operationTypesFilter)}
-              key={`type-${checkboxValue}`}
               defaultChecked={isTypeBoxChecked(
                 checkboxValue,
                 operationTypesFilter
               )}
-            />
+              key={`type-${checkboxValue}`}
+            >
+              {checkboxValue}
+            </Checkbox>
             {checkboxValue.includes("Query") && (
               <div
                 key="query-subvalues"
@@ -225,12 +228,13 @@ const useOperationTypesCheckBox = ({
                     return (
                       <Checkbox
                         key={key}
-                        label={value}
                         value={value}
                         checked={!!operationTypesFilter?.includes(value)}
-                        onChange={onSubTypeChange}
+                        onChange={(e) => onSubTypeChange(e, e.target.checked)}
                         defaultChecked={!!operationTypesFilter.includes(value)}
-                      />
+                      >
+                        {value}
+                      </Checkbox>
                     );
                   })}
               </div>
@@ -257,10 +261,8 @@ const useOnSubTypeChange = ({
   setFilters,
 }: IUseOnSubTypeChange) =>
   React.useCallback(
-    (
-      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
-      { checked }: CheckboxOnChangeData
-    ) => {
+    (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      const value = event.target.value;
       let arr = Array.from(
         new Set([...operationTypesFilter, ...(filters?.types || [])])
       );
@@ -289,10 +291,8 @@ const useOnStatusChange = (
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
-    (
-      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
-      { checked }: CheckboxOnChangeData
-    ) => {
+    (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      const value = event.target.value;
       let arr = Array.from(new Set([...statusFilter, ...filters.statuses]));
       if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
@@ -318,10 +318,8 @@ const useOnResultChange = (
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
-    (
-      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
-      { checked }: CheckboxOnChangeData
-    ) => {
+    (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      const value = event.target.value;
       let arr = Array.from(new Set([...resultFromFilter, ...filters.results]));
       if (checked && arr.indexOf(value) === -1) {
         arr.push(value);
@@ -346,10 +344,8 @@ const useOnOperationTypeFilterChange = (
   setFilters: (input: React.SetStateAction<IFilterSet>) => void
 ) =>
   React.useCallback(
-    (
-      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
-      { checked }: CheckboxOnChangeData
-    ) => {
+    (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      const value = event.target.value;
       let typesFilter = Array.from(
         new Set([...operationTypesFilter, ...(filters?.types || [])])
       );

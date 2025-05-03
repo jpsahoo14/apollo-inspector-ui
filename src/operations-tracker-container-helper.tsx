@@ -5,6 +5,7 @@ export interface IOperationsReducerState {
   checkedOperations: IVerboseOperation[] | null;
   filteredOperations: IVerboseOperation[] | null;
   selectedOperation: IVerboseOperation | null | undefined;
+  operationTypeFilter: string | null; // Added operation type filter
 }
 
 export interface IOperationsAction {
@@ -17,6 +18,7 @@ export enum OperationReducerActionEnum {
   UpdateCheckedOperations,
   UpdateFilteredOperations,
   UpdateSelectedOperation,
+  UpdateOperationTypeFilter, // Added new action type
 }
 
 export const reducers = (
@@ -40,6 +42,10 @@ export const reducers = (
       return { ...state, selectedOperation: action.value };
     }
 
+    case OperationReducerActionEnum.UpdateOperationTypeFilter: {
+      return { ...state, operationTypeFilter: action.value };
+    }
+
     default: {
       return state;
     }
@@ -52,5 +58,6 @@ export const getInitialState = (): IOperationsReducerState => {
     filteredOperations: null,
     searchText: "",
     selectedOperation: null,
+    operationTypeFilter: null, // Initialize with no filter
   };
 };

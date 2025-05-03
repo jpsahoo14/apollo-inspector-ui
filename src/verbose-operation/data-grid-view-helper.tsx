@@ -1,32 +1,30 @@
 import * as React from "react";
+import { Typography, Space } from "antd";
 import {
-  TableCellLayout,
-  createTableColumn,
-  TableColumnDefinition,
-} from "@fluentui/react-components";
+  ReadOutlined,
+  EditOutlined,
+  ApiOutlined,
+  SearchOutlined,
+  DatabaseOutlined,
+  BookOutlined,
+  FileSearchOutlined,
+  FileTextOutlined,
+  FileAddOutlined,
+} from "@ant-design/icons";
 import {
   IOperationResult,
   IVerboseOperation,
   OperationType,
 } from "apollo-inspector";
 import { fragmentSubTypes, IFilterSet, querySubTypes } from "./filter-view";
-import {
-  EditRegular,
-  ReadingListRegular,
-  PipelineRegular,
-  DatabaseLinkRegular,
-  BookDatabaseRegular,
-  DatabaseSearchRegular,
-  DatabaseRegular,
-  BookOpenRegular,
-  BookLetterRegular,
-} from "@fluentui/react-icons";
 import { SAMPLE_COLUMN_OPTIONS } from "./column-options-view";
 import {
   ColumnName,
   CustomColumnWidthOptions,
   Item,
 } from "./data-grid.interface";
+
+const { Text } = Typography;
 
 export const columnSizingOptions = (selectedColumnOptions: string[]) => {
   const columnSizing: { [key: ColumnName]: CustomColumnWidthOptions } = {};
@@ -40,7 +38,7 @@ export const columnSizingOptions = (selectedColumnOptions: string[]) => {
 export const getColumns = (
   anyOperationSelected: boolean,
   selectedColumnOptions: string[]
-): TableColumnDefinition<Item>[] => {
+) => {
   if (anyOperationSelected) {
     return getSelectedColumns([
       ColumnName.ID,
@@ -110,34 +108,34 @@ export const getFilteredItems = (
 const getOperationIcon = (type: string) => {
   switch (type) {
     case OperationType.Query: {
-      return <ReadingListRegular />;
+      return <ReadOutlined />;
     }
     case OperationType.Mutation: {
-      return <EditRegular />;
+      return <EditOutlined />;
     }
     case OperationType.Subscription: {
-      return <PipelineRegular />;
+      return <ApiOutlined />;
     }
     case OperationType.CacheReadQuery: {
-      return <DatabaseSearchRegular />;
+      return <SearchOutlined />;
     }
     case OperationType.CacheWriteQuery: {
-      return <DatabaseLinkRegular />;
+      return <DatabaseOutlined />;
     }
     case OperationType.CacheReadFragment: {
-      return <BookDatabaseRegular />;
+      return <FileSearchOutlined />;
     }
     case OperationType.CacheWriteFragment: {
-      return <DatabaseRegular />;
+      return <FileAddOutlined />;
     }
     case OperationType.ClientReadFragment: {
-      return <BookOpenRegular />;
+      return <BookOutlined />;
     }
     case OperationType.ClientWriteFragment: {
-      return <BookLetterRegular />;
+      return <FileTextOutlined />;
     }
     case OperationType.ClientReadQuery: {
-      return <DatabaseRegular />;
+      return <DatabaseOutlined />;
     }
   }
   return null;
@@ -146,32 +144,46 @@ const getOperationIcon = (type: string) => {
 export const compareString = (a: string | undefined, b: string | undefined) => {
   return (a || "").localeCompare(b || "");
 };
+
 const getSelectedColumns = (selectedColumnOptions: string[]) => {
-  const tableColumn: TableColumnDefinition<Item>[] = [];
+  const tableColumn = [];
   selectedColumnOptions?.map(function (element) {
     const val = SAMPLE_COLUMN_OPTIONS.filter((obj) => obj.key === element)[0];
     !tableColumn.some((obj) => obj.columnId === val.key) &&
-      tableColumn.push(
-        createTableColumn<Item>({
-          columnId: val.key,
-          renderHeaderCell: () => val.header,
-          compare: (a, b) => val.compare(a, b),
-          renderCell: (item) => {
-            return (
-              <TableCellLayout
-                truncate
-                key="tableCell"
-                media={
-                  val.key === ColumnName.Type &&
-                  getOperationIcon(item.operationType)
-                }
+      tableColumn.push({
+        key: val.key,
+        dataIndex: val.key,
+        title: val.header,
+        sorter: (a, b) => val.compare(a, b),
+        ellipsis: true, // Ensure ellipsis for overflow
+        width: val.size?.idealWidth || 180, // Use idealWidth if available, else fallback
+        render: (text, item) => {
+          const icon =
+            val.key === ColumnName.Type
+              ? getOperationIcon(item.operationType)
+              : null;
+          return (
+            <Space
+              style={{
+                maxWidth: val.size?.idealWidth || 180,
+                overflow: "hidden",
+              }}
+            >
+              {icon}
+              <Text
+                ellipsis
+                style={{
+                  maxWidth: (val.size?.idealWidth || 180) - 24,
+                  display: "inline-block",
+                  overflow: "hidden",
+                }}
               >
                 {val.value(item)}
-              </TableCellLayout>
-            );
-          },
-        })
-      );
+              </Text>
+            </Space>
+          );
+        },
+      });
   });
 
   return tableColumn;

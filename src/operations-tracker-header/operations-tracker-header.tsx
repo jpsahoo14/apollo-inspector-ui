@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import { Button, Link } from "@fluentui/react-components";
-import { Info20Regular } from "@fluentui/react-icons";
+import { Button, Typography } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { useStyles } from "./operations-tracker-header-styles";
 import { CopyButton } from "./operations-copy-button";
 import { IOperationsReducerState } from "../operations-tracker-container-helper";
@@ -16,6 +16,8 @@ import { IDataView } from "apollo-inspector";
 import { CopyType, ICopyData, RecordingState } from "../types";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+
+const { Link } = Typography;
 
 export interface IOperationsTrackerHeaderProps {
   operationsState: IOperationsReducerState;
@@ -41,8 +43,8 @@ export const OperationsTrackerHeader = React.memo(
 
     return (
       <>
-        <div className={classes.header}>
-          <div className={classes.buttonContainer}>
+        <div style={classes.header}>
+          <div style={classes.buttonContainer}>
             {renderInfoAndStartStopButton(
               { openDescription, recordingState },
               { classes, setOpenDescription, startRecording, stopRecording }
@@ -59,14 +61,14 @@ export const OperationsTrackerHeader = React.memo(
           </div>
         </div>
         {openDescription && (
-          <div className={classes.description}>
+          <div style={classes.description}>
             <span>
               It monitors changes in cache, fired mutations and
               activated/deactivated queries.
             </span>
             <Link
               href="https://github.com/jpsahoo14/apollo-inspector-ui/blob/main/extension/readme.md"
-              inline
+              target="_blank"
               rel="noopener noreferrer"
             >
               {" "}
@@ -209,28 +211,21 @@ const renderInfoAndStartStopButton = (
   }: IRenderInfoButtonServices
 ) => {
   const recordingString = getRecordingString(recordingState);
+  const isRecording = recordingState === RecordingState.RecordingStarted;
 
   return (
     <>
       <Button
         title="Information"
         tabIndex={0}
-        className={classes.infoButton}
+        style={classes.infoButton}
+        icon={<InfoCircleOutlined />}
         onClick={() => setOpenDescription(!openDescription)}
-      >
-        <Info20Regular />
-      </Button>
+      />
       <Button
-        className={
-          recordingState === RecordingState.RecordingStarted
-            ? classes.stopRecordingButton
-            : ""
-        }
-        onClick={
-          recordingState !== RecordingState.RecordingStarted
-            ? startRecording
-            : stopRecording
-        }
+        danger={isRecording}
+        onClick={isRecording ? stopRecording : startRecording}
+        style={isRecording ? classes.stopRecordingButton : {}}
       >
         {recordingString}
       </Button>

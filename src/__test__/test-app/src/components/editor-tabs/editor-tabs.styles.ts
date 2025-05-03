@@ -1,12 +1,14 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { createStyles } from "../../../../../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles({
   root: {
-    alignItems: "flex-start",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-start",
-    ...shorthands.padding("5.0rem", "2.0rem"),
-    rowGap: "2.0rem",
-  },
+    height: "100%",
+    padding: "0 8px",
+  }
 });

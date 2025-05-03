@@ -1,18 +1,14 @@
-import * as React from "react";
-import * as ReactDom from "react-dom";
-import { FluentProvider, teamsDarkTheme } from "@fluentui/react-components";
-import { createClient } from "./data/apollo-client";
-import { ApolloProvider, useApolloClient, useQuery } from "@apollo/client";
-import { editorQuery, addSectionMutation } from "./data/operations";
-import { EditorMainApp } from "./components/editor-main-app/editor-main-app";
+import React from "react";
+import ReactDOM from "react-dom";
+import { ConfigProvider, theme } from "antd";
+import { App } from "./App";
+import "antd/dist/reset.css";
 
-const apolloClient = createClient();
-
-ReactDom.render(
-  <ApolloProvider client={apolloClient}>
-    <FluentProvider theme={teamsDarkTheme}>
-      <EditorMainApp />
-    </FluentProvider>
-  </ApolloProvider>,
-  document.getElementById("app")
+ReactDOM.render(
+  <React.StrictMode>
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <App />
+    </ConfigProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );

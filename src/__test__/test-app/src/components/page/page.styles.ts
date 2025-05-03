@@ -1,11 +1,22 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { createStyles } from "../../../../../utils/style-utils";
 
-export const useStyles = makeStyles({
-  root: { display: "flex", flexDirection: "column" },
-  titleWrapper: {
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles({
+  root: {
     display: "flex",
+    flexDirection: "column",
+    padding: "8px",
+    cursor: "pointer",
+    borderBottom: "1px solid #e8e8e8",
+    "&:hover": {
+      backgroundColor: "#e6f7ff"
+    }
   },
-  title: {
-    ...shorthands.margin("1rem"),
-  },
+  active: {
+    backgroundColor: "#e6f7ff",
+    borderRight: "2px solid #1890ff"
+  }
 });

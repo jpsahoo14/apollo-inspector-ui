@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useScrollbarWidth, useFluent } from "@fluentui/react-components";
 import { IVerboseOperation } from "apollo-inspector";
 import { CountReducerActionEnum } from "../operations-tracker-body";
 import { IFilterSet } from "./filter-view";
@@ -24,7 +23,6 @@ const ItemSize = 20;
 export const useDataGridView = (props: IDataGridView) => {
   const { operationsState, dispatchOperationsState } = props;
 
-  const { scrollbarWidth } = useScrollbarWidthInternal();
   const divRef = React.useRef<HTMLDivElement | null>(null);
 
   const { gridHeight } = useObserveGridHeight(divRef);
@@ -47,21 +45,8 @@ export const useDataGridView = (props: IDataGridView) => {
     columns,
     columnSizing,
     updateVerboseOperations,
-    scrollbarWidth,
     onClick,
   };
-};
-
-/**
- * Computes the width of the scrollbar, which can be used as padding
- * to data-grid so that scrollbar doesn't overlay on content
- * @returns scrollbarWidth
- */
-const useScrollbarWidthInternal = () => {
-  const { targetDocument } = useFluent();
-  const scrollbarWidth = useScrollbarWidth({ targetDocument });
-
-  return { scrollbarWidth };
 };
 
 const useObserveGridHeight = (

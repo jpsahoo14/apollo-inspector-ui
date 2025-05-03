@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TabList, Tab } from "@fluentui/react-components";
+import { Tabs } from "antd";
 import { IDataView } from "apollo-inspector";
 import { CopyType, ICopyData, TabHeaders } from "../types";
 import { VerboseOperationsContainer } from "../verbose-operation/verbose-operations-container";
@@ -83,43 +83,42 @@ export const OperationsTrackerBody = (props: IOperationViewContainer) => {
     return newTabHeaders;
   }, []);
 
-  const tabs = React.useMemo(() => {
-    const items = updatedTabItems.map((item: ITabHeader) => {
-      return (
-        <Tab key={item.key} value={item.key}>
-          {getTabHeaderName(item, state, data)}
-        </Tab>
-      );
+  const items = React.useMemo(() => {
+    return updatedTabItems.map((item: ITabHeader) => {
+      return {
+        key: item.key,
+        label: getTabHeaderName(item, state, data),
+        children: (
+          <OperationsViewRenderer
+            data={data}
+            selectedTab={item.key}
+            operationsState={operationsState}
+            dispatchOperationsCount={dispatchOperationsCount}
+            dispatchOperationsState={dispatchOperationsState}
+            apolloClientIds={apolloClientIds}
+            onCopy={onCopy}
+            clearStore={clearStore}
+            resetStore={resetStore}
+          />
+        ),
+      };
     });
-    return items;
-  }, [updatedTabItems, state, data]);
+  }, [updatedTabItems, state, data, operationsState, dispatchOperationsState, apolloClientIds, onCopy, clearStore, resetStore]);
 
-  const onTabSelect = React.useCallback((_, props) => {
-    setSelectedTab(props.value);
-  }, []);
+  const onChange = (activeKey: string) => {
+    setSelectedTab(activeKey as TabHeaders);
+  };
 
   if (!data) return null;
+
   return (
-    <div className={classes.root}>
-      <TabList
+    <div style={classes.root}>
+      <Tabs
+        defaultActiveKey={updatedTabItems[0].key}
+        activeKey={selectedTab}
+        onChange={onChange}
         className={classes.operationTabList}
-        defaultSelectedValue={updatedTabItems[0].key}
-        onTabSelect={onTabSelect}
-        selectedValue={selectedTab}
-        key="tabListOperations"
-      >
-        {tabs}
-      </TabList>
-      <OperationsViewRenderer
-        data={data}
-        selectedTab={selectedTab}
-        operationsState={operationsState}
-        dispatchOperationsCount={dispatchOperationsCount}
-        dispatchOperationsState={dispatchOperationsState}
-        apolloClientIds={apolloClientIds}
-        onCopy={onCopy}
-        clearStore={clearStore}
-        resetStore={resetStore}
+        items={items}
       />
     </div>
   );

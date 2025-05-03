@@ -1,7 +1,6 @@
 import * as React from "react";
 import { IAffectedQueryMap, IDueToOperation } from "apollo-inspector";
 import { AffectedQueriesRenderer } from "./affected-queries-renderer";
-import { SelectTabData } from "@fluentui/react-components";
 
 export interface IAffectedQueriesContainerProps {
   affectedQueries: IAffectedQueryMap | null;
@@ -24,8 +23,8 @@ export const AffectedQueriesContainer = (
   );
 
   const onTabSelect = React.useCallback(
-    (_, { value }: SelectTabData) => {
-      setSelectedItem(value as string);
+    (activeKey: string) => {
+      setSelectedItem(activeKey);
     },
     [setSelectedItem]
   );

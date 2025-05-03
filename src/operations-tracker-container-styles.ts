@@ -1,6 +1,10 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { createStyles } from './utils/style-utils';
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles({
   root: {
     flexBasic: 0,
     display: "flex",
@@ -8,26 +12,26 @@ export const useStyles = makeStyles({
     minHeight: 0,
     height: "calc(100% - 1rem)",
     width: "100%",
-    ...shorthands.padding("0.5rem"),
+    padding: "0.5rem",
   },
   innerContainer: {
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    ...shorthands.overflow("hidden"),
+    overflow: "hidden",
     flexGrow: 1,
   },
   innerContainerDescription: {},
   name: {
-    ...shorthands.overflow("hidden"),
+    overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
   label: {
     display: "inline-block",
-    ...shorthands.padding(".5rem", "1.0rem"),
-    ...shorthands.borderRadius("1.2rem"),
-    ...shorthands.borderStyle("none"),
+    padding: ".5rem 1.0rem",
+    borderRadius: "1.2rem",
+    border: "none",
   },
   centerDiv: {
     display: "flex",

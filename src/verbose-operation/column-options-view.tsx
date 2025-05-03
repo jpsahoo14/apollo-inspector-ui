@@ -1,16 +1,6 @@
 import * as React from "react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogSurface,
-  DialogTitle,
-  DialogContent,
-  DialogBody,
-  Button,
-  Label,
-  Checkbox,
-  CheckboxOnChangeData,
-} from "@fluentui/react-components";
+import { Modal, Button, Typography, Checkbox, Space } from "antd";
+import { ToolOutlined } from "@ant-design/icons";
 import { ISetState, TrackerStoreContext } from "../store";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
@@ -20,8 +10,9 @@ import {
 } from "../utils/apollo-operations-tracker-utils";
 import { useStyles } from "./column-options-view.styles";
 import { IColumnOptions, ColumnName } from "./data-grid.interface";
-import { ToolboxRegular } from "@fluentui/react-icons";
 import { compareString } from "./data-grid-view-helper";
+
+const { Text } = Typography;
 
 export const SAMPLE_COLUMN_OPTIONS: IColumnOptions[] = [
   {
@@ -116,6 +107,7 @@ export const SAMPLE_COLUMN_OPTIONS: IColumnOptions[] = [
 ];
 
 export const ColumnOptions = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const styles = useStyles();
   const store = React.useContext(TrackerStoreContext);
   const [selectedColumnOptions, setSelectedColumnOptions] = useStore(
@@ -136,34 +128,48 @@ export const ColumnOptions = () => {
       const checkboxValue = value[1];
       return (
         <Checkbox
-          onChange={onColumnOptionsChange}
+          onChange={(e) => onColumnOptionsChange(e, e.target.checked)}
           value={checkboxValue.key}
-          label={checkboxValue.header}
-          name={checkboxValue.key}
           key={key}
           checked={selectedColumnOptions.includes(checkboxValue.key)}
-        />
+        >
+          {checkboxValue.header}
+        </Checkbox>
       );
     }
   );
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <Dialog modalType="non-modal">
-      <DialogTrigger disableButtonEnhancement>
-        <Button icon={<ToolboxRegular />}>Column Options</Button>
-      </DialogTrigger>
-      <DialogSurface aria-describedby={undefined}>
-        <DialogBody>
-          <DialogTitle>Column options</DialogTitle>
-          <DialogContent className={styles.main}>
-            <Label>Add or remove columns.</Label>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {columnOptionCheckbox}
-            </div>
-          </DialogContent>
-        </DialogBody>
-      </DialogSurface>
-    </Dialog>
+    <>
+      <Button 
+        icon={<ToolOutlined />} 
+        onClick={showModal}
+      >
+        Column Options
+      </Button>
+      <Modal
+        title="Column options"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+        width={600}
+      >
+        <div style={styles.main}>
+          <Text>Add or remove columns.</Text>
+          <Space direction="vertical" style={{ display: "flex", marginTop: "16px" }}>
+            {columnOptionCheckbox}
+          </Space>
+        </div>
+      </Modal>
+    </>
   );
 };
 
@@ -173,9 +179,10 @@ const useOnColumnOptionsChange = (
 ) =>
   React.useCallback(
     (
-      { target: { value } }: React.ChangeEvent<HTMLInputElement>,
-      { checked }: CheckboxOnChangeData
+      event: React.ChangeEvent<HTMLInputElement>,
+      checked: boolean
     ) => {
+      const value = event.target.value;
       let arr = [...selectedColumnOptions];
       if (checked) {
         !arr.includes(value) && arr.push(value);

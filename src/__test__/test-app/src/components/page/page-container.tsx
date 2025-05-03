@@ -1,16 +1,18 @@
 import * as React from "react";
 import { Page } from "./page";
 import { IPage } from "../../data/resolvers/initial-data/data.interface";
-import { Button } from "@fluentui/react-components";
+import { Button } from "antd";
 import { addSectionMutation, editorQuery } from "../../data/operations";
 import { useApolloClient } from "@apollo/client";
-import { editor } from "../../data/resolvers/query/editor-resolver";
 
 interface IPageContainerProps {
   page: IPage;
+  isActive?: boolean;
+  onClick?: () => void;
 }
+
 export const PageContainer = (props: IPageContainerProps) => {
-  const { page } = props;
+  const { page, isActive = false, onClick } = props;
   const client = useApolloClient();
 
   const onBtnClick = React.useCallback(async () => {
@@ -19,7 +21,6 @@ export const PageContainer = (props: IPageContainerProps) => {
         mutation: addSectionMutation,
         variables: { input: { pageId: page.id } },
         update: (cache, result) => {
-          console.log({ cache, result });
           const cachedData: any = cache.readQuery({
             query: editorQuery,
             variables: { input: { id: 1 } },
@@ -45,9 +46,18 @@ export const PageContainer = (props: IPageContainerProps) => {
       console.log(e);
     }
   }, [client, page]);
+
   const actionButton = (
-    <Button onClick={onBtnClick}>{`${"Add Section"}`}</Button>
+    <Button onClick={onBtnClick} size="small">{`${"Add Section"}`}</Button>
   );
 
-  return <Page page={page} actionButton={actionButton} />;
+  return (
+    <Page
+      name={page.title || "Untitled"}
+      isActive={isActive}
+      onClick={onClick || (() => {})}
+      actionButton={actionButton}
+      page={page}
+    />
+  );
 };

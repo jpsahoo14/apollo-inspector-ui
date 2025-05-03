@@ -1,13 +1,6 @@
 import * as React from "react";
-import {
-  Accordion,
-  AccordionHeader,
-  AccordionItem,
-  AccordionPanel,
-  Tooltip,
-  Text,
-  Button,
-} from "@fluentui/react-components";
+import { Collapse, Tooltip, Typography, Button } from "antd";
+import { CopyOutlined, CloseOutlined } from "@ant-design/icons";
 import {
   IVerboseOperation,
   IOperationResult,
@@ -22,10 +15,11 @@ import {
   sizeInBytes,
 } from "../utils/apollo-operations-tracker-utils";
 import { DocumentNode } from "graphql";
-import { Dismiss16Filled, Copy16Regular } from "@fluentui/react-icons";
 import copy from "copy-to-clipboard";
 import { JsonViewer } from "view-json-react";
 
+const { Text } = Typography;
+const { Panel } = Collapse;
 const spaceForStringify = 2;
 
 interface IVerboseOperationViewProps {
@@ -38,12 +32,12 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
 
   const classes = useStyles();
 
-  const accordionItems = React.useMemo(() => {
+  const collapseItems = React.useMemo(() => {
     if (!operation) {
       return [];
     }
 
-    return getAccordionItems(operation, classes);
+    return getCollapseItems(operation, classes);
   }, [operation, classes]);
 
   const closePreview = React.useCallback(() => {
@@ -61,57 +55,51 @@ export const VerboseOperationView = (props: IVerboseOperationViewProps) => {
   const { operationType, operationName } = operation;
 
   return (
-    <div className={classes.operationView} key="verboseOperationView">
-      <div className={classes.header} key="verboseHeader">
-        <div className={classes.heading} key="operationType1">
-          <div className={classes.operationNameText}> {operationName} </div>
-          <div className={classes.operationType}> {operationType} </div>
+    <div style={classes.operationView} key="verboseOperationView">
+      <div style={classes.header} key="verboseHeader">
+        <div style={classes.heading} key="operationType1">
+          <div style={classes.operationNameText}> {operationName} </div>
+          <div style={classes.operationType}> {operationType} </div>
         </div>
-        <div className={classes.headerButtons}>
-          <Tooltip content={"Copy operation details"} relationship="label">
+        <div style={classes.headerButtons}>
+          <Tooltip title="Copy operation details">
             <Button
               key={`copy-btn`}
               onClick={copyOperation}
-              className={classes.button}
-              icon={{
-                className: classes.copyButtonIcon,
-                children: <Copy16Regular />,
-              }}
-            ></Button>
+              style={classes.button}
+              icon={<CopyOutlined style={classes.copyButtonIcon} />}
+            />
           </Tooltip>
-          <Tooltip content={"Close operation view"} relationship="label">
+          <Tooltip title="Close operation view">
             <Button
               key={`dismiss-btn`}
               onClick={closePreview}
-              className={classes.button}
-              icon={{
-                className: classes.dismissButtonIcon,
-                children: <Dismiss16Filled />,
-              }}
-            ></Button>
+              style={classes.button}
+              icon={<CloseOutlined style={classes.dismissButtonIcon} />}
+            />
           </Tooltip>
         </div>
       </div>
       <div
-        className={classes.accordionWrapper}
+        style={classes.accordionWrapper}
         key="operationnViewAccordionnWrapper"
       >
-        <div className={classes.accordionPreWrapper}>
-          <Accordion
-            className={classes.operationDetails}
+        <div style={classes.accordionPreWrapper}>
+          <Collapse
+            style={classes.operationDetails}
             key={"operationnViewAccordionn"}
-            multiple
-            collapsible
+            defaultActiveKey={['operationName']}
+            ghost
           >
-            {accordionItems}
-          </Accordion>
+            {collapseItems}
+          </Collapse>
         </div>
       </div>
     </div>
   );
 };
 
-const getAccordionItems = (
+const getCollapseItems = (
   operation: IVerboseOperation,
   classes: Record<stylesKeys, string>
 ) => {
@@ -169,14 +157,12 @@ const getOperationNamePanel = (
   classes: Record<stylesKeys, string>
 ) => {
   return (
-    <AccordionItem value="operationName" key="operationName">
-      <AccordionHeader>
-        <Text style={{ fontFamily: "monospace" }}>{operationName}</Text>
-      </AccordionHeader>
-      <AccordionPanel>
-        <div className={classes.operationNameAccPanel}>{operationString}</div>
-      </AccordionPanel>
-    </AccordionItem>
+    <Panel 
+      header={<Text style={{ fontFamily: "monospace" }}>{operationName}</Text>}
+      key="operationName"
+    >
+      <div style={classes.operationNameAccPanel}>{operationString}</div>
+    </Panel>
   );
 };
 
@@ -184,52 +170,44 @@ const getVariablesPanel = (
   variables: OperationVariables | undefined,
   classes: Record<stylesKeys, string>
 ) => (
-  <AccordionItem value="variables" key="variables">
-    <Tooltip content={"Variables for the operation"} relationship="label">
-      <AccordionHeader>
-        <Text style={{ fontFamily: "monospace" }}>{"Variables"}</Text>
-      </AccordionHeader>
-    </Tooltip>
-    <AccordionPanel>
-      <div className={classes.operationVariablesAccPanel}>
-        {JSON.stringify(variables, null, spaceForStringify)}
-      </div>
-    </AccordionPanel>
-  </AccordionItem>
+  <Panel
+    header={<Tooltip title="Variables for the operation"><Text style={{ fontFamily: "monospace" }}>{"Variables"}</Text></Tooltip>}
+    key="variables"
+  >
+    <div style={classes.operationVariablesAccPanel}>
+      {JSON.stringify(variables, null, spaceForStringify)}
+    </div>
+  </Panel>
 );
 
 const getClientIdPanel = (
   clientId: string,
   classes: Record<stylesKeys, string>
 ) => (
-  <AccordionItem value="clientId" key="clientId">
-    <Tooltip content={"Apollo Client Id"} relationship="label">
-      <AccordionHeader>
-        <Text style={{ fontFamily: "monospace" }}>{`ClientId`}</Text>
-      </AccordionHeader>
-    </Tooltip>
-    <AccordionPanel>
-      <div className={classes.accPanel}> {clientId}</div>
-    </AccordionPanel>
-  </AccordionItem>
+  <Panel
+    header={<Tooltip title="Apollo Client Id"><Text style={{ fontFamily: "monospace" }}>{`ClientId`}</Text></Tooltip>}
+    key="clientId"
+  >
+    <div style={classes.accPanel}> {clientId}</div>
+  </Panel>
 );
 
 const getFetchPolicyPanel = (
   fetchPolicy: WatchQueryFetchPolicy | undefined,
   classes: Record<stylesKeys, string>
 ) => (
-  <AccordionItem value="fetchPolicy" key="fetchPolicy">
-    <Tooltip content={"Fetch policy of the operation"} relationship="label">
-      <AccordionHeader>
+  <Panel
+    header={
+      <Tooltip title="Fetch policy of the operation">
         <Text style={{ fontFamily: "monospace" }}>{`Fetch Policy ${
           fetchPolicy ? `(${fetchPolicy})` : ``
         }`}</Text>
-      </AccordionHeader>
-    </Tooltip>
-    <AccordionPanel>
-      <div className={classes.accPanel}> {fetchPolicy}</div>
-    </AccordionPanel>
-  </AccordionItem>
+      </Tooltip>
+    }
+    key="fetchPolicy"
+  >
+    <div style={classes.accPanel}> {fetchPolicy}</div>
+  </Panel>
 );
 
 const getAffectedQueriesPanel = (
@@ -245,22 +223,22 @@ const getAffectedQueriesPanel = (
   }));
 
   return (
-    <AccordionItem value={value} key={value}>
-      <Tooltip content={tooltipContent} relationship="label">
-        <AccordionHeader>
-          <Text
-            style={{ fontFamily: "monospace" }}
-          >{`${accordionHeaderString} (${affectedQueriesItems.length})`}</Text>
-        </AccordionHeader>
-      </Tooltip>
-      <AccordionPanel>
-        <div className={classes.affectedQueriesAccPanel}>
-          {affectedQueriesItems.map((query, key) => (
-            <div key={`affected-queries-${key}`}>{query.header}</div>
-          ))}
-        </div>
-      </AccordionPanel>
-    </AccordionItem>
+    <Panel
+      header={
+        <Tooltip title={tooltipContent}>
+          <Text style={{ fontFamily: "monospace" }}>
+            {`${accordionHeaderString} (${affectedQueriesItems.length})`}
+          </Text>
+        </Tooltip>
+      }
+      key={value}
+    >
+      <div style={classes.affectedQueriesAccPanel}>
+        {affectedQueriesItems.map((query, key) => (
+          <div key={`affected-queries-${key}`}>{query.header}</div>
+        ))}
+      </div>
+    </Panel>
   );
 };
 
@@ -273,43 +251,38 @@ const getResultPanel = (
     const resultFrom = getResultFromString(res.from);
 
     return (
-      <AccordionItem value={resultFrom} key={resultFrom}>
-        <AccordionHeader>
+      <Panel
+        header={
           <Text style={{ fontFamily: "monospace" }}>{`${resultFrom} ${
             res.size ? `(${sizeInBytes(res.size)})` : ``
           }`}</Text>
-        </AccordionHeader>
-        <AccordionPanel>
-          <div className={classes.resultPanel}>
-            <JsonViewer
-              data={res.result}
-              expandLevel={1}
-              style={{ color: "#61dafb" }}
-            />
-          </div>
-        </AccordionPanel>
-      </AccordionItem>
+        }
+        key={resultFrom}
+      >
+        <div style={classes.resultPanel}>
+          <JsonViewer
+            data={res.result}
+            expandLevel={1}
+            style={{ color: "#1890ff" }}
+          />
+        </div>
+      </Panel>
     );
   });
 
   return (
-    <AccordionItem value="result" key="result">
-      <Tooltip
-        content={
-          "Data/result of the operation, whether its from cache or network"
-        }
-        relationship="label"
-      >
-        <AccordionHeader>
+    <Panel
+      header={
+        <Tooltip title="Data/result of the operation, whether its from cache or network">
           <Text style={{ fontFamily: "monospace" }}>{`Result ${
             isOptimistic ? "(Optimistic result)" : ""
           }`}</Text>
-        </AccordionHeader>
-      </Tooltip>
-      <AccordionPanel>
-        <Accordion collapsible>{items}</Accordion>
-      </AccordionPanel>
-    </AccordionItem>
+        </Tooltip>
+      }
+      key="result"
+    >
+      <Collapse ghost>{items}</Collapse>
+    </Panel>
   );
 };
 
@@ -329,83 +302,72 @@ const getResultFromString = (from: ResultsFrom) => {
 };
 
 const getErrorPanel = (error: unknown, classes: Record<stylesKeys, string>) => (
-  <AccordionItem value="errorPanel" key="errorPanel">
-    <Tooltip
-      content={"Error message for operation failure"}
-      relationship="label"
-    >
-      <AccordionHeader>
+  <Panel
+    header={
+      <Tooltip title="Error message for operation failure">
         <Text style={{ fontFamily: "monospace" }}>{`Error ${
           error ? "(failed)" : ""
         }`}</Text>
-      </AccordionHeader>
-    </Tooltip>
-    <AccordionPanel>
-      <div className={classes.accPanel}> {JSON.stringify(error)}</div>
-    </AccordionPanel>
-  </AccordionItem>
+      </Tooltip>
+    }
+    key="errorPanel"
+  >
+    <div style={classes.accPanel}> {JSON.stringify(error)}</div>
+  </Panel>
 );
 
 const getWarningPanel = (
   warning: unknown[],
   classes: Record<stylesKeys, string>
 ) => (
-  <AccordionItem value="warningPanel" key="warningPanel">
-    <Tooltip
-      content={
-        "Show any warning like missing field error or why the result is not fetched from cache"
-      }
-      relationship="label"
-    >
-      <AccordionHeader>
+  <Panel
+    header={
+      <Tooltip title="Show any warning like missing field error or why the result is not fetched from cache">
         <Text style={{ fontFamily: "monospace" }}>{`Warning`}</Text>
-      </AccordionHeader>
-    </Tooltip>
-    <AccordionPanel>
-      <div className={classes.accPanel}> {JSON.stringify(warning)}</div>
-    </AccordionPanel>
-  </AccordionItem>
+      </Tooltip>
+    }
+    key="warningPanel"
+  >
+    <div style={classes.accPanel}> {JSON.stringify(warning)}</div>
+  </Panel>
 );
 
 const getDurationPanel = (
   duration: IVerboseOperationDuration | undefined,
   classes: Record<stylesKeys, string>
 ) => (
-  <AccordionItem value="duration" key="duration">
-    <Tooltip
-      content={"Detailed time info for operation in milliSeconds"}
-      relationship="label"
-    >
-      <AccordionHeader>
+  <Panel
+    header={
+      <Tooltip title="Detailed time info for operation in milliSeconds">
         <Text style={{ fontFamily: "monospace" }}>{`Duration ${
           duration?.totalTime ? `(${duration.totalTime} ms)` : `(ms)`
         }`}</Text>
-      </AccordionHeader>
-    </Tooltip>
-    <AccordionPanel>
-      <div className={classes.durationAccPanel}>
-        <Text key="1">{`Total execution time: ${duration?.totalTime}`}</Text>
-        {isNumber(duration?.requestExecutionTime) ? (
-          <Text key="2">{`Time spend to get the data from resolver: ${duration?.requestExecutionTime}`}</Text>
-        ) : (
-          <div />
-        )}
-        {isNumber(duration?.cacheWriteTime) ? (
-          <Text key="3">{`Time spent to write data to cache: ${duration?.cacheWriteTime}`}</Text>
-        ) : (
-          <div />
-        )}
-        {isNumber(duration?.cacheDiffTime) ? (
-          <Text key="4">{`Time spent to diff data from cache: ${duration?.cacheDiffTime}`}</Text>
-        ) : (
-          <div />
-        )}
-        {isNumber(duration?.cacheBroadcastWatchesTime) ? (
-          <Text key="5">{`Time spent to broadcastWatches: ${duration?.cacheBroadcastWatchesTime}`}</Text>
-        ) : (
-          <div />
-        )}
-      </div>
-    </AccordionPanel>
-  </AccordionItem>
+      </Tooltip>
+    }
+    key="duration"
+  >
+    <div style={classes.durationAccPanel}>
+      <Text key="1">{`Total execution time: ${duration?.totalTime}`}</Text>
+      {isNumber(duration?.requestExecutionTime) ? (
+        <Text key="2">{`Time spend to get the data from resolver: ${duration?.requestExecutionTime}`}</Text>
+      ) : (
+        <div />
+      )}
+      {isNumber(duration?.cacheWriteTime) ? (
+        <Text key="3">{`Time spent to write data to cache: ${duration?.cacheWriteTime}`}</Text>
+      ) : (
+        <div />
+      )}
+      {isNumber(duration?.cacheDiffTime) ? (
+        <Text key="4">{`Time spent to diff data from cache: ${duration?.cacheDiffTime}`}</Text>
+      ) : (
+        <div />
+      )}
+      {isNumber(duration?.cacheBroadcastWatchesTime) ? (
+        <Text key="5">{`Time spent to broadcastWatches: ${duration?.cacheBroadcastWatchesTime}`}</Text>
+      ) : (
+        <div />
+      )}
+    </div>
+  </Panel>
 );

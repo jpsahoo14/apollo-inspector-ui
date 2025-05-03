@@ -1,5 +1,5 @@
 import React from "react";
-import { mergeClasses, Spinner, Title2 } from "@fluentui/react-components";
+import { Spin, Typography } from "antd";
 import { OperationsTrackerBody } from "./operations-tracker-body/operations-tracker-body";
 import { useStyles } from "./operations-tracker-container-styles";
 import { OperationsTrackerHeader } from "./operations-tracker-header/operations-tracker-header";
@@ -25,9 +25,12 @@ import { useShallow } from "zustand/react/shallow";
 import { RecordingState } from "./types";
 import { ApolloClientSelection } from "./apollo-clients-selection/apollo-clients-selection";
 
+const { Title } = Typography;
+
 export const OperationsTrackerContainer = (
   props: IOperationsTrackerContainer
 ) => {
+  console.log(`jps OperationsTrackerContainer`);
   const trackerStore = React.useMemo(() => createTrackerStore(), []);
   const trackerStoreRef = React.useRef(trackerStore);
   return (
@@ -57,12 +60,12 @@ export const OperationsTrackerContainerInner = (
 
   return (
     <ErrorBoundary>
-      <div className={classes.root}>
+      <div style={classes.root}>
         <div
-          className={mergeClasses(
-            classes.innerContainer,
-            openDescription && classes.innerContainerDescription
-          )}
+          style={{
+            ...classes.innerContainer,
+            ...(openDescription ? classes.innerContainerDescription : {}),
+          }}
         >
           <OperationsTrackerHeader
             operationsState={operationsState}
@@ -139,15 +142,15 @@ const useMainSlot = (
   }
   if (error.error && error.type === IErrorType.FullPage) {
     return (
-      <div className={classes.centerDiv}>
-        <Title2>{error.message}</Title2>
+      <div style={classes.centerDiv}>
+        <Title level={2}>{error.message}</Title>
       </div>
     );
   }
   if (loader.loading) {
     return (
-      <div className={classes.centerDiv}>
-        <Spinner labelPosition="below" label={loader.message} />
+      <div style={classes.centerDiv}>
+        <Spin tip={loader.message} />
       </div>
     );
   }

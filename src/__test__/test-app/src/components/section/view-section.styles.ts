@@ -1,15 +1,16 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { createStyles } from "../../../../../utils/style-utils";
 
-export const useStyles = makeStyles({
+export const useStyles = () => {
+  return styles;
+};
+
+const styles = createStyles({
   root: {
     display: "flex",
     flexDirection: "column",
-    marginBottom: "1rem",
-  },
-  titleWrapper: {
-    ...shorthands.border("0.2rem", "solid"),
-  },
-  contentWrapper: {
-    ...shorthands.border("1rem"),
-  },
+    padding: "16px",
+    marginBottom: "16px",
+    border: "1px solid #e8e8e8",
+    borderRadius: "4px",
+  }
 });

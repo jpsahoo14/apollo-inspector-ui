@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Title2 } from "@fluentui/react-components";
+import { Button, Typography } from "antd";
 
 export interface IErrorBoundaryState {
   error?: IError;
@@ -24,7 +24,7 @@ export class ErrorBoundary extends React.PureComponent<
     if (this.state.error?.error) {
       return (
         <div>
-          <Title2>{this.state.error.message}</Title2>
+          <Typography.Title level={2}>{this.state.error.message}</Typography.Title>
           <Button onClick={this.resetError}>Retry</Button>
         </div>
       );
@@ -33,7 +33,7 @@ export class ErrorBoundary extends React.PureComponent<
     return children as JSX.Element;
   }
 
-  private resetError() {
+  private resetError = () => {
     this.setState({
       error: undefined,
     });

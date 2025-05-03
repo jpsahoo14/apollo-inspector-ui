@@ -1,115 +1,88 @@
 import * as React from "react";
-import {
-  IEditorData,
-  IPage,
-} from "../../data/resolvers/initial-data/data.interface";
-import {
-  AccordionItem,
-  AccordionHeader,
-  AccordionPanel,
-  Accordion,
-} from "@fluentui/react-components";
 import { useStyles } from "./page-navigator-list-container.styles";
-import { setSelectedPageMutation, editorQuery } from "../../data/operations";
-import { ApolloClient, InMemoryCache, useApolloClient } from "@apollo/client";
-import { produce } from "immer";
+import { Button, List, Typography } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { PageContainer } from "../page/page-container";
 
-interface IPageNavigatorListContainerProps {
-  data: IEditorData;
+const { Text } = Typography;
+
+// Create a default user object for pages
+const defaultUser = { id: 1, name: "Default User" };
+
+export interface IPageNavigatorListProps {
+  pages: Array<{
+    id: string | number;
+    title?: string;
+    sections: Array<{
+      id: string | number;
+      title?: string;
+    }>;
+  }>;
+  activePage: {
+    id: string | number;
+    title?: string;
+    sections: Array<{
+      id: string | number;
+      title?: string;
+    }>;
+  } | null;
+  setActivePage: (page: any) => void;
 }
-export const PageNavigatorListContainer = (
-  props: IPageNavigatorListContainerProps
-) => {
-  const { data } = props;
-  const pages = data.pages;
-  const selectedPage = [`${data.selectedPage.id}`];
-  const styles = useStyles();
-  const client = useApolloClient();
 
-  const setSelectedPageCB = useSetSelectedPageCB(client);
-  const accordion = React.useMemo(() => {
-    const comp = pages.map((pg) => {
-      const comp = (
-        <AccordionItem value={`${pg.id}`} key={`${pg.id}`}>
-          <AccordionHeader>{`${pg.title}`}</AccordionHeader>
-          {getAccordionPanel(pg)}
-        </AccordionItem>
-      );
+export const PageNavigatorList = (props: IPageNavigatorListProps) => {
+  const { pages, activePage, setActivePage } = props;
+  const classes = useStyles();
 
-      return comp;
-    });
-    return (
-      <Accordion
-        collapsible
-        onToggle={setSelectedPageCB}
-        openItems={selectedPage}
-      >
-        {comp}
-      </Accordion>
-    );
-  }, [pages, getAccordionPanel, setSelectedPageCB, selectedPage]);
+  const onPageClick = React.useCallback(
+    (page: any) => {
+      setActivePage(page);
+    },
+    [setActivePage]
+  );
 
-  return <div className={styles.root}>{accordion}</div>;
+  return (
+    <div style={classes.root}>
+      <div style={classes.header}>
+        <Text strong>Files</Text>
+        <Button 
+          icon={<PlusOutlined />} 
+          size="small" 
+          onClick={() => {
+            // Handle new page creation if needed
+            console.log('Create new page');
+          }}
+        >
+          New
+        </Button>
+      </div>
+      <div style={classes.list}>
+        <List
+          dataSource={pages}
+          renderItem={(page) => (
+            <List.Item>
+              <PageContainer
+                page={{
+                  ...page,
+                  id: Number(page.id), // Convert to number as IPage expects number
+                  title: page.title || "Untitled",
+                  lastEditedBy: defaultUser,
+                  isEditing: false,
+                  sections: page.sections.map(section => ({
+                    ...section,
+                    id: Number(section.id),
+                    title: section.title || "Untitled Section",
+                    content: "",
+                    lastEditedBy: defaultUser,
+                    isEditing: false
+                  }))
+                }}
+                isActive={activePage ? activePage.id === page.id : false}
+                onClick={() => onPageClick(page)}
+              />
+            </List.Item>
+          )}
+        />
+      </div>
+    </div>
+  );
 };
-
-const getAccordionPanel = (page: IPage) => {
-  const comp = page.sections.map((sec) => {
-    const comp = (
-      <AccordionPanel key={sec.id}>
-        <div>{`${sec.title}`}</div>
-      </AccordionPanel>
-    );
-
-    return comp;
-  });
-
-  return comp;
-};
-
-const useSetSelectedPageCB = (client: ApolloClient<object>) =>
-  React.useCallback(async (_: any, { value }: { value: string }) => {
-    //setSelectedPage(openItems);
-    const pageId = parseInt(value);
-    const editorQueryData = readEditorQueryData(client);
-    const actualPage = editorQueryData.editor.pages.find(
-      (pg) => pg.id === pageId
-    );
-    const optimisticData = {
-      setSelectedPage: actualPage,
-    };
-    await setSelectedPageMutationCB(client, pageId, optimisticData);
-  }, []);
-
-const setSelectedPageMutationCB = async (
-  client: any,
-  pageId: number,
-  optimisticData: { setSelectedPage: any }
-) => {
-  try {
-    await client.mutate({
-      mutation: setSelectedPageMutation,
-      variables: { input: { pageId } },
-      optimisticResponse: optimisticData,
-      update: (cache: InMemoryCache, { data }: { data: any }) => {
-        const editorQueryData = readEditorQueryData(client);
-
-        const updatedState = produce(editorQueryData, (draft) => {
-          draft.editor.selectedPage = data.setSelectedPage;
-        });
-        client.writeQuery({
-          query: editorQuery,
-          variables: { input: { id: 1 } },
-          data: updatedState,
-        });
-      },
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const readEditorQueryData = (client: any) =>
-  client.readQuery({
-    query: editorQuery,
-    variables: { input: { id: 1 } },
-  });

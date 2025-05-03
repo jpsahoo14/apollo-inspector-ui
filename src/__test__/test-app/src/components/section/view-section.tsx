@@ -1,23 +1,29 @@
-import * as React from "react";
-import { ISection } from "../../data/resolvers/initial-data/data.interface";
-import { Text } from "@fluentui/react-components";
-import { useStyles } from "./view-section.styles";
+import React from "react";
+import { Typography } from "antd";
 
-interface IViewSectionProps {
-  section: ISection;
+const { Text } = Typography;
+
+// Define IQueryTab interface here since it can't be imported
+export interface IQueryTab {
+  id: string;
+  text: string;
 }
-export const ViewSection = (props: IViewSectionProps) => {
-  const { section } = props;
-  const styles = useStyles();
+
+export function ViewSection(props: {
+  id: string;
+  title: string;
+  tabs: IQueryTab[];
+  defaultTab?: string;
+}) {
+  const { title, tabs, defaultTab } = props;
+  // Initialize with default tab or first tab, but don't track state since it's not used
+  const activeTab = defaultTab || (tabs.length > 0 ? tabs[0].id : "");
 
   return (
-    <div className={styles.root}>
-      <div className={styles.titleWrapper}>
-        <Text>{section.title}</Text>
+    <>
+      <div>
+        <Text strong>{title}</Text>
       </div>
-      <div className={styles.contentWrapper}>
-        <Text>{section.content}</Text>
-      </div>
-    </div>
+    </>
   );
-};
+}

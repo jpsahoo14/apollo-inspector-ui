@@ -1,22 +1,13 @@
 import React from "react";
-import {
-  Checkbox,
-  Label,
-  CheckboxOnChangeData,
-  Button,
-  Tooltip,
-  Text,
-} from "@fluentui/react-components";
+import { Checkbox, Button, Tooltip, Typography } from "antd";
+import { CopyOutlined, ReloadOutlined, ClearOutlined } from "@ant-design/icons";
 import { IErrorType, ISetState, TrackerStoreContext } from "../store";
 import { useStyles } from "./apollo-clients-selection-styles";
-import {
-  DocumentCopyRegular,
-  ArrowResetRegular,
-  BroomRegular,
-} from "@fluentui/react-icons";
 import { CopyType, ICopyData, RecordingState } from "../types";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+
+const { Text } = Typography;
 
 export interface IApolloClientSelectionProps {
   clientIds: string[];
@@ -56,16 +47,16 @@ export const ApolloClientSelection = (props: IApolloClientSelectionProps) => {
   });
 
   return (
-    <div className={classes.root}>
-      <Label size="large" weight="semibold" className={classes.label}>
+    <div style={classes.root}>
+      <Text strong style={classes.label}>
         Select the Apollo Clients to track operations
-      </Label>
+      </Text>
       {error.error && error.type === IErrorType.Normal ? (
-        <Label size="large" weight="semibold" className={classes.errorLabel}>
+        <Text strong type="danger" style={classes.errorLabel}>
           {error.message}
-        </Label>
+        </Text>
       ) : null}
-      <div className={classes.checkBoxes}>{checkBoxes}</div>
+      <div style={classes.checkBoxes}>{checkBoxes}</div>
     </div>
   );
 };
@@ -103,11 +94,8 @@ const useApolloClientCheckboxes = ({
       const checked = selectedApolloClientIds.find(
         (selected) => selected === clientId
       );
-      const onChange = (
-        e: React.SyntheticEvent,
-        props: CheckboxOnChangeData
-      ) => {
-        if (props.checked) {
+      const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
           const selectedClientIdsCopy = selectedApolloClientIds.concat([]);
           selectedClientIdsCopy.push(clientId);
           setSelectedApolloClientIds(selectedClientIdsCopy);
@@ -132,47 +120,39 @@ const useApolloClientCheckboxes = ({
       };
       const shouldDisable = recordingState === RecordingState.RecordingStarted;
       return (
-        <div className={classes.checkboxWrapper} key={clientId}>
+        <div style={classes.checkboxWrapper} key={clientId}>
           <Checkbox
             checked={!!checked}
-            label={clientId}
             onChange={onChange}
             key={clientId}
             disabled={!!shouldDisable}
-          />
-          <Tooltip
-            content={<Text>Copy whole apollo cache</Text>}
-            relationship="label"
           >
+            {clientId}
+          </Checkbox>
+          <Tooltip title="Copy whole apollo cache">
             <Button
-              className={classes.copyButton}
+              style={classes.copyButton}
               size="small"
-              icon={<DocumentCopyRegular />}
+              icon={<CopyOutlined />}
               onClick={onCopyCache}
             />
           </Tooltip>
           {clearStore && (
-            <Tooltip
-              content={<Text>Clear apollo client store.</Text>}
-              relationship="label"
-            >
+            <Tooltip title="Clear apollo client store.">
               <Button
-                className={classes.copyButton}
+                style={classes.copyButton}
                 size="small"
-                icon={<BroomRegular />}
+                icon={<ClearOutlined />}
                 onClick={onClearStore}
               />
             </Tooltip>
           )}
           {resetStore && (
-            <Tooltip
-              content={<Text>Reset apollo client store</Text>}
-              relationship="label"
-            >
+            <Tooltip title="Reset apollo client store">
               <Button
-                className={classes.copyButton}
+                style={classes.copyButton}
                 size="small"
-                icon={<ArrowResetRegular />}
+                icon={<ReloadOutlined />}
                 onClick={onResetStore}
               />
             </Tooltip>

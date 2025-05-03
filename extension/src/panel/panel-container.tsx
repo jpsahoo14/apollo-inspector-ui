@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import browser from "webextension-polyfill";
-import { Spinner } from "@fluentui/react-components";
+import { Spin } from "antd"; // Replaced FluentUI Spinner with Ant Design Spin
 import {
   CustomEventTarget,
   IMessagePayload,
@@ -78,7 +78,7 @@ export const PanelContainer = () => {
     return (
       <>
         {"Devtools still loading"}
-        <Spinner />
+        <Spin /> {/* Replaced Spinner with Spin */}
       </>
     );
   }
@@ -87,7 +87,7 @@ export const PanelContainer = () => {
     return (
       <>
         {"No Apollo clients found"}
-        <Spinner />
+        <Spin /> {/* Replaced Spinner with Spin */}
       </>
     );
   }
@@ -101,7 +101,7 @@ export const PanelContainer = () => {
       fallback={
         <>
           {"Loading"}
-          <Spinner />
+          <Spin /> {/* Replaced Spinner with Spin */}
         </>
       }
     >

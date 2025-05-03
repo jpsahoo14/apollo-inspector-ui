@@ -28,7 +28,7 @@ export const VerboseOperationsContainer = (
   } = props;
 
   const classes = useStyles();
-  const verboseClassName = operationsState.selectedOperation
+  const verboseStyle = operationsState.selectedOperation
     ? classes.selectedOperationView
     : classes.notselectedOperationView;
 
@@ -37,11 +37,11 @@ export const VerboseOperationsContainer = (
       type: OperationReducerActionEnum.UpdateSelectedOperation,
       value: undefined,
     });
-  }, []);
+  }, [dispatchOperationsState]);
 
   return (
-    <div className={classes.root}>
-      <div className={classes.allOperationsView}>
+    <div style={classes.root}>
+      <div style={classes.allOperationsView}>
         <DataGridView
           key={"OperationsDataGridView"}
           operations={operations}
@@ -50,7 +50,7 @@ export const VerboseOperationsContainer = (
           dispatchOperationsState={dispatchOperationsState}
         />
       </div>
-      <div className={verboseClassName}>
+      <div style={verboseStyle}>
         <VerboseOperationView
           key={"VerboseOperationView"}
           operation={operationsState.selectedOperation}
